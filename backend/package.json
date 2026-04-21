@@ -1,0 +1,30 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js",
+        "diagnose:leave-quota": "node scripts/diagnoseLeaveQuotaMismatch.js",
+        "migrate:attendance-libur": "node scripts/migrateAttendanceLiburStatus.js",
+        "recalc:leave-quota": "node scripts/recalculateLeaveQuota.js",
+        "sync:payroll-appeal-status": "node scripts/syncPayrollAppealStatus.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "cors": "^2.8.5",
+        "date-holidays": "^3.26.8",
+        "dotenv": "^17.2.3",
+        "express": "^5.2.1",
+        "jsonwebtoken": "^9.0.3",
+        "multer": "^1.4.5-lts.1",
+        "mysql2": "^3.16.0",
+        "pdfkit": "^0.17.2",
+        "sequelize": "^6.37.7"
+    }
+}
