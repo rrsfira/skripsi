@@ -29,7 +29,8 @@ const HRAttendance = lazy(() => import('../pages/protected/HRAttendance'))
 const HRLeaveRequests = lazy(() => import('../pages/protected/HRLeaveRequests'))
 const HRReimbursements = lazy(() => import('../pages/protected/HRReimbursements'))
 const HRSalaryAppeals = lazy(() => import('../pages/protected/HRSalaryAppeals'))
-const HRPayrollDirectorAdjustments = lazy(() => import('../pages/protected/HRPayrollDirectorAdjustments'))
+const HRAllowance = lazy(() => import('../pages/protected/HRAllowance'))
+const HRAllowanceOther = lazy(() => import('../pages/protected/HRAllowanceOther'))
 const HRWarningLetters = lazy(() => import('../pages/protected/HRWarningLetters'))
 const HRJobOpenings = lazy(() => import('../pages/protected/HRJobOpenings'));
 const HRRecruitmentProcess = lazy(() => import('../pages/protected/HRRecruitmentProcess'));
@@ -51,7 +52,8 @@ const FinanceDashboard = lazy(() => import('../pages/protected/FinanceDashboard'
 const FinancePayroll = lazy(() => import('../pages/protected/FinancePayroll'))
 const FinancePayrollRevision = lazy(() => import('../pages/protected/FinancePayrollRevision'))
 const FinancePayrollTransfers = lazy(() => import('../pages/protected/FinancePayrollTransfers'))
-const FinancePayrollManagerAdjustments = lazy(() => import('../pages/protected/FinancePayrollManagerAdjustments'))
+const FinanceAllowance = lazy(() => import('../pages/protected/FinanceAllowance'))
+const PayrollAllowanceOther = lazy(() => import('../pages/protected/HRAllowanceOther'))
 const FinanceReimbursements = lazy(() => import('../pages/protected/FinanceReimbursements'))
 const FinanceSalaryAppeals = lazy(() => import('../pages/protected/FinanceSalaryAppeals'))
 const FinanceReports = lazy(() => import('../pages/protected/FinanceReports'))
@@ -183,8 +185,12 @@ const hrRoutes = [
     component: HRSalaryAppeals,
   },
   {
-    path: '/payroll/hr-adjustments',
-    component: HRPayrollDirectorAdjustments,
+    path: '/hr-allowance',
+    component: HRAllowance,
+  },
+  {
+    path: '/hr/other-allowance',
+    component: HRAllowanceOther,
   },
   {
     path: '/warning-letters',
@@ -261,8 +267,12 @@ const financeRoutes = [
     component: FinancePayrollTransfers,
   },
   {
-    path: '/payroll/manager-adjustments',
-    component: FinancePayrollManagerAdjustments,
+    path: '/payroll/component',
+    component: FinanceAllowance,
+  },
+  {
+    path: '/payroll/other-allowance',
+    component: PayrollAllowanceOther,
   },
   {
     path: '/reimbursements',

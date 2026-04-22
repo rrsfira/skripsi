@@ -3,12 +3,84 @@ import Holidays from "date-holidays";
 const MiniCalendar = ({
   month = new Date().getMonth() + 1,
   year = new Date().getFullYear(),
+  attendanceData = [],
 }) => {
   const hd = new Holidays("ID");
   const today = new Date();
   const todayDay = today.getDate();
   const todayMonth = today.getMonth() + 1;
   const todayYear = today.getFullYear();
+
+  const attendanceMarkerConfig = {
+    present: {
+      label: "Hadir",
+      border: "#16a34a",
+      fill: "#dcfce7",
+    },
+    late: {
+      label: "Terlambat",
+      border: "#eab308",
+      fill: "#fef9c3",
+    },
+    leave: {
+      label: "Izin/Cuti",
+      border: "#2563eb",
+      fill: "#dbeafe",
+    },
+    alpha: {
+      label: "Alpha",
+      border: "#dc2626",
+      fill: "#fee2e2",
+    },
+  };
+
+  const attendancePriority = {
+    alpha: 4,
+    leave: 3,
+    late: 2,
+    present: 1,
+  };
+
+  const getAttendanceMarkerType = (item) => {
+    const status = String(item?.status || "").toLowerCase();
+    const lateMinutes = Number(item?.late_minutes || 0);
+
+    if (status === "alpha") return "alpha";
+    if (status === "izin" || status === "sakit" || status === "cuti") {
+      return "leave";
+    }
+    if (lateMinutes > 60 || (Boolean(item?.is_late) && status === "hadir")) {
+      return "late";
+    }
+    if (status === "hadir") return "present";
+
+    return null;
+  };
+
+  const attendanceByDay = attendanceData.reduce((accumulator, item) => {
+    const recordDate = new Date(item?.date);
+    if (Number.isNaN(recordDate.getTime())) return accumulator;
+
+    const recordMonth = recordDate.getMonth() + 1;
+    const recordYear = recordDate.getFullYear();
+    if (recordMonth !== Number(month) || recordYear !== Number(year)) {
+      return accumulator;
+    }
+
+    const markerType = getAttendanceMarkerType(item);
+    if (!markerType) return accumulator;
+
+    const day = recordDate.getDate();
+    const existingType = accumulator[day];
+    if (
+      !existingType ||
+      attendancePriority[markerType] > attendancePriority[existingType]
+    ) {
+      accumulator[day] = markerType;
+    }
+
+    return accumulator;
+  }, {});
 
   // Get holidays for the month
   const getHolidaysInMonth = () => {
@@ -68,11 +140,15 @@ const MiniCalendar = ({
           const weekend = day && isWeekend(day);
           const workday = day && isWorkday(day);
           const isCurrentDay = day && isToday(day);
+          const attendanceType = day ? attendanceByDay[day] : null;
+          const markerConfig = attendanceType
+            ? attendanceMarkerConfig[attendanceType]
+            : null;
 
           return (
             <div
               key={index}
-              className={`h-10 w-full flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${
+              className={`relative h-10 w-full flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${
                 !day
                   ? "bg-transparent"
                   : isCurrentDay
@@ -85,14 +161,32 @@ const MiniCalendar = ({
                           ? "bg-success/30 text-success-content border border-success/55 dark:text-white"
                           : "bg-base-200 text-base-content dark:text-white"
               }`}
+              title={
+                markerConfig
+                  ? `${day} - ${markerConfig.label}`
+                  : day
+                    ? String(day)
+                    : ""
+              }
             >
               {day}
+              {markerConfig && (
+                <span
+                  className="absolute inset-[3px] rounded-md border-2 pointer-events-none"
+                  style={{
+                    borderColor: markerConfig.border,
+                  }}
+                ></span>
+              )}
             </div>
           );
         })}
       </div>
 
       <div className="space-y-2 text-xs border-t border-base-300 pt-4">
+          <p className="text-[11px] uppercase tracking-wide opacity-70 mb-3">
+            Keterangan Kalendar
+          </p>
         <div className="flex items-center gap-3">
           <div className="w-4 h-4 rounded bg-primary border-2 border-primary-focus"></div>
           <span className="text-base-content">Hari Ini</span>

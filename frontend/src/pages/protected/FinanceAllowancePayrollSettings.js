@@ -37,7 +37,7 @@ const getCurrentPeriod = () => {
   };
 };
 
-function FinancePayrollManagerAdjustments() {
+function FinancePayrollSettings() {
   const dispatch = useDispatch();
   const period = getCurrentPeriod();
 
@@ -214,4 +214,4 @@ function FinancePayrollManagerAdjustments() {
   );
 }
 
-export default FinancePayrollManagerAdjustments;
+export default FinancePayrollSettings;

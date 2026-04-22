@@ -147,7 +147,7 @@ const getEffectiveManagerAdjustment = async (
         const [rows] = await db.promise().query(
             `SELECT id, employee_id, period_month, period_year, bonus, other_allowance, other_deduction,
                     notes, status, submitted_by, submitted_at, reviewed_by, reviewed_at, review_notes
-             FROM payroll_manager_adjustments
+             FROM allowance
                          WHERE employee_id = ? AND period_month = ? AND period_year = ?
                              AND status IN ('submitted', 'approved')
                          ORDER BY submitted_at DESC, reviewed_at DESC, updated_at DESC
@@ -253,44 +253,44 @@ router.get(
             let whereClause = "WHERE 1=1";
 
             if (Number.isInteger(month) && month >= 1 && month <= 12) {
-                whereClause += " AND pma.period_month = ?";
+                whereClause += " AND alw.period_month = ?";
                 params.push(month);
             }
 
             if (Number.isInteger(year) && year >= 2000 && year <= 2100) {
-                whereClause += " AND pma.period_year = ?";
+                whereClause += " AND alw.period_year = ?";
                 params.push(year);
             }
 
             if (allowedStatuses.includes(status)) {
-                whereClause += " AND pma.status = ?";
+                whereClause += " AND awl.status = ?";
                 params.push(status);
             }
 
             if (Number.isInteger(employeeId) && employeeId > 0) {
-                whereClause += " AND pma.employee_id = ?";
+                whereClause += " AND alw.employee_id = ?";
                 params.push(employeeId);
             }
 
             const [rows] = await db.promise().query(
-                `SELECT pma.*, e.employee_code, u.name AS employee_name,
+                `SELECT alw.*, e.employee_code, u.name AS employee_name,
                         submitter.name AS submitted_by_name,
                         reviewer.name AS reviewed_by_name,
                         pos.name AS position_name, dept.name AS department_name
-                 FROM payroll_manager_adjustments pma
-                 JOIN employees e ON pma.employee_id = e.id
+                 FROM allowance alw
+                 JOIN employees e ON alw.employee_id = e.id
                  JOIN users u ON e.user_id = u.id
                  LEFT JOIN positions pos ON e.position_id = pos.id
                  LEFT JOIN departments dept ON pos.department_id = dept.id
-                 LEFT JOIN users submitter ON pma.submitted_by = submitter.id
-                 LEFT JOIN users reviewer ON pma.reviewed_by = reviewer.id
+                 LEFT JOIN users submitter ON alw.submitted_by = submitter.id
+                 LEFT JOIN users reviewer ON alw.reviewed_by = reviewer.id
                  ${whereClause}
-                 ORDER BY pma.period_year DESC, pma.period_month DESC, u.name ASC`,
+                 ORDER BY alw.period_year DESC, alw.period_month DESC, u.name ASC`,
                 params
             );
 
             res.status(200).json({
-                message: "Manager adjustments retrieved successfully",
+                message: "Manager allowance retrieved successfully",
                 total: rows.length,
                 data: rows,
             });
@@ -381,7 +381,7 @@ router.post(
 
             const [existing] = await db.promise().query(
                 `SELECT id, status
-                 FROM payroll_manager_adjustments
+                 FROM allowance
                  WHERE employee_id = ? AND period_month = ? AND period_year = ?
                  LIMIT 1`,
                 [employeeId, periodMonth, periodYear]
@@ -391,7 +391,7 @@ router.post(
             if (existing.length > 0) {
                 adjustmentId = existing[0].id;
                 await db.promise().query(
-                    `UPDATE payroll_manager_adjustments
+                    `UPDATE allowance
                      SET bonus = ?, other_allowance = ?, other_deduction = ?, notes = ?,
                          status = 'submitted', submitted_by = ?, submitted_at = NOW(),
                          reviewed_by = NULL, reviewed_at = NULL, review_notes = NULL
@@ -407,7 +407,7 @@ router.post(
                 );
             } else {
                 const [insertResult] = await db.promise().query(
-                    `INSERT INTO payroll_manager_adjustments
+                    `INSERT INTO allowance
                      (employee_id, period_month, period_year, bonus, other_allowance, other_deduction, notes, status, submitted_by)
                      VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted', ?)`,
                     [

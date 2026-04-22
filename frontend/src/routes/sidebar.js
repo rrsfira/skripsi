@@ -50,9 +50,9 @@ const adminRoutes = [
     name: 'Review Banding Gaji',
   },
   {
-    path: '/app/payroll/manager-adjustments',
+    path: '/app/hr-allowance',
     icon: <BanknotesIcon className={iconClasses}/> ,
-    name: 'Adjustment Payroll',
+    name: 'Manajemen Tunjangan',
   },
   {
     path: '/app/warning-letters',
@@ -161,9 +161,9 @@ const hrRoutes = [
   },
 
   {
-    path: '/app/payroll/hr-adjustments',
+     path: '/app/hr-allowance',
     icon: <BanknotesIcon className={iconClasses}/> ,
-    name: 'Adjustment Payroll',
+    name: 'Manajemen Payroll',
   },
 
   {
@@ -203,9 +203,9 @@ const financeRoutes = [
     name: 'Dashboard Finance',
   },
   {
-    path: '/app/payroll/manager-adjustments',
+    path: '/app/payroll/component',
     icon: <BanknotesIcon className={iconClasses}/> ,
-    name: 'Monitoring Adjustment',
+    name: 'Komponen Payroll',
   },
   {
     path: '/app/reimbursements',

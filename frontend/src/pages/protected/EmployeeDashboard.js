@@ -83,22 +83,28 @@ function EmployeeDashboard() {
     setLoading(true);
     setError("");
 
-    const [profileResult, dashboardResult, summaryResult, historyResult, todayResult, warningLettersResult] =
-      await Promise.allSettled([
-        pegawaiApi.getProfile(),
-        pegawaiApi.getDashboard(),
-        pegawaiApi.getAttendanceSummary({
-          month: currentMonth,
-          year: currentYear,
-        }),
-        pegawaiApi.getAttendanceHistory({
-          month: currentMonth,
-          year: currentYear,
-          limit: 200,
-        }),
-        pegawaiApi.getAttendanceToday(),
-        pegawaiApi.getMyWarningLetters(),
-      ]);
+    const [
+      profileResult,
+      dashboardResult,
+      summaryResult,
+      historyResult,
+      todayResult,
+      warningLettersResult,
+    ] = await Promise.allSettled([
+      pegawaiApi.getProfile(),
+      pegawaiApi.getDashboard(),
+      pegawaiApi.getAttendanceSummary({
+        month: currentMonth,
+        year: currentYear,
+      }),
+      pegawaiApi.getAttendanceHistory({
+        month: currentMonth,
+        year: currentYear,
+        limit: 200,
+      }),
+      pegawaiApi.getAttendanceToday(),
+      pegawaiApi.getMyWarningLetters(),
+    ]);
 
     if (profileResult.status === "fulfilled") {
       setProfile(profileResult.value || {});
@@ -143,7 +149,9 @@ function EmployeeDashboard() {
     }
 
     const historyData =
-      historyResult.status === "fulfilled" ? historyResult.value?.data || [] : [];
+      historyResult.status === "fulfilled"
+        ? historyResult.value?.data || []
+        : [];
     const nowDate = new Date();
     const isCurrentPeriod =
       Number(currentMonth) === nowDate.getMonth() + 1 &&
@@ -335,13 +343,15 @@ function EmployeeDashboard() {
     return todayDateKey >= startDate && todayDateKey <= endDate;
   });
   const isApprovedLeaveToday = !!activeApprovedLeaveToday;
-  const isCheckInTooEarly = currentSeconds < checkInStartSeconds && !hasCheckedIn;
-  const isCheckInCutoffPassed = currentSeconds > checkInCutoffSeconds && !hasCheckedIn;
+  const isCheckInTooEarly =
+    currentSeconds < checkInStartSeconds && !hasCheckedIn;
+  const isCheckInCutoffPassed =
+    currentSeconds > checkInCutoffSeconds && !hasCheckedIn;
   const isCheckOutNotOpenYet =
     currentSeconds < checkOutStartSeconds && hasCheckedIn && !hasCheckedOut;
 
   const openAttendanceTodayCard = () => {
-    navigate('/app/attendance', {
+    navigate("/app/attendance", {
       state: { focusAttendanceToday: true },
     });
   };
@@ -359,36 +369,53 @@ function EmployeeDashboard() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <TitleCard title={`Hai, ${profile?.user?.name || profile?.user?.username || "Pegawai"}!`} topMargin="mt-0">
+          <TitleCard
+            title={`Hai, ${profile?.user?.name || profile?.user?.username || "Pegawai"}!`}
+            topMargin="mt-0"
+          >
             <p className="opacity-70">
               {isSundayToday
                 ? "Hari ini hari libur, anda tidak perlu absen!"
                 : isLeaveIntegratedToday || isApprovedLeaveToday
-                ? `Hari ini status kamu ${todayAttendance?.status || activeApprovedLeaveToday?.leave_type || "izin/cuti"}. Anda tidak perlu absen.`
-                : isCheckInTooEarly
-                ? "Absen masuk hanya bisa dilakukan pada pukul 07.00 hingga 12.00."
-                : isCheckInCutoffPassed
-                ? "Sudah lewat pukul 12.00, anda tidak bisa absen!."
-                : isCheckOutNotOpenYet
-                ? "Absen pulang hanya bisa dilakukan setelah pukul 12.01."
-                : !hasCheckedIn
-                ? "Hari ini kamu belum absen masuk."
-                : !hasCheckedOut
-                ? "Hari ini kamu belum absen pulang."
-                : "Hari ini kamu sudah absen pulang."}
+                  ? `Hari ini status kamu ${todayAttendance?.status || activeApprovedLeaveToday?.leave_type || "izin/cuti"}. Anda tidak perlu absen.`
+                  : isCheckInTooEarly
+                    ? "Absen masuk hanya bisa dilakukan pada pukul 07.00 hingga 12.00."
+                    : isCheckInCutoffPassed
+                      ? "Sudah lewat pukul 12.00, anda tidak bisa absen!."
+                      : isCheckOutNotOpenYet
+                        ? "Absen pulang hanya bisa dilakukan setelah pukul 12.01."
+                        : !hasCheckedIn
+                          ? "Hari ini kamu belum absen masuk."
+                          : !hasCheckedOut
+                            ? "Hari ini kamu belum absen pulang."
+                            : "Hari ini kamu sudah absen pulang."}
             </p>
 
             <div className="flex flex-wrap gap-3 mt-5">
               <button
                 className="btn btn-primary"
-                disabled={hasCheckedIn || isLeaveIntegratedToday || isApprovedLeaveToday || isSundayToday || isCheckInTooEarly || isCheckInCutoffPassed}
+                disabled={
+                  hasCheckedIn ||
+                  isLeaveIntegratedToday ||
+                  isApprovedLeaveToday ||
+                  isSundayToday ||
+                  isCheckInTooEarly ||
+                  isCheckInCutoffPassed
+                }
                 onClick={handleCheckIn}
               >
                 Absen Masuk
               </button>
               <button
                 className="btn btn-secondary"
-                disabled={!hasCheckedIn || hasCheckedOut || isLeaveIntegratedToday || isApprovedLeaveToday || isSundayToday || isCheckOutNotOpenYet}
+                disabled={
+                  !hasCheckedIn ||
+                  hasCheckedOut ||
+                  isLeaveIntegratedToday ||
+                  isApprovedLeaveToday ||
+                  isSundayToday ||
+                  isCheckOutNotOpenYet
+                }
                 onClick={handleCheckOut}
               >
                 Absen Pulang
@@ -399,7 +426,7 @@ function EmployeeDashboard() {
             className="cursor-pointer"
             onClick={openAttendanceTodayCard}
             onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
+              if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 openAttendanceTodayCard();
               }
@@ -443,59 +470,77 @@ function EmployeeDashboard() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <button
                 type="button"
-                onClick={() => navigate('/app/attendance')}
+                onClick={() => navigate("/app/attendance")}
                 className="p-3 bg-success/10 border border-success/25 rounded-lg text-left hover:bg-success/20 transition"
               >
                 <p className="text-xs opacity-70 mb-1">Hadir</p>
-                <p className="text-lg font-bold text-success">{presentDays} hari</p>
+                <p className="text-lg font-bold text-success">
+                  {presentDays} hari
+                </p>
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/app/attendance')}
+                onClick={() => navigate("/app/attendance")}
                 className="p-3 bg-warning/10 border border-warning/25 rounded-lg text-left hover:bg-warning/20 transition"
               >
                 <p className="text-xs opacity-70 mb-1">Terlambat</p>
-                <p className="text-lg font-bold text-warning">{lateDays} hari</p>
+                <p className="text-lg font-bold text-warning">
+                  {lateDays} hari
+                </p>
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/app/attendance')}
+                onClick={() => navigate("/app/attendance")}
                 className="p-3 bg-info/10 border border-info/25 rounded-lg text-left hover:bg-info/20 transition"
               >
                 <p className="text-xs opacity-70 mb-1">Izin/Cuti</p>
-                <p className="text-lg font-bold text-info">{permissionDays} hari</p>
+                <p className="text-lg font-bold text-info">
+                  {permissionDays} hari
+                </p>
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/app/attendance')}
+                onClick={() => navigate("/app/attendance")}
                 className="p-3 bg-error/10 border border-error/25 rounded-lg text-left hover:bg-error/20 transition"
               >
                 <p className="text-xs opacity-70 mb-1">Alpha</p>
-                <p className="text-lg font-bold text-error">{absentDays} hari</p>
+                <p className="text-lg font-bold text-error">
+                  {absentDays} hari
+                </p>
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/app/attendance')}
+                onClick={() => navigate("/app/attendance")}
                 className="col-span-2 p-3 bg-primary/10 border border-primary/25 rounded-lg text-center hover:bg-primary/20 transition"
               >
                 <p className="text-xs opacity-70 mb-1">Persentase Kehadiran</p>
-                <p className="text-2xl font-bold text-primary">{performancePercent}%</p>
-                <p className="text-xs opacity-70 mt-1">dari {totalWorkdays} hari kerja</p>
+                <p className="text-2xl font-bold text-primary">
+                  {performancePercent}%
+                </p>
+                <p className="text-xs opacity-70 mt-1">
+                  dari {totalWorkdays} hari kerja
+                </p>
               </button>
               <div className="col-span-2 p-3 bg-base-200 rounded-lg border border-base-300">
                 <p className="text-xs opacity-70 mb-1">Status SP Alpha</p>
                 <div className="grid md:grid-cols-4 grid-cols-1 gap-2 text-xs mb-2">
                   <div className="bg-base-100 rounded px-2 py-2">
                     <p className="opacity-70">Sanksi Saat Ini</p>
-                    <span className={`badge ${sanctionBadgeClass}`}>{sanctionLabel}</span>
+                    <span className={`badge ${sanctionBadgeClass}`}>
+                      {sanctionLabel}
+                    </span>
                   </div>
                   <div className="bg-base-100 rounded px-2 py-2">
                     <p className="opacity-70">Alpha Berturut</p>
-                    <p className="font-semibold">{Number(discipline?.alpha_consecutive_days || 0)} hari</p>
+                    <p className="font-semibold">
+                      {Number(discipline?.alpha_consecutive_days || 0)} hari
+                    </p>
                   </div>
                   <div className="bg-base-100 rounded px-2 py-2">
                     <p className="opacity-70">Alpha Akumulasi</p>
-                    <p className="font-semibold">{Number(discipline?.alpha_accumulated_days || 0)} hari</p>
+                    <p className="font-semibold">
+                      {Number(discipline?.alpha_accumulated_days || 0)} hari
+                    </p>
                   </div>
                   <div className="bg-base-100 rounded px-2 py-2">
                     <p className="opacity-70">Dokumen</p>
@@ -511,8 +556,8 @@ function EmployeeDashboard() {
                 <div className="mt-3 pt-3 border-t border-base-300">
                   <p className="text-xs opacity-70 mb-2">
                     {latestWarningLetter
-                      ? `SP terbaru: ${latestWarningLetter.letter_number || '-'} (${String(latestWarningLetter.sp_level || '').toUpperCase()})`
-                      : 'Belum ada dokumen SP yang dapat dilihat'}
+                      ? `SP terbaru: ${latestWarningLetter.letter_number || "-"} (${String(latestWarningLetter.sp_level || "").toUpperCase()})`
+                      : "Belum ada dokumen SP yang dapat dilihat"}
                   </p>
                   <p className="text-xs opacity-70 mb-1">Aturan SP Alpha</p>
                   <div className="overflow-x-auto">
@@ -553,7 +598,7 @@ function EmployeeDashboard() {
           </TitleCard>
         </div>
 
-        <TitleCard title="Grafik Evaluasi Kinerja" topMargin="mt-0">
+        <TitleCard title="" topMargin="mt-0">
           <div className="mb-6 pb-6 border-b">
             <div className="flex items-center justify-center gap-2 mb-5">
               <button
@@ -582,10 +627,18 @@ function EmployeeDashboard() {
                 →
               </button>
             </div>
-            <MiniCalendar month={currentMonth} year={currentYear} />
+            <MiniCalendar
+              month={currentMonth}
+              year={currentYear}
+              attendanceData={attendanceHistory}
+            />
           </div>
 
           <div className="space-y-4">
+            {" "}
+            <p className="text-[11px] uppercase tracking-wide opacity-70 mb-3">
+              Keterangan Status Absensi
+            </p>
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span>Hadir</span>
@@ -639,7 +692,7 @@ function EmployeeDashboard() {
           <div className="space-y-2">
             <button
               type="button"
-              onClick={() => navigate('/app/leave-requests')}
+              onClick={() => navigate("/app/leave-requests")}
               className="w-full bg-info/10 border border-info/25 p-3 rounded-lg text-left hover:bg-info/20 transition"
             >
               <p className="text-xs opacity-70">Cuti/Izin</p>
@@ -649,7 +702,7 @@ function EmployeeDashboard() {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/app/reimbursements')}
+              onClick={() => navigate("/app/reimbursements")}
               className="w-full bg-success/10 border border-success/25 p-3 rounded-lg text-left hover:bg-success/20 transition"
             >
               <p className="text-xs opacity-70">Reimbursement</p>
@@ -659,7 +712,7 @@ function EmployeeDashboard() {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/app/salary-appeals')}
+              onClick={() => navigate("/app/salary-appeals")}
               className="w-full bg-warning/10 border border-warning/25 p-3 rounded-lg text-left hover:bg-warning/20 transition"
             >
               <p className="text-xs opacity-70">Banding Gaji</p>
@@ -681,7 +734,7 @@ function EmployeeDashboard() {
               <button
                 key={item.id}
                 type="button"
-                onClick={() => navigate('/app/payroll')}
+                onClick={() => navigate("/app/payroll")}
                 className="w-full border border-base-300 rounded-lg p-3 hover:bg-base-200/50 transition text-left"
               >
                 <div className="flex justify-between items-start">
@@ -711,13 +764,21 @@ function EmployeeDashboard() {
           <div className="modal-box">
             <h3 className="font-bold text-lg">Peringatan Disiplin</h3>
             <p className="py-2 text-sm opacity-80">
-              Anda menerima {String(latestWarningLetter.sp_level || '').toUpperCase()}.
+              Anda menerima{" "}
+              {String(latestWarningLetter.sp_level || "").toUpperCase()}.
             </p>
             <p className="text-sm">
-              No Surat: <b>{latestWarningLetter.letter_number || '-'}</b>
+              No Surat: <b>{latestWarningLetter.letter_number || "-"}</b>
             </p>
             <p className="text-sm">
-              Tanggal Terbit: <b>{latestWarningLetter.issued_date ? new Date(latestWarningLetter.issued_date).toLocaleDateString('id-ID') : '-'}</b>
+              Tanggal Terbit:{" "}
+              <b>
+                {latestWarningLetter.issued_date
+                  ? new Date(
+                      latestWarningLetter.issued_date,
+                    ).toLocaleDateString("id-ID")
+                  : "-"}
+              </b>
             </p>
             <div className="modal-action">
               <button
@@ -729,7 +790,10 @@ function EmployeeDashboard() {
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  localStorage.setItem(SP_ALERT_STORAGE_KEY, String(latestWarningLetter.id));
+                  localStorage.setItem(
+                    SP_ALERT_STORAGE_KEY,
+                    String(latestWarningLetter.id),
+                  );
                   setShowWarningPopup(false);
                 }}
               >

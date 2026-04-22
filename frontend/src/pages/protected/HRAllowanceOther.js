@@ -3,8 +3,10 @@ import { useDispatch } from 'react-redux'
 import TitleCard from '../../components/Cards/TitleCard'
 import { setPageTitle, showNotification } from '../../features/common/headerSlice'
 import { hrApi } from '../../features/hr/api'
+import { financeApi } from '../../features/finance/api'
 import { formatRupiah, resolveFixedPositionAllowance } from '../../utils/fixedPositionAllowance'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const statusLabelMap = {
     draft: 'Draft',
@@ -54,7 +56,21 @@ const buildEmployeeSelectionOptions = (items = []) => {
 
 function HRPayrollDirectorAdjustments() {
     const dispatch = useDispatch()
+    const location = useLocation()
+    const navigate = useNavigate()
     const initialPeriod = getCurrentPeriod()
+    const isFinanceHistoryOnlyView = location.pathname.endsWith('/payroll/other-allowance')
+    const backPath = isFinanceHistoryOnlyView ? '/app/payroll/component' : '/app/hr-allowance'
+
+    const backButton = (
+        <button
+            className="btn btn-sm btn-ghost"
+            title={isFinanceHistoryOnlyView ? 'Kembali ke Manajemen Payroll' : 'Kembali ke Manajemen Tunjangan'}
+            onClick={() => navigate(backPath)}
+        >
+            Kembali
+        </button>
+    )
 
     const [periodMonth, setPeriodMonth] = useState(initialPeriod.month)
     const [periodYear, setPeriodYear] = useState(initialPeriod.year)
@@ -110,6 +126,30 @@ function HRPayrollDirectorAdjustments() {
     const loadData = useCallback(async () => {
         try {
             setLoading(true)
+
+            if (isFinanceHistoryOnlyView) {
+                const historyResult = await financeApi.getPayrollManagerAdjustments()
+                const historyRows = historyResult?.data || []
+                const derivedEmployees = [...new Map(
+                    historyRows
+                        .filter((item) => Number(item?.employee_id || 0) > 0)
+                        .map((item) => [
+                            String(item.employee_id),
+                            {
+                                id: String(item.employee_id),
+                                name: String(item.employee_name || '').trim(),
+                                employee_code: String(item.employee_code || '').trim(),
+                            },
+                        ])
+                ).values()]
+
+                setAvailableEmployees(derivedEmployees)
+                setPeriodAdjustments([])
+                setHistoryAdjustments(historyRows)
+                setSelectedEmployeeId('')
+                return
+            }
+
             const [employeesResult, adjustmentResult, allAdjustmentsResult] = await Promise.all([
                 hrApi.getEmployees(),
                 hrApi.getPayrollManagerAdjustments({ month: periodMonth, year: periodYear }),
@@ -156,15 +196,25 @@ function HRPayrollDirectorAdjustments() {
         } finally {
             setLoading(false)
         }
-    }, [dispatch, periodMonth, periodYear])
+    }, [dispatch, isFinanceHistoryOnlyView, periodMonth, periodYear])
 
     useEffect(() => {
-        dispatch(setPageTitle({ title: 'Adjustment Payroll' }))
-    }, [dispatch])
+        dispatch(setPageTitle({ title: isFinanceHistoryOnlyView ? 'Riwayat Tunjangan Lain' : 'Tunjangan Lain' }))
+    }, [dispatch, isFinanceHistoryOnlyView])
 
     useEffect(() => {
         loadData()
     }, [loadData])
+
+    useEffect(() => {
+        if (!isFinanceHistoryOnlyView) return
+
+        setHistoryFilters((prev) => ({
+            ...prev,
+            month: '',
+            year: '',
+        }))
+    }, [isFinanceHistoryOnlyView])
 
     const scrollToHistoryCard = useCallback(() => {
         window.requestAnimationFrame(() => {
@@ -209,7 +259,7 @@ function HRPayrollDirectorAdjustments() {
                 notes: form.notes,
             })
 
-            dispatch(showNotification({ message: 'Adjustment payroll tersimpan dan langsung aktif', status: 1 }))
+            dispatch(showNotification({ message: 'Tunjangan tersimpan dan langsung aktif', status: 1 }))
             setSelectedEmployeeId('')
             setForm({
                 bonus: '',
@@ -293,106 +343,112 @@ function HRPayrollDirectorAdjustments() {
 
     return (
         <>
-            <TitleCard title="Input Adjustment Payroll" topMargin="mt-0">
-                <div className="grid md:grid-cols-4 grid-cols-1 gap-4 mb-4">
-                    <select className="select select-bordered" value={periodMonth} onChange={(e) => setPeriodMonth(e.target.value)}>
-                        {Array.from({ length: 12 }, (_, idx) => (
-                            <option key={idx + 1} value={idx + 1}>
-                                {new Date(2000, idx).toLocaleString('id-ID', { month: 'long' })}
-                            </option>
-                        ))}
-                    </select>
-                    <select className="select select-bordered" value={periodYear} onChange={(e) => setPeriodYear(e.target.value)}>
-                        {Array.from({ length: 5 }, (_, idx) => {
-                            const year = new Date().getFullYear() - idx
-                            return <option key={year} value={year}>{year}</option>
-                        })}
-                    </select>
-                    <div className="form-control md:col-span-2">
-                        <div className="relative">
-                            <input
-                                type="search"
-                                list="hr-adjustment-employee-options"
-                                className="input input-bordered w-full pr-10"
-                                placeholder="Pilih pegawai..."
-                                value={selectedEmployeeInput}
-                                onChange={(e) => handleEmployeeInputChange(e.target.value)}
-                            />
-                            <datalist id="hr-adjustment-employee-options">
-                                {employeeSelectionOptions.map((option) => (
-                                    <option key={option.id} value={option.label} />
-                                ))}
-                            </datalist>
-                            <MagnifyingGlassIcon className="w-5 h-5 absolute right-3 top-3 text-gray-400" />
+            {!isFinanceHistoryOnlyView && (
+                <TitleCard title="Input Tunjangan Lain" topMargin="mt-0" TopSideButtons={backButton}>
+                    <div className="grid md:grid-cols-4 grid-cols-1 gap-4 mb-4">
+                        <select className="select select-bordered" value={periodMonth} onChange={(e) => setPeriodMonth(e.target.value)}>
+                            {Array.from({ length: 12 }, (_, idx) => (
+                                <option key={idx + 1} value={idx + 1}>
+                                    {new Date(2000, idx).toLocaleString('id-ID', { month: 'long' })}
+                                </option>
+                            ))}
+                        </select>
+                        <select className="select select-bordered" value={periodYear} onChange={(e) => setPeriodYear(e.target.value)}>
+                            {Array.from({ length: 5 }, (_, idx) => {
+                                const year = new Date().getFullYear() - idx
+                                return <option key={year} value={year}>{year}</option>
+                            })}
+                        </select>
+                        <div className="form-control md:col-span-2">
+                            <div className="relative">
+                                <input
+                                    type="search"
+                                    list="hr-adjustment-employee-options"
+                                    className="input input-bordered w-full pr-10"
+                                    placeholder="Pilih pegawai..."
+                                    value={selectedEmployeeInput}
+                                    onChange={(e) => handleEmployeeInputChange(e.target.value)}
+                                />
+                                <datalist id="hr-adjustment-employee-options">
+                                    {employeeSelectionOptions.map((option) => (
+                                        <option key={option.id} value={option.label} />
+                                    ))}
+                                </datalist>
+                                <MagnifyingGlassIcon className="w-5 h-5 absolute right-3 top-3 text-gray-400" />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <p className="text-xs opacity-70 mb-4">
-                    Dropdown menampilkan semua pegawai. Nilai Tunjangan Lainnya otomatis mengikuti jabatan dan tidak bisa diedit.
-                </p>
+                    <p className="text-xs opacity-70 mb-4">
+                        Dropdown menampilkan semua pegawai. Nilai Tunjangan Lainnya otomatis mengikuti jabatan dan tidak bisa diedit.
+                    </p>
 
-                <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mb-4">
-                    <label className="form-control">
-                        <span className="label-text">Bonus</span>
-                        <input
-                            type="number"
-                            min="0"
-                            step="1"
-                            className="input input-bordered"
-                            value={form.bonus}
-                            onWheel={disableNumberWheelChange}
-                            onChange={(e) => setForm((prev) => ({ ...prev, bonus: e.target.value }))}
+                    <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mb-4">
+                        <label className="form-control">
+                            <span className="label-text">Bonus</span>
+                            <input
+                                type="number"
+                                min="0"
+                                step="1"
+                                className="input input-bordered"
+                                value={form.bonus}
+                                onWheel={disableNumberWheelChange}
+                                onChange={(e) => setForm((prev) => ({ ...prev, bonus: e.target.value }))}
+                            />
+                        </label>
+                        <label className="form-control">
+                            <span className="label-text">Tunjangan Lainnya</span>
+                            <input
+                                type="number"
+                                min="0"
+                                className="input input-bordered"
+                                value={form.other_allowance}
+                                disabled
+                            />
+                            <span className="label-text-alt">Nominal tetap sesuai jabatan: {formatRupiah(selectedEmployeeFixedAllowance)}</span>
+                        </label>
+                        <label className="form-control">
+                            <span className="label-text">Potongan Lainnya</span>
+                            <input
+                                type="number"
+                                min="0"
+                                step="1"
+                                className="input input-bordered"
+                                value={form.other_deduction}
+                                onWheel={disableNumberWheelChange}
+                                onChange={(e) => setForm((prev) => ({ ...prev, other_deduction: e.target.value }))}
+                            />
+                        </label>
+                    </div>
+
+                    <label className="form-control mb-4">
+                        <span className="label-text">Catatan HR</span>
+                        <textarea
+                            className="textarea textarea-bordered"
+                            rows={3}
+                            value={form.notes}
+                            onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
+                            placeholder="Tuliskan alasan penyesuaian komponen payroll"
                         />
                     </label>
-                    <label className="form-control">
-                        <span className="label-text">Tunjangan Lainnya</span>
-                        <input
-                            type="number"
-                            min="0"
-                            className="input input-bordered"
-                            value={form.other_allowance}
-                            disabled
-                        />
-                        <span className="label-text-alt">Nominal tetap sesuai jabatan: {formatRupiah(selectedEmployeeFixedAllowance)}</span>
-                    </label>
-                    <label className="form-control">
-                        <span className="label-text">Potongan Lainnya</span>
-                        <input
-                            type="number"
-                            min="0"
-                            step="1"
-                            className="input input-bordered"
-                            value={form.other_deduction}
-                            onWheel={disableNumberWheelChange}
-                            onChange={(e) => setForm((prev) => ({ ...prev, other_deduction: e.target.value }))}
-                        />
-                    </label>
-                </div>
 
-                <label className="form-control mb-4">
-                    <span className="label-text">Catatan HR</span>
-                    <textarea
-                        className="textarea textarea-bordered"
-                        rows={3}
-                        value={form.notes}
-                        onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
-                        placeholder="Tuliskan alasan penyesuaian komponen payroll"
-                    />
-                </label>
-
-                <div className="flex flex-wrap gap-2">
-                    <button className={`btn btn-primary ${saving ? 'loading' : ''}`} onClick={handleSaveAdjustment} disabled={saving}>
-                        Simpan Adjustment
-                    </button>
-                    <button className="btn btn-ghost" onClick={loadData} disabled={loading}>
-                        Refresh
-                    </button>
-                </div>
-            </TitleCard>
+                    <div className="flex flex-wrap gap-2">
+                        <button className={`btn btn-primary ${saving ? 'loading' : ''}`} onClick={handleSaveAdjustment} disabled={saving}>
+                            Simpan Tunjangan
+                        </button>
+                        <button className="btn btn-ghost" onClick={loadData} disabled={loading}>
+                            Refresh
+                        </button>
+                    </div>
+                </TitleCard>
+            )}
 
             <div ref={historyCardRef}>
-                <TitleCard title="Riwayat Adjustment Payroll" topMargin="mt-6">
+                <TitleCard
+                    title="Riwayat Tambahan Tunjangan Lain"
+                    topMargin="mt-6"
+                    TopSideButtons={isFinanceHistoryOnlyView ? backButton : null}
+                >
                 <div className="mb-4 rounded-lg border border-base-300 bg-base-200/40 p-4">
                     <div className="grid lg:grid-cols-6 md:grid-cols-2 grid-cols-1 gap-4 items-end">
                         <div className="form-control lg:col-span-3">
@@ -426,6 +482,7 @@ function HRPayrollDirectorAdjustments() {
                                 value={historyFilters.month}
                                 onChange={(e) => setHistoryFilters((prev) => ({ ...prev, month: e.target.value }))}
                             >
+                                <option value="">Semua Bulan</option>
                                 {Array.from({ length: 12 }, (_, idx) => (
                                     <option key={`history-period-month-${idx + 1}`} value={idx + 1}>
                                         {new Date(2000, idx).toLocaleString('id-ID', { month: 'long' })}
@@ -443,6 +500,7 @@ function HRPayrollDirectorAdjustments() {
                                 value={historyFilters.year}
                                 onChange={(e) => setHistoryFilters((prev) => ({ ...prev, year: e.target.value }))}
                             >
+                                <option value="">Semua Tahun</option>
                                 {Array.from({ length: 5 }, (_, idx) => {
                                     const year = new Date().getFullYear() - idx
                                     return <option key={`history-period-year-${year}`} value={year}>{year}</option>
@@ -453,7 +511,7 @@ function HRPayrollDirectorAdjustments() {
                 </div>
 
                 {loading ? (
-                    <div className="text-center py-10">Memuat data adjustment payroll...</div>
+                    <div className="text-center py-10">Memuat data tunjangan lain...</div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="table table-zebra">
@@ -485,7 +543,7 @@ function HRPayrollDirectorAdjustments() {
                                 ))}
                                 {!filteredHistoryRows.length && (
                                     <tr>
-                                        <td colSpan={7} className="text-center opacity-70">Belum ada adjustment payroll untuk periode ini</td>
+                                        <td colSpan={7} className="text-center opacity-70">Belum ada data tunjangan lain untuk periode ini</td>
                                     </tr>
                                 )}
                             </tbody>
