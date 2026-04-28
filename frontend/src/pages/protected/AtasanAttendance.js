@@ -18,6 +18,22 @@ function AtasanAttendance() {
     const [allRecords, setAllRecords] = useState([])
     const [teamMembers, setTeamMembers] = useState([])
 
+    const formatLateDuration = (lateMinutes) => {
+        const minutes = Number(lateMinutes)
+        if (!Number.isFinite(minutes) || minutes <= 0) {
+            return '00 jam 00 menit 00 detik'
+        }
+
+        const totalSeconds = Math.round(minutes * 60)
+        const hours = Math.floor(totalSeconds / 3600)
+        const remainingSeconds = totalSeconds % 3600
+        const mins = Math.floor(remainingSeconds / 60)
+        const secs = remainingSeconds % 60
+
+        const [hh, mm, ss] = [hours, mins, secs].map((value) => String(value).padStart(2, '0'))
+        return `${hh} jam ${mm} menit ${ss} detik`
+    }
+
     const loadTeamMembers = useCallback(async () => {
         try {
             const result = await atasanApi.getTeamMembers()
@@ -60,7 +76,11 @@ function AtasanAttendance() {
         }
 
         if (filters.status !== 'all') {
-            filteredRecords = filteredRecords.filter((item) => String(item.status) === filters.status)
+            if (filters.status === 'terlambat') {
+                filteredRecords = filteredRecords.filter((item) => Boolean(item.is_late))
+            } else {
+                filteredRecords = filteredRecords.filter((item) => String(item.status) === filters.status)
+            }
         }
 
         setRecords(filteredRecords)
@@ -82,6 +102,10 @@ function AtasanAttendance() {
     const summary = records.reduce((acc, item) => {
         const key = item.status || 'unknown'
         acc[key] = (acc[key] || 0) + 1
+        if (item.is_late) {
+            acc.late = (acc.late || 0) + 1
+            acc.late_minutes = (acc.late_minutes || 0) + (Number(item.late_minutes) || 0)
+        }
         return acc
     }, {})
 
@@ -133,10 +157,11 @@ function AtasanAttendance() {
                         <option value="sakit">Sakit</option>
                         <option value="alpha">Alpha</option>
                         <option value="libur">Libur</option>
+                        <option value="terlambat">Terlambat</option>
                     </select>
                 </div>
 
-                <div className="grid md:grid-cols-5 grid-cols-2 gap-4 mb-6">
+                <div className="grid md:grid-cols-6 grid-cols-2 gap-4 mb-6">
                     <div className="stat rounded-lg bg-base-200">
                         <div className="stat-title">Hadir</div>
                         <div className="stat-value text-xl">{summary.hadir || 0}</div>
@@ -156,6 +181,11 @@ function AtasanAttendance() {
                     <div className="stat rounded-lg bg-base-200">
                         <div className="stat-title">Libur</div>
                         <div className="stat-value text-xl">{summary.libur || 0}</div>
+                    </div>
+                    <div className="stat rounded-lg bg-base-200">
+                        <div className="stat-title">Terlambat</div>
+                        <div className="stat-value text-xl">{summary.late || 0}</div>
+                        <div className="stat-desc">{formatLateDuration(summary.late_minutes || 0)}</div>
                     </div>
                 </div>
 
@@ -186,7 +216,7 @@ function AtasanAttendance() {
                                         <td>{item.check_in || '-'}</td>
                                         <td>{item.check_out || '-'}</td>
                                         <td><span className="badge badge-outline">{item.status}</span></td>
-                                        <td>{['izin', 'sakit', 'libur', 'alpha'].includes(String(item.status || '').toLowerCase()) ? '-' : (item.is_late ? `${item.late_minutes || 0} menit` : 'Tidak')}</td>
+                                        <td>{['izin', 'sakit', 'libur', 'alpha'].includes(String(item.status || '').toLowerCase()) ? '-' : (item.is_late ? formatLateDuration(item.late_minutes || 0) : 'Tidak')}</td>
                                         <td>
                                             <select
                                                 className={`select select-bordered select-xs ${updatingId === item.id ? 'loading' : ''}`}

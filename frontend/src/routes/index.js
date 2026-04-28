@@ -53,6 +53,7 @@ const FinancePayroll = lazy(() => import('../pages/protected/FinancePayroll'))
 const FinancePayrollRevision = lazy(() => import('../pages/protected/FinancePayrollRevision'))
 const FinancePayrollTransfers = lazy(() => import('../pages/protected/FinancePayrollTransfers'))
 const FinanceAllowance = lazy(() => import('../pages/protected/FinanceAllowance'))
+const FinanceAllowancePayrollSettings = lazy(() => import('../pages/protected/FinanceAllowancePayrollSettings'))
 const PayrollAllowanceOther = lazy(() => import('../pages/protected/HRAllowanceOther'))
 const FinanceReimbursements = lazy(() => import('../pages/protected/FinanceReimbursements'))
 const FinanceSalaryAppeals = lazy(() => import('../pages/protected/FinanceSalaryAppeals'))
@@ -189,6 +190,10 @@ const hrRoutes = [
     component: HRAllowance,
   },
   {
+    path: '/payroll-settings',
+    component: FinanceAllowancePayrollSettings,
+  },
+  {
     path: '/hr/other-allowance',
     component: HRAllowanceOther,
   },
@@ -269,6 +274,10 @@ const financeRoutes = [
   {
     path: '/payroll/component',
     component: FinanceAllowance,
+  },
+  {
+    path: '/payroll/settings',
+    component: FinanceAllowancePayrollSettings,
   },
   {
     path: '/payroll/other-allowance',

@@ -26,6 +26,58 @@ const getEffectiveStatus = (item) => {
     return String(item?.payment_status || item?.status || '').toLowerCase()
 }
 
+const getSlipDateParts = (item) => {
+    const pad = (value) => String(value).padStart(2, '0')
+    const dateCandidates = [
+        item?.created_at,
+        item?.createdAt,
+        item?.slip_created_at,
+        item?.slipCreatedAt,
+        item?.generated_at,
+        item?.generatedAt,
+    ]
+
+    for (const candidate of dateCandidates) {
+        if (!candidate) continue
+        const date = new Date(candidate)
+        if (!Number.isNaN(date.getTime())) {
+            return {
+                day: pad(date.getDate()),
+                month: pad(date.getMonth() + 1),
+                year: String(date.getFullYear()),
+            }
+        }
+    }
+
+    const periodMonth = Number(item?.period_month)
+    const periodYear = Number(item?.period_year)
+    if (Number.isFinite(periodMonth) && periodMonth >= 1 && periodMonth <= 12 && Number.isFinite(periodYear)) {
+        return {
+            day: '01',
+            month: pad(periodMonth),
+            year: String(periodYear),
+        }
+    }
+
+    const now = new Date()
+    return {
+        day: pad(now.getDate()),
+        month: pad(now.getMonth() + 1),
+        year: String(now.getFullYear()),
+    }
+}
+
+const toSafeFileNamePart = (value) => {
+    const normalized = String(value || '')
+        .trim()
+        .replace(/[\\/:*?"<>|]/g, '-')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+
+    return normalized || 'pegawai'
+}
+
 function FinancePayrollTransfers() {
     const dispatch = useDispatch()
     const [searchParams, setSearchParams] = useSearchParams()
@@ -174,6 +226,40 @@ function FinancePayrollTransfers() {
         }
     }
 
+    const openPayrollPdf = async (payrollItem) => {
+        const payrollId = payrollItem?.id
+        const previewWindow = window.open('about:blank', '_blank')
+
+        try {
+            setError('')
+            const blob = await financeApi.getPayrollPdfBlob(payrollId)
+            const url = window.URL.createObjectURL(blob)
+            const { day, month, year } = getSlipDateParts(payrollItem)
+            const employeeName = toSafeFileNamePart(payrollItem?.employee_name)
+
+            // Trigger direct download while keeping PDF preview behavior.
+            const downloadLink = document.createElement('a')
+            downloadLink.href = url
+            downloadLink.download = `slip-gaji-${employeeName}-${payrollId}-${day}-${month}-${year}.pdf`
+            document.body.appendChild(downloadLink)
+            downloadLink.click()
+            document.body.removeChild(downloadLink)
+
+            if (previewWindow) {
+                previewWindow.location.href = url
+            } else {
+                window.open(url, '_blank')
+            }
+
+            setTimeout(() => window.URL.revokeObjectURL(url), 60000)
+        } catch (err) {
+            if (previewWindow && !previewWindow.closed) {
+                previewWindow.close()
+            }
+            setError(err.message)
+        }
+    }
+
     return (
         <>
             {error && (
@@ -265,14 +351,23 @@ function FinancePayrollTransfers() {
                                     <td>{formatCurrency(item.final_amount || item.net_salary)}</td>
                                     <td>{getEffectiveStatus(item) || '-'}</td>
                                     <td>
-                                        <button
-                                            type="button"
-                                            className={`btn btn-xs btn-primary ${actionLoadingId === item.id ? 'loading' : ''}`}
-                                            onClick={() => handleTransferPayroll(item.id)}
-                                            disabled={getEffectiveStatus(item) !== 'claimed' || actionLoadingId === item.id}
-                                        >
-                                            Kirim Gaji
-                                        </button>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <button
+                                                type="button"
+                                                className="btn btn-xs btn-outline whitespace-nowrap"
+                                                onClick={() => openPayrollPdf(item)}
+                                            >
+                                                Unduh slip gaji
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`btn btn-xs btn-primary whitespace-nowrap ${actionLoadingId === item.id ? 'loading' : ''}`}
+                                                onClick={() => handleTransferPayroll(item.id)}
+                                                disabled={getEffectiveStatus(item) !== 'claimed' || actionLoadingId === item.id}
+                                            >
+                                                Kirim Gaji
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

@@ -13,10 +13,26 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js'
-import { Doughnut, Bar } from 'react-chartjs-2'
-import { getChartColors, getCurrentTheme, UI_PALETTE, toRgba } from '../../utils/themePalette'
+import { Doughnut } from 'react-chartjs-2'
+import { getCurrentTheme, UI_PALETTE, toRgba } from '../../utils/themePalette'
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend)
+
+const formatLateDuration = (lateMinutes) => {
+    const minutes = Number(lateMinutes)
+    if (!Number.isFinite(minutes) || minutes <= 0) {
+        return '00 jam 00 menit'
+    }
+
+    const totalSeconds = Math.round(minutes * 60)
+    const hours = Math.floor(totalSeconds / 3600)
+    const remainingSeconds = totalSeconds % 3600
+    const mins = Math.floor(remainingSeconds / 60)
+    const secs = remainingSeconds % 60
+
+    const [hh, mm, ss] = [hours, mins, secs].map((value) => String(value).padStart(2, '0'))
+    return `${hh} jam ${mm} menit ${ss} detik`
+}
 
 function AtasanDashboard() {
     const dispatch = useDispatch()
@@ -91,8 +107,19 @@ function AtasanDashboard() {
     const teamMembers = dashboard?.team_members || []
     const topLateEmployees = dashboard?.performance_alerts?.top_late_employees || []
     const recentActions = dashboard?.recent_actions || []
+    const lateRows = topLateEmployees
+        .slice(0, 8)
+        .flatMap((item, idx) =>
+            (Array.isArray(item?.late_per_day) ? item.late_per_day : []).map((late) => ({
+                key: `${item.id || item.name}-${late.date}`,
+                no: idx + 1,
+                name: item.name,
+                employee_code: item.employee_code,
+                date: late.date,
+                minutes: late.minutes,
+            })),
+        )
 
-    const chartColors = getChartColors()
     const activeTheme = getCurrentTheme()
     const activePalette = UI_PALETTE[activeTheme] || UI_PALETTE.light
     const isDarkMode = activeTheme === 'dark'
@@ -139,40 +166,29 @@ function AtasanDashboard() {
                     Number(summary.alpha || 0),
                 ],
                 backgroundColor: [
-                    toRgba(chartColors[5], 0.8),
-                    toRgba(chartColors[4], 0.8),
-                    toRgba(chartColors[1], 0.8),
-                    toRgba(chartColors[3], 0.8),
+                    toRgba('#3B82F6', 0.8),
+                    toRgba('#F59E0B', 0.8),
+                    toRgba('#10B981', 0.8),
+                    toRgba('#FF0000', 0.8),
                 ],
                 borderWidth: 1,
             },
         ],
     }
 
-    const lateEmployeesChart = {
-        labels: topLateEmployees.slice(0, 8).map((item) => item.name),
-        datasets: [
-            {
-                label: 'Jumlah Terlambat',
-                data: topLateEmployees.slice(0, 8).map((item) => Number(item.late_count || 0)),
-                backgroundColor: toRgba(chartColors[4], 0.85),
-                borderColor: chartColors[4],
-                borderWidth: 1,
-            },
-            {
-                label: 'Total Menit Terlambat',
-                data: topLateEmployees.slice(0, 8).map((item) => Number(item.total_late_minutes || 0)),
-                backgroundColor: toRgba(chartColors[0], 0.75),
-                borderColor: chartColors[0],
-                borderWidth: 1,
-            },
-        ],
-    }
+    const attendanceLegendItems = [
+        { label: 'Hadir', color: '#3B82F6' },
+        { label: 'Izin', color: '#F59E0B' },
+        { label: 'Sakit', color: '#10B981' },
+        { label: 'Alpha', color: '#FF0000' },
+    ]
 
     const chartOptions = {
         responsive: true,
+        color: descriptionTextColor,
         plugins: {
             legend: {
+                display: false,
                 position: 'top',
                 labels: {
                     color: descriptionTextColor,
@@ -191,36 +207,6 @@ function AtasanDashboard() {
                 backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.96)' : 'rgba(255, 255, 255, 0.96)',
                 borderColor: activePalette.border,
                 borderWidth: 1,
-            },
-        },
-    }
-
-    const barChartOptions = {
-        ...chartOptions,
-        scales: {
-            x: {
-                ticks: {
-                    color: descriptionTextColor,
-                    font: {
-                        size: 11,
-                        weight: '500',
-                    },
-                },
-                grid: {
-                    color: isDarkMode ? 'rgba(224, 224, 224, 0.2)' : 'rgba(79, 79, 79, 0.2)',
-                },
-            },
-            y: {
-                ticks: {
-                    color: descriptionTextColor,
-                    font: {
-                        size: 11,
-                        weight: '500',
-                    },
-                },
-                grid: {
-                    color: isDarkMode ? 'rgba(224, 224, 224, 0.2)' : 'rgba(79, 79, 79, 0.2)',
-                },
             },
         },
     }
@@ -283,7 +269,20 @@ function AtasanDashboard() {
 
             <div className="grid lg:grid-cols-3 grid-cols-1 gap-6 mt-6">
                 <TitleCard title="Grafik Komposisi Kehadiran" topMargin="mt-0">
-                    <Doughnut data={attendanceCompositionChart} options={chartOptions} />
+                    <div className="space-y-4">
+                        <Doughnut data={attendanceCompositionChart} options={chartOptions} />
+                        <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium">
+                            {attendanceLegendItems.map((item) => (
+                                <div key={item.label} className="flex items-center gap-2 whitespace-nowrap">
+                                    <span
+                                        className="inline-block h-3 w-3 rounded-sm border border-base-100"
+                                        style={{ backgroundColor: item.color }}
+                                    />
+                                    <span className="text-base-content">{item.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </TitleCard>
 
                 <TitleCard title="Daftar Nama Tim" topMargin="mt-0">
@@ -315,7 +314,7 @@ function AtasanDashboard() {
                 </TitleCard>
 
                 <TitleCard title="Pegawai yang Terlambat Hari Ini" topMargin="mt-0">
-                    {topLateEmployees.length > 0 && Array.isArray(topLateEmployees[0]?.late_per_day) && topLateEmployees[0].late_per_day.length > 0 ? (
+                    {lateRows.length > 0 ? (
                         <div className="overflow-x-auto">
                             <table className="table table-zebra table-sm">
                                 <thead>
@@ -324,21 +323,19 @@ function AtasanDashboard() {
                                         <th>Nama</th>
                                         <th>Kode</th>
                                         <th>Tanggal</th>
-                                        <th>Menit Terlambat</th>
+                                        <th className="whitespace-nowrap">Terlambat</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {topLateEmployees.slice(0, 8).flatMap((item, idx) =>
-                                        item.late_per_day.map((late, lateIdx) => (
-                                            <tr key={`${item.id || item.name}-${late.date}`}>
-                                                <td>{idx + 1}</td>
-                                                <td className="font-semibold">{item.name}</td>
-                                                <td>{item.employee_code || '-'}</td>
-                                                <td>{late.date ? new Date(late.date).toLocaleDateString('id-ID') : '-'}</td>
-                                                <td>{late.minutes || 0}</td>
-                                            </tr>
-                                        ))
-                                    )}
+                                    {lateRows.map((row) => (
+                                        <tr key={row.key}>
+                                            <td>{row.no}</td>
+                                            <td className="font-semibold">{row.name}</td>
+                                            <td>{row.employee_code || '-'}</td>
+                                            <td>{row.date ? new Date(row.date).toLocaleDateString('id-ID') : '-'}</td>
+                                            <td className="whitespace-nowrap">{formatLateDuration(row.minutes)}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>

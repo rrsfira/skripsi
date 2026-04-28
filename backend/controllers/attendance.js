@@ -67,12 +67,13 @@ router.post("/cron/auto-checkout", async (req, res) => {
             // Hitung working_hours dan overtime_hours
             const checkInSeconds = timeStringToSeconds(att.check_in);
             const checkOutSeconds = 23 * 3600 + 59 * 60; // 23:59:00
-            const standardCheckOutSeconds = timeStringToSeconds(STANDARD_CHECK_OUT_TIME);
+            const standardWorkingDurationSeconds = 8 * 3600;
 
             let workingDurationSeconds = checkOutSeconds - checkInSeconds;
             if (workingDurationSeconds < 0) workingDurationSeconds += 24 * 3600;
 
-            let overtimeDurationSeconds = checkOutSeconds - standardCheckOutSeconds;
+            let overtimeDurationSeconds =
+                workingDurationSeconds - standardWorkingDurationSeconds;
             if (overtimeDurationSeconds < 0) overtimeDurationSeconds = 0;
 
             const workingHoursDecimal = secondsToHoursDecimal(workingDurationSeconds);
@@ -803,16 +804,15 @@ router.post(
                 existingAttendance[0].check_in
             );
             const checkOutSeconds = timeStringToSeconds(checkOutTime);
-            const standardCheckOutSeconds = timeStringToSeconds(
-                STANDARD_CHECK_OUT_TIME
-            );
+            const standardWorkingDurationSeconds = 8 * 3600;
 
             let workingDurationSeconds = checkOutSeconds - checkInSeconds;
             if (workingDurationSeconds < 0) {
                 workingDurationSeconds += 24 * 3600;
             }
 
-            let overtimeDurationSeconds = checkOutSeconds - standardCheckOutSeconds;
+            let overtimeDurationSeconds =
+                workingDurationSeconds - standardWorkingDurationSeconds;
             if (overtimeDurationSeconds < 0) {
                 overtimeDurationSeconds = 0;
             }

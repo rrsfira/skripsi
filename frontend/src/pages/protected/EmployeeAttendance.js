@@ -22,9 +22,8 @@ const formatDurationFromHours = (hoursValue) => {
     const totalSeconds = Math.max(0, Math.round(Number(hoursValue) * 3600))
     const hours = Math.floor(totalSeconds / 3600)
     const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = totalSeconds % 60
 
-    return `${hours} jam ${minutes} menit ${seconds} detik`
+    return `${hours} jam ${minutes} menit`
 }
 
 const parseTimeToSeconds = (timeValue) => {
@@ -53,25 +52,40 @@ const formatDurationFromCheckTimes = (checkIn, checkOut, fallbackHours) => {
 
     const hours = Math.floor(durationSeconds / 3600)
     const minutes = Math.floor((durationSeconds % 3600) / 60)
-    const seconds = durationSeconds % 60
 
-    return `${hours} jam ${minutes} menit ${seconds} detik`
+    return `${hours} jam ${minutes} menit `
 }
 
 const formatDurationFromMinutes = (minutesValue) => {
-    if (minutesValue === null || minutesValue === undefined || minutesValue === '') return '0 jam 0 menit 0 detik'
+    if (minutesValue === null || minutesValue === undefined || minutesValue === '') return '0 jam 0 menit '
 
     const totalSeconds = Math.max(0, Math.round(Number(minutesValue) * 60))
     const hours = Math.floor(totalSeconds / 3600)
     const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = totalSeconds % 60
 
-    return `${hours} jam ${minutes} menit ${seconds} detik`
+    return `${hours} jam ${minutes} menit `
 }
 
 const isLeaveOrPermissionStatus = (statusValue) => {
     const normalizedStatus = String(statusValue || '').toLowerCase()
     return normalizedStatus === 'izin' || normalizedStatus === 'sakit' || normalizedStatus === 'libur'
+}
+
+const formatOvertimeDisplay = ({ status, checkIn, checkOut, overtimeHours, workingHours }) => {
+    if (isLeaveOrPermissionStatus(status)) return '-'
+    if (!checkIn || !checkOut) return '-'
+
+    const overtimeValue = Number(overtimeHours)
+    if (Number.isFinite(overtimeValue) && overtimeValue > 0) {
+        return formatDurationFromHours(overtimeValue)
+    }
+
+    const workingValue = Number(workingHours)
+    if (Number.isFinite(workingValue) && workingValue > 8) {
+        return formatDurationFromHours(workingValue - 8)
+    }
+
+    return '-'
 }
 
 const alphaSanctionLabelMap = {
@@ -385,9 +399,13 @@ function EmployeeAttendance() {
                     <div className="p-4 rounded-lg bg-base-200">
                         <p className="text-sm opacity-70">Lembur</p>
                         <p className="text-lg font-semibold">
-                            {isLeaveOrPermissionStatus(today.status) || !today.check_out
-                                ? '-'
-                                : formatDurationFromHours(today.overtime_hours)}
+                            {formatOvertimeDisplay({
+                                status: today.status,
+                                checkIn: today.check_in,
+                                checkOut: today.check_out,
+                                overtimeHours: today.overtime_hours,
+                                workingHours: today.working_hours,
+                            })}
                         </p>
                     </div>
                     <div className="p-4 rounded-lg bg-base-200">
@@ -470,7 +488,13 @@ function EmployeeAttendance() {
                                     <td>{item.check_in || '-'}</td>
                                     <td>{item.check_out || '-'}</td>
                                     <td>{formatDurationFromCheckTimes(item.check_in, item.check_out, item.working_hours)}</td>
-                                    <td>{isLeaveOrPermissionStatus(item.status) ? '-' : formatDurationFromHours(item.overtime_hours)}</td>
+                                    <td>{formatOvertimeDisplay({
+                                        status: item.status,
+                                        checkIn: item.check_in,
+                                        checkOut: item.check_out,
+                                        overtimeHours: item.overtime_hours,
+                                        workingHours: item.working_hours,
+                                    })}</td>
                                     <td>{isLeaveOrPermissionStatus(item.status) ? '-' : formatDurationFromMinutes(item.late_minutes)}</td>
                                 </tr>
                             ))}

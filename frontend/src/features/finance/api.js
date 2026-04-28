@@ -118,6 +118,15 @@ export const financeApi = {
         }
     },
 
+    async updatePayrollSettings(payload) {
+        try {
+            const response = await axios.put('/api/payroll-settings', payload)
+            return response.data || {}
+        } catch (error) {
+            throw new Error(parseApiError(error, 'Gagal menyimpan pengaturan payroll'))
+        }
+    },
+
     async getEmployeeReferences() {
         try {
             const response = await axios.get('/api/dashboard/finance/employees-reference')

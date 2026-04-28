@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 22, 2026 at 06:31 PM
+-- Generation Time: Apr 28, 2026 at 07:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -1234,7 +1234,41 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `username`, `role`, `action`, `mod
 (1191, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-22 16:18:59', '2026-04-22 16:18:59'),
 (1192, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-22 16:24:02', '2026-04-22 16:24:02'),
 (1193, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-22 16:24:31', '2026-04-22 16:24:31'),
-(1194, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-22 16:30:10', '2026-04-22 16:30:10');
+(1194, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-22 16:30:10', '2026-04-22 16:30:10'),
+(1195, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-22 17:00:01', '2026-04-22 17:00:01');
+INSERT INTO `activity_logs` (`id`, `user_id`, `username`, `role`, `action`, `module`, `description`, `old_values`, `new_values`, `ip_address`, `user_agent`, `status`, `error_message`, `created_at`, `updated_at`) VALUES
+(1196, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-22 17:00:57', '2026-04-22 17:00:57'),
+(1197, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 09:34:31', '2026-04-24 09:34:31'),
+(1198, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 09:48:20', '2026-04-24 09:48:20'),
+(1199, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 09:48:43', '2026-04-24 09:48:43'),
+(1200, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 09:57:23', '2026-04-24 09:57:23'),
+(1201, 5, 'shafira', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 09:58:23', '2026-04-24 09:58:23'),
+(1202, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 09:59:23', '2026-04-24 09:59:23'),
+(1203, 8, 'user3', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 10:14:28', '2026-04-24 10:14:28'),
+(1204, 8, 'user3', 'unknown', 'LOGIN', 'auth', 'Failed login attempt - invalid password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'failed', 'Invalid password', '2026-04-24 10:29:40', '2026-04-24 10:29:40'),
+(1205, 8, 'user3', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 10:29:42', '2026-04-24 10:29:42'),
+(1206, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 11:14:59', '2026-04-24 11:14:59'),
+(1207, 8, 'user3', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 11:15:40', '2026-04-24 11:15:40'),
+(1208, 5, 'shafira', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 11:19:11', '2026-04-24 11:19:11'),
+(1209, 8, 'user3', 'unknown', 'LOGIN', 'auth', 'Failed login attempt - invalid password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'failed', 'Invalid password', '2026-04-24 11:20:23', '2026-04-24 11:20:23'),
+(1210, 8, 'user3', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 11:20:28', '2026-04-24 11:20:28'),
+(1211, 5, 'shafira', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 11:24:10', '2026-04-24 11:24:10'),
+(1212, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 11:46:06', '2026-04-24 11:46:06'),
+(1213, 9, 'user4', 'unknown', 'LOGIN', 'auth', 'Failed login attempt - invalid password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'failed', 'Invalid password', '2026-04-24 11:47:28', '2026-04-24 11:47:28'),
+(1214, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 11:47:30', '2026-04-24 11:47:30'),
+(1215, 13, 'user6', 'admin', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 12:05:47', '2026-04-24 12:05:47'),
+(1216, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 12:16:32', '2026-04-24 12:16:32'),
+(1217, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 14:58:52', '2026-04-24 14:58:52'),
+(1218, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 15:24:25', '2026-04-24 15:24:25'),
+(1219, 8, 'user3', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 16:08:06', '2026-04-24 16:08:06'),
+(1220, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-24 16:13:52', '2026-04-24 16:13:52'),
+(1221, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-28 09:12:12', '2026-04-28 09:12:12'),
+(1222, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-28 13:49:37', '2026-04-28 13:49:37'),
+(1223, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-28 13:52:40', '2026-04-28 13:52:40'),
+(1224, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-28 15:35:33', '2026-04-28 15:35:33'),
+(1225, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-28 16:38:42', '2026-04-28 16:38:42'),
+(1226, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-28 17:05:28', '2026-04-28 17:05:28'),
+(1227, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-04-28 17:23:47', '2026-04-28 17:23:47');
 
 -- --------------------------------------------------------
 
@@ -2829,7 +2863,84 @@ INSERT INTO `attendance` (`id`, `employee_id`, `date`, `check_in`, `check_out`, 
 (1740, 15, '2026-03-30', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-20 11:24:24', '2026-04-20 04:24:24'),
 (1741, 15, '2026-03-31', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-20 11:24:24', '2026-04-20 04:24:24'),
 (1742, 12, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-21 15:25:48', '2026-04-21 08:25:48'),
-(1743, 12, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-22 14:04:37', '2026-04-22 07:04:37');
+(1743, 12, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-22 14:04:37', '2026-04-22 07:04:37'),
+(1744, 5, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 16:58:24', '2026-04-24 09:58:24'),
+(1746, 5, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 16:58:24', '2026-04-24 09:58:24'),
+(1747, 5, '2026-04-24', '08:20:00', '18:00:00', 'hadir', 1, 20, 8.00, 1.67, NULL, '2026-04-24 16:58:24', '2026-04-24 11:43:49'),
+(1749, 8, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 17:14:29', '2026-04-24 10:14:29'),
+(1751, 8, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 17:14:29', '2026-04-24 10:14:29'),
+(1753, 8, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 17:14:29', '2026-04-24 10:14:29'),
+(1754, 8, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 17:14:29', '2026-04-24 10:14:29'),
+(1756, 5, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 18:19:12', '2026-04-24 11:19:12'),
+(1757, 13, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 19:14:30', '2026-04-24 12:14:30'),
+(1758, 13, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 19:14:30', '2026-04-24 12:14:30'),
+(1760, 13, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 19:14:30', '2026-04-24 12:14:30'),
+(1761, 13, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-24 19:14:30', '2026-04-24 12:14:30'),
+(1763, 1, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1764, 1, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1765, 1, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1766, 1, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1767, 1, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1768, 1, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1769, 1, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1770, 2, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1771, 2, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1772, 2, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1773, 2, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1774, 2, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1775, 2, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1776, 2, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1777, 3, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1778, 3, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1779, 3, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1780, 3, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1781, 3, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1782, 3, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1783, 3, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1784, 5, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1785, 5, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1786, 7, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1787, 7, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1788, 7, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1789, 7, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1790, 7, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1791, 7, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1792, 7, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1793, 8, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1794, 8, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1795, 8, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1796, 9, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1797, 9, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1798, 9, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1799, 9, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1800, 9, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1801, 9, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1802, 9, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1803, 12, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1804, 12, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1805, 12, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1806, 12, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1807, 12, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1808, 13, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1809, 13, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1810, 13, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:04', '2026-04-28 15:48:04'),
+(1811, 15, '2026-04-20', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:05', '2026-04-28 15:48:05'),
+(1812, 15, '2026-04-21', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:05', '2026-04-28 15:48:05'),
+(1813, 15, '2026-04-22', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:05', '2026-04-28 15:48:05'),
+(1814, 15, '2026-04-23', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:05', '2026-04-28 15:48:05'),
+(1815, 15, '2026-04-24', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:05', '2026-04-28 15:48:05'),
+(1816, 15, '2026-04-25', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:05', '2026-04-28 15:48:05'),
+(1817, 15, '2026-04-27', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-28 22:48:05', '2026-04-28 15:48:05'),
+(1818, 1, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1819, 2, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1820, 3, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1821, 5, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1822, 7, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1823, 8, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1824, 9, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1825, 12, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1826, 13, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30'),
+(1827, 15, '2026-04-28', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-04-29 00:15:30', '2026-04-28 17:15:30');
 
 -- --------------------------------------------------------
 
@@ -2979,16 +3090,16 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`id`, `user_id`, `employee_code`, `full_name`, `gender`, `birth_place`, `date_of_birth`, `marital_status`, `nationality`, `address`, `phone`, `email`, `nik`, `npwp`, `bank_account`, `bpjs_number`, `account_holder_name`, `bank_name`, `ktp_document`, `diploma_document`, `employment_contract_document`, `position_id`, `join_date`, `basic_salary`, `employment_status`, `working_hours_id`, `annual_leave_quota`, `remaining_leave_quota`, `alpha_consecutive_days`, `alpha_accumulated_days`, `alpha_sanction_level`, `alpha_last_evaluated_at`, `quota_reset_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 2, 'EMP001', 'Yuliana Putri ', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '08123456789', 'yulianaputri@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '2026-01-09', 8000000.00, 'permanent', 1, 12, 12, 140, 140, 'evaluasi_hr', '2026-04-20 11:24:24', NULL, '2026-01-12 14:43:08', '2026-04-20 11:24:24', NULL),
-(2, 1, 'EMP002', 'Dimas Setia Budi', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '08111111111', 'dimassetiabudi@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 9, NULL, 7000000.00, 'permanent', 1, 12, 12, 17, 139, 'evaluasi_hr', '2026-04-20 11:24:24', NULL, '2026-01-12 14:44:10', '2026-04-20 11:24:24', NULL),
-(3, 3, 'EMP003', 'Gita Safitri', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '22222222', 'gitasafitri@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '2026-01-10', 8000000.00, 'permanent', 1, 12, 12, 17, 115, 'evaluasi_hr', '2026-04-20 11:24:24', NULL, '2026-01-13 14:50:44', '2026-04-20 11:24:24', NULL),
-(5, 5, 'EMP004', 'shafira', 'female', 'Jember', '2003-04-23', 'single', 'Indonesian', 'GWA 1', '0911097213921', 'shafira@gmail.com', '9012840194819041', '092438', '0291840219', '9082018421', 'Reihan Rachma Shafira', 'BNI', 'uploads/employee_documents/ktp_document-1772111243307-844121372.pdf', 'uploads/employee_documents/diploma_document-1772469288003-392959580.pdf', NULL, 5, '2026-02-16', 7000000.00, 'permanent', 1, 12, 9, 0, 112, 'evaluasi_hr', '2026-04-21 15:26:12', NULL, '2026-02-20 16:21:34', '2026-04-21 15:26:12', NULL),
-(7, 7, 'EMP005', 'aku', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '0824019248', 'user2@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, '2026-02-20', 9000000.00, 'permanent', 1, 12, 12, 17, 139, 'evaluasi_hr', '2026-04-20 11:24:24', NULL, '2026-02-22 21:17:07', '2026-04-20 11:24:24', NULL),
-(8, 8, 'EMP006', 'user3', 'male', NULL, NULL, NULL, 'Indonesian', NULL, '08324209432', 'user3@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, '2026-02-19', 10000000.00, 'permanent', 1, 12, 11, 10, 105, 'evaluasi_hr', '2026-04-20 12:06:44', NULL, '2026-02-22 21:20:01', '2026-04-20 12:06:44', NULL),
-(9, 9, 'EMP007', 'user4', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user4@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 10, '2026-02-24', 9000000.00, 'permanent', 1, 12, 12, 10, 105, 'evaluasi_hr', '2026-04-20 11:24:24', NULL, '2026-02-25 16:11:00', '2026-04-20 11:24:24', NULL),
-(12, 12, 'EMP008', 'HR', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user5@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 12, '2026-02-27', 8500000.00, 'permanent', 1, 12, 12, 12, 110, 'evaluasi_hr', '2026-04-22 15:22:30', NULL, '2026-02-27 15:18:28', '2026-04-22 15:22:30', NULL),
-(13, 13, 'EMP009', 'DIREKTUR', 'male', NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user6@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2026-02-27', 15000000.00, 'permanent', 1, 12, 10, 17, 134, 'evaluasi_hr', '2026-04-20 11:24:24', NULL, '2026-02-27 15:28:56', '2026-04-20 11:24:24', NULL),
-(15, 16, 'EMP010', 'user7', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user7@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 13, '2026-03-08', 5500000.00, 'permanent', 1, 12, 12, 139, 139, 'evaluasi_hr', '2026-04-20 11:24:24', NULL, '2026-03-10 23:20:42', '2026-04-20 11:24:24', NULL);
+(1, 2, 'EMP001', 'Yuliana Putri ', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '08123456789', 'yulianaputri@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '2026-01-09', 8000000.00, 'permanent', 1, 12, 12, 148, 148, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-01-12 14:43:08', '2026-04-29 00:15:30', NULL),
+(2, 1, 'EMP002', 'Dimas Setia Budi', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '08111111111', 'dimassetiabudi@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 9, NULL, 7000000.00, 'permanent', 1, 12, 12, 25, 147, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-01-12 14:44:10', '2026-04-29 00:15:30', NULL),
+(3, 3, 'EMP003', 'Gita Safitri', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '22222222', 'gitasafitri@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '2026-01-10', 8000000.00, 'permanent', 1, 12, 12, 25, 123, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-01-13 14:50:44', '2026-04-29 00:15:30', NULL),
+(5, 5, 'EMP004', 'shafira', 'female', 'Jember', '2003-04-23', 'single', 'Indonesian', 'GWA 1', '0911097213921', 'shafira@gmail.com', '9012840194819041', '092438', '0291840219', '9082018421', 'Reihan Rachma Shafira', 'BNI', 'uploads/employee_documents/ktp_document-1772111243307-844121372.pdf', 'uploads/employee_documents/diploma_document-1772469288003-392959580.pdf', NULL, 5, '2026-02-16', 7000000.00, 'permanent', 1, 12, 9, 3, 118, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-02-20 16:21:34', '2026-04-29 00:15:30', NULL),
+(7, 7, 'EMP005', 'aku', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '0824019248', 'user2@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, '2026-02-20', 9000000.00, 'permanent', 1, 12, 12, 25, 147, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-02-22 21:17:07', '2026-04-29 00:15:30', NULL),
+(8, 8, 'EMP006', 'user3', 'male', NULL, NULL, NULL, 'Indonesian', NULL, '08324209432', 'user3@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, '2026-02-19', 10000000.00, 'permanent', 1, 12, 11, 18, 113, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-02-22 21:20:01', '2026-04-29 00:15:30', NULL),
+(9, 9, 'EMP007', 'user4', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user4@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 10, '2026-02-24', 9000000.00, 'permanent', 1, 12, 12, 18, 113, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-02-25 16:11:00', '2026-04-29 00:15:30', NULL),
+(12, 12, 'EMP008', 'HR', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user5@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 12, '2026-02-27', 8500000.00, 'permanent', 1, 12, 12, 18, 116, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-02-27 15:18:28', '2026-04-29 00:15:30', NULL),
+(13, 13, 'EMP009', 'DIREKTUR', 'male', NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user6@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2026-02-27', 15000000.00, 'permanent', 1, 12, 10, 25, 142, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-02-27 15:28:56', '2026-04-29 00:15:30', NULL),
+(15, 16, 'EMP010', 'user7', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user7@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 13, '2026-03-08', 5500000.00, 'permanent', 1, 12, 12, 147, 147, 'evaluasi_hr', '2026-04-29 00:15:30', NULL, '2026-03-10 23:20:42', '2026-04-29 00:15:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -3177,6 +3288,7 @@ INSERT INTO `payrolls` (`id`, `employee_id`, `period_month`, `period_year`, `bas
 
 CREATE TABLE `payroll_settings` (
   `id` int(11) NOT NULL,
+  `tax` decimal(10,2) DEFAULT NULL,
   `transport_per_day` decimal(12,2) NOT NULL DEFAULT 50000.00,
   `meal_per_day` decimal(12,2) NOT NULL DEFAULT 25000.00,
   `health_percentage` decimal(5,4) NOT NULL DEFAULT 0.0100,
@@ -3190,8 +3302,11 @@ CREATE TABLE `payroll_settings` (
 -- Dumping data for table `payroll_settings`
 --
 
-INSERT INTO `payroll_settings` (`id`, `transport_per_day`, `meal_per_day`, `health_percentage`, `bpjs_percentage`, `updated_by`, `updated_at`, `created_at`) VALUES
-(1, 50000.00, 25000.00, 0.0100, 0.0100, NULL, '2026-01-15 07:12:10', '2026-01-15 07:12:10');
+INSERT INTO `payroll_settings` (`id`, `tax`, `transport_per_day`, `meal_per_day`, `health_percentage`, `bpjs_percentage`, `updated_by`, `updated_at`, `created_at`) VALUES
+(1, NULL, 50000.00, 25000.00, 0.0100, 0.0100, 9, '2026-04-28 16:50:30', '2026-01-15 07:12:10'),
+(2, NULL, 50000.00, 26000.00, 0.0100, 0.0100, 9, '2026-04-28 16:51:38', '2026-04-28 16:51:38'),
+(3, NULL, 50000.00, 25000.00, 0.0100, 0.0100, 9, '2026-04-28 16:51:51', '2026-04-28 16:51:51'),
+(4, 0.03, 50000.00, 25000.00, 1.0000, 1.0000, 9, '2026-04-28 17:20:26', '2026-04-28 17:15:03');
 
 -- --------------------------------------------------------
 
@@ -3673,7 +3788,7 @@ ALTER TABLE `working_hours`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1195;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1228;
 
 --
 -- AUTO_INCREMENT for table `allowance`
@@ -3691,7 +3806,7 @@ ALTER TABLE `applications`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1744;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1828;
 
 --
 -- AUTO_INCREMENT for table `candidates`
@@ -3745,7 +3860,7 @@ ALTER TABLE `payrolls`
 -- AUTO_INCREMENT for table `payroll_settings`
 --
 ALTER TABLE `payroll_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `positions`

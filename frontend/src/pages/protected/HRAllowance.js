@@ -22,7 +22,7 @@ function Allowance() {
 
         <button
           className="btn btn-accent w-full"
-          onClick={() => navigate("/hr/payroll-settings")}
+          onClick={() => navigate("/app/payroll-settings")}
         >
           Ubah Komponen Global
         </button>

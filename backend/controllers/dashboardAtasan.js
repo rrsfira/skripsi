@@ -104,7 +104,6 @@ router.get(
 // ============================
 router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
   try {
-    const today = new Date().toISOString().split("T")[0];
     const now = new Date();
     const requestedMonth = Number(req.query.month);
     const requestedYear = Number(req.query.year);
@@ -139,7 +138,7 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
     );
 
     const [teamMembers] = await db.promise().query(
-      `SELECT e.id, e.employee_code, u.name as employee_name
+      `SELECT e.id, e.employee_code, u.name as employee_name, p.name as position_name
                          FROM employees e
                          JOIN positions p ON e.position_id = p.id
                          JOIN users u ON e.user_id = u.id
@@ -158,10 +157,10 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
             FROM attendance a
             JOIN employees e ON a.employee_id = e.id
             JOIN positions p ON e.position_id = p.id
-            WHERE a.date = ?
+            WHERE a.date = CURDATE()
               AND p.department_id = ?
               AND e.id <> ?`,
-      [today, departmentId, managerEmployeeId],
+      [departmentId, managerEmployeeId],
     );
 
     // 3. Pending Leave Requests (yang perlu diapprove atasan)
@@ -217,24 +216,53 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
       [selectedMonth, selectedYear, departmentId, managerEmployeeId],
     );
 
-    // 6. Top Late Employees (bulan ini)
-    const [topLateEmployees] = await db.promise().query(
-      `SELECT e.employee_code, u.name, 
-                    COUNT(*) as late_count,
-                    SUM(a.late_minutes) as total_late_minutes
-             FROM attendance a
-             JOIN employees e ON a.employee_id = e.id
-                         JOIN positions p ON e.position_id = p.id
-             JOIN users u ON e.user_id = u.id
-             WHERE a.is_late = 1 
-               AND MONTH(a.date) = ? AND YEAR(a.date) = ?
-                             AND p.department_id = ?
-                             AND e.id <> ?
-             GROUP BY e.id, e.employee_code, u.name
-             ORDER BY late_count DESC
-             LIMIT 10`,
-      [selectedMonth, selectedYear, departmentId, managerEmployeeId],
+    // 6. Employees late today (structured for frontend late_per_day table)
+    const [lateTodayRows] = await db.promise().query(
+      `SELECT 
+            e.id,
+            e.employee_code,
+            u.name,
+            a.date,
+            a.late_minutes
+         FROM attendance a
+         JOIN employees e ON a.employee_id = e.id
+         JOIN positions p ON e.position_id = p.id
+         JOIN users u ON e.user_id = u.id
+         WHERE a.is_late = 1
+           AND a.date = CURDATE()
+           AND p.department_id = ?
+           AND e.id <> ?
+         ORDER BY a.late_minutes DESC, u.name ASC
+         LIMIT 25`,
+      [departmentId, managerEmployeeId],
     );
+
+    const topLateEmployeesMap = new Map();
+    for (const row of lateTodayRows) {
+      if (!topLateEmployeesMap.has(row.id)) {
+        topLateEmployeesMap.set(row.id, {
+          id: row.id,
+          employee_code: row.employee_code,
+          name: row.name,
+          late_per_day: [],
+          late_count: 0,
+          total_late_minutes: 0,
+        });
+      }
+
+      const employee = topLateEmployeesMap.get(row.id);
+      const minutes = Number(row.late_minutes) || 0;
+      employee.late_per_day.push({
+        date: row.date,
+        minutes,
+      });
+      employee.late_count += 1;
+      employee.total_late_minutes += minutes;
+    }
+
+    const topLateEmployees = Array.from(topLateEmployeesMap.values())
+      .sort((a, b) => b.total_late_minutes - a.total_late_minutes)
+      .slice(0, 10);
 
     // 7. Recent Approved/Rejected Actions
     const [recentActions] = await db.promise().query(

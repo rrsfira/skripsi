@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
 import TitleCard from "../../components/Cards/TitleCard";
+import { formatLateDuration } from "../../components/Typography/LateDurationText";
 import { financeApi } from "../../features/finance/api";
 import { resolveFixedPositionAllowance } from "../../utils/fixedPositionAllowance";
 
@@ -16,16 +17,8 @@ const getCurrentPeriod = () => {
 const formatCurrency = (value) =>
   `Rp ${Number(value || 0).toLocaleString("id-ID")}`;
 
-const formatLateDuration = (value) => {
-  const minutes = Number(value || 0);
-  const totalSeconds = Math.round(minutes * 60);
-  const hours = Math.floor(totalSeconds / 3600);
-  const remainingAfterHours = totalSeconds % 3600;
-  const displayMinutes = Math.floor(remainingAfterHours / 60);
-  const seconds = remainingAfterHours % 60;
-
-  return `${hours} jam ${displayMinutes} menit ${seconds} detik`;
-};
+const formatPercent = (value) =>
+  `${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value || 0) * 100)}%`;
 
 const monthOptions = [
   { value: "1", label: "Januari" },
@@ -48,7 +41,15 @@ const statusBadgeClass = {
   claimed: "badge-success",
 };
 
-const AUTO_TAX_RATE = 0.03;
+const statusLabelMap = {
+  draft: "draf",
+  published: "dipublikasikan",
+  claimed: "diklaim",
+};
+
+const getStatusLabel = (status) =>
+  statusLabelMap[String(status || "").toLowerCase()] || status || "-";
+
 const LATE_DEDUCTION_HOURLY_PERCENTAGE = 0.02;
 const DEFAULT_WORKING_HOURS_PER_DAY = 8;
 
@@ -57,6 +58,7 @@ const defaultPayrollSettings = {
   meal_per_day: 25000,
   health_percentage: 0.01,
   bpjs_percentage: 0.01,
+  tax: 0.03,
 };
 
 const resolvePhotoUrl = (photoPath) => {
@@ -77,6 +79,7 @@ function FinancePayroll() {
 
   const period = getCurrentPeriod();
   const [error, setError] = useState("");
+  const [setupWarning, setSetupWarning] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loadingGenerate, setLoadingGenerate] = useState(false);
   const [loadingPublishAll, setLoadingPublishAll] = useState(false);
@@ -154,7 +157,7 @@ function FinancePayroll() {
   useEffect(() => {
     dispatch(
       setPageTitle({
-        title: "Payroll Finance",
+        title: "Payroll Keuangan",
       }),
     );
   }, [dispatch]);
@@ -210,6 +213,7 @@ function FinancePayroll() {
           payrollSettingsResult.status === "fulfilled"
             ? payrollSettingsResult.value
             : defaultPayrollSettings;
+        const payrollSetupValidation = payrollSettingsRow?.validation || {};
         const employeeRows =
           employeeReferenceResult.status === "fulfilled"
             ? employeeReferenceResult.value
@@ -240,7 +244,46 @@ function FinancePayroll() {
             payrollSettingsRow?.bpjs_percentage ??
               defaultPayrollSettings.bpjs_percentage,
           ),
+          tax: Number(
+            payrollSettingsRow?.tax ?? defaultPayrollSettings.tax,
+          ),
         });
+
+        const missingPayrollSettings =
+          Boolean(payrollSetupValidation.has_missing_payroll_settings) ||
+          !payrollSettingsResult?.value?.id;
+        const missingPositionBaseSalary =
+          Number(payrollSetupValidation.missing_base_salary_count || 0) > 0;
+        const missingPositionAllowance =
+          Number(payrollSetupValidation.missing_position_allowance_count || 0) > 0;
+
+        if (missingPayrollSettings || missingPositionBaseSalary || missingPositionAllowance) {
+          const warningParts = [];
+
+          if (missingPayrollSettings) {
+            warningParts.push("pengaturan payroll belum lengkap");
+          }
+
+          if (missingPositionBaseSalary) {
+            warningParts.push(
+              `${payrollSetupValidation.missing_base_salary_count} posisi masih belum punya gaji pokok`,
+            );
+          }
+
+          if (missingPositionAllowance) {
+            warningParts.push(
+              `${payrollSetupValidation.missing_position_allowance_count} posisi masih belum punya tunjangan jabatan`,
+            );
+          }
+
+          setSetupWarning(
+            `Komponen gaji belum lengkap. ${warningParts.join(
+              "; ",
+            )}. Silakan lengkapi komponen payroll terlebih dahulu sebelum membuat payroll.`,
+          );
+        } else {
+          setSetupWarning("");
+        }
 
         const failedMessages = [
           attendanceSummaryResult,
@@ -385,6 +428,12 @@ function FinancePayroll() {
     return currentEmployeePayrollRows[0] || null;
   }, [currentEmployeePayrollRows, latestGenerated, selectedEmployeeId]);
 
+  const existingPayrollForSelectedPeriod = useMemo(() => {
+    return currentEmployeePayrollRows[0] || null;
+  }, [currentEmployeePayrollRows]);
+
+  const hasExistingPayrollForPeriod = Boolean(existingPayrollForSelectedPeriod);
+
   const selectedBasicSalary = useMemo(() => {
     if (
       latestGenerated?.details?.basic_salary &&
@@ -406,8 +455,8 @@ function FinancePayroll() {
   ]);
 
   const autoTaxDeduction = useMemo(() => {
-    return Number((selectedBasicSalary * AUTO_TAX_RATE).toFixed(2));
-  }, [selectedBasicSalary]);
+    return Number((selectedBasicSalary * Number(payrollSettings.tax || 0.03)).toFixed(2));
+  }, [selectedBasicSalary, payrollSettings.tax]);
 
   const autoPayrollId = useMemo(() => {
     if (
@@ -808,8 +857,20 @@ function FinancePayroll() {
     setError("");
     setSuccessMessage("");
 
+    if (setupWarning) {
+      setError(setupWarning);
+      return;
+    }
+
     if (!selectedEmployeeId || !periodMonth || !periodYear) {
       setError("Pegawai, bulan, dan tahun wajib dipilih");
+      return;
+    }
+
+    if (hasExistingPayrollForPeriod) {
+      setError(
+        "Slip gaji untuk pegawai dan periode ini sudah ada. Gunakan slip yang sudah tersedia.",
+      );
       return;
     }
 
@@ -975,11 +1036,16 @@ function FinancePayroll() {
 
   return (
     <>
-      {(error || successMessage) && (
+      {(error || setupWarning || successMessage) && (
         <div className="mb-4">
           {error && (
             <div className="alert alert-error mb-2">
               <span>{error}</span>
+            </div>
+          )}
+          {!error && setupWarning && (
+            <div className="alert alert-warning mb-2">
+              <span>{setupWarning}</span>
             </div>
           )}
         </div>
@@ -1100,7 +1166,7 @@ function FinancePayroll() {
                     {selectedEmployeeReference?.position_level || "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Role:</span>{" "}
+                    <span className="font-semibold">Peran:</span>{" "}
                     {selectedEmployeeReference?.roles || "-"}
                   </p>
 
@@ -1114,7 +1180,7 @@ function FinancePayroll() {
                   </p>
 
                   <p className="md:col-span-2">
-                    <span className="font-semibold">Gaji Dasar:</span>{" "}
+                    <span className="font-semibold">Gaji Pokok:</span>{" "}
                     {selectedBasicSalary
                       ? formatCurrency(selectedBasicSalary)
                       : "Belum tersedia"}
@@ -1124,6 +1190,16 @@ function FinancePayroll() {
             )}
             {hasPayrollFiltersSelected && (
               <>
+                {hasExistingPayrollForPeriod && (
+                  <div className="alert alert-warning text-sm">
+                    <span>
+                      Slip gaji untuk pegawai dan periode ini sudah pernah
+                      dibuat (ID: {existingPayrollForSelectedPeriod?.id}).
+                      Pembuatan slip baru dinonaktifkan.
+                    </span>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <input
                     className="input input-bordered w-full"
@@ -1137,7 +1213,7 @@ function FinancePayroll() {
                   />
                   <input
                     className="input input-bordered w-full"
-                    value={`Telat: ${formatLateDuration(payrollPreview.totalLateMinutes)}`}
+                    value={`Terlambat: ${formatLateDuration(payrollPreview.totalLateMinutes)}`}
                     disabled
                   />
                   <input
@@ -1152,22 +1228,22 @@ function FinancePayroll() {
                   />
                   <input
                     className="input input-bordered w-full"
-                    value={`Reimb Dihitung Payroll: ${formatCurrency(payrollPreview.reimbursement)}`}
+                    value={`Penggantian Dana: ${formatCurrency(payrollPreview.reimbursement)}`}
                     disabled
                   />
                   <input
                     className="input input-bordered w-full"
-                    value={`Pajak 3%: ${formatCurrency(autoTaxDeduction)}`}
+                    value={`Pajak ${formatPercent(payrollSettings.tax || 0.03)}: ${formatCurrency(autoTaxDeduction)}`}
                     disabled
                   />
                   <input
                     className="input input-bordered w-full"
-                    value={`Transport/Hari: ${formatCurrency(payrollSettings.transport_per_day)}`}
+                    value={`Tunjangan Transport per-hari: ${formatCurrency(payrollSettings.transport_per_day)}`}
                     disabled
                   />
                   <input
                     className="input input-bordered w-full"
-                    value={`Makan/Hari: ${formatCurrency(payrollSettings.meal_per_day)}`}
+                    value={`Tunjangan Makan per-hari: ${formatCurrency(payrollSettings.meal_per_day)}`}
                     disabled
                   />
                   <input
@@ -1203,28 +1279,29 @@ function FinancePayroll() {
                 <div className="alert alert-info text-sm">
                   <span>
                     Nilai bonus dan potongan lain terisi otomatis dari
-                    adjustment (atau slip terakhir jika belum ada adjustment).
+                    penyesuaian manajer (atau slip terakhir jika belum ada
+                    penyesuaian).
                     Nilai tunjangan lain dipatok otomatis sesuai jabatan dan
-                    bersifat read-only.
+                    bersifat hanya-baca.
                   </span>
                 </div>
 
                 <div className="rounded-lg border border-base-300 p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-semibold">Preview Perhitungan Payroll</p>
+                    <p className="font-semibold">Pratinjau Perhitungan Payroll</p>
                   </div>
                   <div className="grid md:grid-cols-2 grid-cols-1 gap-3 text-sm">
                     <div className="rounded-lg bg-base-200 p-3">
                       <p className="text-lg font-bold">
-                        <span className="font-semibold">Net Salary:</span>{" "}
+                        <span className="font-semibold">Gaji Bersih:</span>{" "}
                         {formatCurrency(payrollPreview.netSalary)}
                       </p>
                       <p>
-                        <span className="font-semibold">Total Income:</span>{" "}
+                        <span className="font-semibold">Total Pendapatan:</span>{" "}
                         {formatCurrency(payrollPreview.totalIncome)}
                       </p>
                       <p>
-                        <span className="font-semibold">Total Deduction:</span>{" "}
+                        <span className="font-semibold">Total Potongan:</span>{" "}
                         {formatCurrency(payrollPreview.totalDeduction)}
                       </p>
                     </div>
@@ -1238,7 +1315,7 @@ function FinancePayroll() {
                         {formatCurrency(payrollPreview.allowanceTotal)}
                       </p>
                       <p>
-                        <span className="font-semibold">Reimbursement:</span>{" "}
+                        <span className="font-semibold">Total Reimbursement:</span>{" "}
                         {formatCurrency(payrollPreview.reimbursement)}
                       </p>
                     </div>
@@ -1247,7 +1324,7 @@ function FinancePayroll() {
                     <table className="table table-zebra table-sm">
                       <tbody>
                         <tr>
-                          <td>Transport</td>
+                          <td>Tunjangan Transport</td>
                           <td className="text-right">
                             {formatCurrency(payrollPreview.transportAllowance)}
                           </td>
@@ -1283,19 +1360,19 @@ function FinancePayroll() {
                           </td>
                         </tr>
                         <tr className="font-semibold">
-                          <td>Gross Salary</td>
+                          <td>Gaji Kotor</td>
                           <td className="text-right">
                             {formatCurrency(payrollPreview.grossSalary)}
                           </td>
                         </tr>
                         <tr className="font-semibold">
-                          <td>Total Income</td>
+                          <td>Total Pendapatan</td>
                           <td className="text-right">
                             {formatCurrency(payrollPreview.totalIncome)}
                           </td>
                         </tr>
                         <tr>
-                          <td>Potongan Telat</td>
+                          <td>Potongan Keterlambatan</td>
                           <td className="text-right">
                             {formatCurrency(payrollPreview.lateDeduction)}
                           </td>
@@ -1331,7 +1408,7 @@ function FinancePayroll() {
                           </td>
                         </tr>
                         <tr className="font-semibold text-lg">
-                          <td>Take Home Pay</td>
+                          <td>Gaji yang Diterima</td>
                           <td className="text-right font-bold">
                             {formatCurrency(payrollPreview.netSalary)}
                           </td>
@@ -1343,15 +1420,20 @@ function FinancePayroll() {
 
                 <input
                   className="input input-bordered w-full"
-                  value={autoPayrollId ? `Payroll ID: ${autoPayrollId}` : ""}
+                  value={autoPayrollId ? `ID Payroll: ${autoPayrollId}` : ""}
                   disabled
                 />
 
                 <button
                   className={`btn btn-primary w-full ${loadingGenerate ? "loading" : ""}`}
                   type="submit"
+                  disabled={loadingGenerate || hasExistingPayrollForPeriod || Boolean(setupWarning)}
                 >
-                  Buat Slip Gaji
+                  {hasExistingPayrollForPeriod
+                    ? "Slip Sudah Dibuat"
+                    : setupWarning
+                      ? "Lengkapi Komponen Gaji"
+                    : "Buat Slip Gaji"}
                 </button>
 
                 <button
@@ -1383,7 +1465,7 @@ function FinancePayroll() {
                 <div className="grid md:grid-cols-2 grid-cols-1 gap-4 text-sm">
                   <div className="rounded-lg bg-base-200 p-4">
                     <p>
-                      <span className="font-semibold">Payroll ID:</span>{" "}
+                      <span className="font-semibold">ID Payroll:</span>{" "}
                       {latestGenerated.payroll_id}
                     </p>
                     <p>
@@ -1397,17 +1479,17 @@ function FinancePayroll() {
                   </div>
                   <div className="rounded-lg bg-base-200 p-4">
                     <p className="text-lg font-bold">
-                      <span className="font-semibold">Net Salary:</span>{" "}
+                      <span className="font-semibold">Gaji Bersih:</span>{" "}
                       {formatCurrency(latestGenerated?.details?.net_salary)}
                     </p>
                     <p>
-                      <span className="font-semibold">Total Income:</span>{" "}
+                      <span className="font-semibold">Total Pendapatan:</span>{" "}
                       {formatCurrency(
                         latestGenerated?.details?.income?.total_income,
                       )}
                     </p>
                     <p>
-                      <span className="font-semibold">Total Deduction:</span>{" "}
+                      <span className="font-semibold">Total Potongan:</span>{" "}
                       {formatCurrency(
                         latestGenerated?.details?.total_deduction,
                       )}
@@ -1434,7 +1516,7 @@ function FinancePayroll() {
                         </td>
                       </tr>
                       <tr>
-                        <td>Reimbursement</td>
+                        <td>Penggantian Dana</td>
                         <td className="text-right">
                           {formatCurrency(
                             latestGenerated?.details?.reimbursement_total,
@@ -1442,7 +1524,7 @@ function FinancePayroll() {
                         </td>
                       </tr>
                       <tr>
-                        <td>Potongan Telat</td>
+                        <td>Potongan Keterlambatan</td>
                         <td className="text-right">
                           {formatCurrency(
                             latestGenerated?.details?.late_deduction,
@@ -1482,7 +1564,7 @@ function FinancePayroll() {
                         </td>
                       </tr>
                       <tr className="font-semibold text-lg">
-                        <td>Take Home Pay</td>
+                        <td>Gaji Diterima</td>
                         <td className="text-right font-bold">
                           {formatCurrency(latestGenerated?.details?.net_salary)}
                         </td>
@@ -1494,7 +1576,7 @@ function FinancePayroll() {
             )}
         </TitleCard>
 
-        <TitleCard title="Rekap Slip Gaji & Publish" topMargin="mt-0">
+        <TitleCard title="Rekap Slip Gaji & Publikasi" topMargin="mt-0">
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <span className="badge badge-outline">
               Pegawai aktif: {employeeReferenceData.length}
@@ -1510,7 +1592,7 @@ function FinancePayroll() {
               Slip dibuat: {doneEmployeeIds.size}/{employeeReferenceData.length}
             </span>
             <span className="badge badge-info">
-              Draft:{" "}
+              Draf:{" "}
               {
                 monthlyPayrollRows.filter((item) => item.status === "draft")
                   .length
@@ -1556,11 +1638,11 @@ function FinancePayroll() {
             <table className="table table-zebra table-sm">
               <thead>
                 <tr>
-                  <th>Payroll ID</th>
+                  <th>ID Payroll</th>
                   <th>Pegawai</th>
                   <th>Gaji Pokok</th>
-                  <th>Reimbursement</th>
-                  <th>Net Salary</th>
+                  <th>Penggantian Dana</th>
+                  <th>Gaji Bersih</th>
                   <th>Status</th>
                   <th>Aksi</th>
                 </tr>
@@ -1579,7 +1661,7 @@ function FinancePayroll() {
                       <span
                         className={`badge ${statusBadgeClass[item.status] || "badge-outline"}`}
                       >
-                        {item.status}
+                        {getStatusLabel(item.status)}
                       </span>
                     </td>
                     <td>
@@ -1589,14 +1671,14 @@ function FinancePayroll() {
                           className="btn btn-xs btn-outline"
                           onClick={() => handleViewRow(item)}
                         >
-                          View
+                          Lihat
                         </button>
                         <button
                           type="button"
                           className="btn btn-xs btn-outline btn-info"
                           onClick={() => handleEditRow(item)}
                         >
-                          Edit
+                          Ubah
                         </button>
                         <button
                           type="button"
@@ -1604,7 +1686,7 @@ function FinancePayroll() {
                           onClick={() => handleDeleteRow(item)}
                           disabled={item.status !== "draft"}
                         >
-                          Delete
+                          Hapus
                         </button>
                       </div>
                     </td>
@@ -1633,7 +1715,7 @@ function FinancePayroll() {
             onClick={handlePublishAll}
             disabled={!hasDraftToPublish || loadingPublishAll}
           >
-            Publish Semua Slip Bulan Ini
+            Publikasikan Semua Slip Bulan Ini
           </button>
         </TitleCard>
       </div>
@@ -1705,7 +1787,7 @@ function FinancePayroll() {
                   </td>
                 </tr>
                 <tr>
-                  <td>Potongan Telat</td>
+                  <td>Potongan Keterlambatan</td>
                   <td className="text-right">
                     {formatCurrency(latestGenerated?.details?.late_deduction)}
                   </td>

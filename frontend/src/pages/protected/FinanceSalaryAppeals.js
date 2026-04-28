@@ -179,6 +179,15 @@ function FinanceSalaryAppeals() {
         })
     }, [activeApprovedAppeals, filters])
 
+    const historyAppeals = useMemo(() => {
+        return approvedAppeals.filter((item) => {
+            const payrollStatus = String(item.payroll_status || '').toLowerCase()
+            const hasRevisedAmount = item.final_amount !== null && item.final_amount !== undefined
+
+            return hasRevisedAmount || ['published', 'claimed'].includes(payrollStatus)
+        })
+    }, [approvedAppeals])
+
     const totalAdjustmentAmount = useMemo(() => {
         return filteredAppeals.reduce((total, item) => total + Number(item.expected_amount || 0), 0)
     }, [filteredAppeals])
@@ -282,6 +291,42 @@ function FinanceSalaryAppeals() {
                             ))}
                             {filteredAppeals.length === 0 && (
                                 <tr><td colSpan={7} className="text-center opacity-70">Belum ada banding gaji yang disetujui HR / Direktur</td></tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </TitleCard>
+
+            <TitleCard title="Riwayat Banding Gaji" topMargin="mt-6">
+                <div className="overflow-x-auto">
+                    <table className="table table-zebra table-sm">
+                        <thead>
+                            <tr>
+                                <th>Pegawai</th>
+                                <th>Kode</th>
+                                <th>Periode</th>
+                                <th>Nominal Banding</th>
+                                <th>Nominal Final</th>
+                                <th>Status Payroll</th>
+                                <th>Tanggal Review</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {historyAppeals.map((item) => (
+                                <tr key={`history-${item.id}`}>
+                                    <td>{item.full_name || item.employee_name || '-'}</td>
+                                    <td>{item.employee_code || '-'}</td>
+                                    <td>{item.period_month}/{item.period_year}</td>
+                                    <td>{formatCurrency(item.expected_amount || 0)}</td>
+                                    <td>{formatCurrency(item.final_amount || 0)}</td>
+                                    <td>{safeText(item.payroll_status)}</td>
+                                    <td>{item.reviewed_at ? new Date(item.reviewed_at).toLocaleString('id-ID') : '-'}</td>
+                                </tr>
+                            ))}
+                            {historyAppeals.length === 0 && (
+                                <tr>
+                                    <td colSpan={7} className="text-center opacity-70">Belum ada riwayat banding gaji</td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
