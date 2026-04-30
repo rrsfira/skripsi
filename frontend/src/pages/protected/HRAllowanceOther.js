@@ -10,9 +10,24 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 const statusLabelMap = {
     draft: 'Draft',
-    submitted: 'Aktif untuk Payroll',
-    approved: 'Aktif untuk Payroll',
-    rejected: 'Nonaktif',
+    submitted: 'Menunggu',
+    approved: 'Disetujui',
+    rejected: 'Ditolak',
+}
+
+const getStatusBadgeColor = (status) => {
+    switch (status) {
+        case 'draft':
+            return 'badge-info'
+        case 'submitted':
+            return 'badge-warning'
+        case 'approved':
+            return 'badge-success'
+        case 'rejected':
+            return 'badge-error'
+        default:
+            return 'badge-neutral'
+    }
 }
 
 const getCurrentPeriod = () => {
@@ -379,11 +394,7 @@ function HRPayrollDirectorAdjustments() {
                         </div>
                     </div>
 
-                    <p className="text-xs opacity-70 mb-4">
-                        Dropdown menampilkan semua pegawai. Nilai Tunjangan Lainnya otomatis mengikuti jabatan dan tidak bisa diedit.
-                    </p>
-
-                    <div className="grid md:grid-cols-3 grid-cols-1 gap-4 mb-4">
+                    <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mb-4">
                         <label className="form-control">
                             <span className="label-text">Bonus</span>
                             <input
@@ -394,19 +405,10 @@ function HRPayrollDirectorAdjustments() {
                                 value={form.bonus}
                                 onWheel={disableNumberWheelChange}
                                 onChange={(e) => setForm((prev) => ({ ...prev, bonus: e.target.value }))}
+                                placeholder="Rp"
                             />
                         </label>
-                        <label className="form-control">
-                            <span className="label-text">Tunjangan Lainnya</span>
-                            <input
-                                type="number"
-                                min="0"
-                                className="input input-bordered"
-                                value={form.other_allowance}
-                                disabled
-                            />
-                            <span className="label-text-alt">Nominal tetap sesuai jabatan: {formatRupiah(selectedEmployeeFixedAllowance)}</span>
-                        </label>
+                       
                         <label className="form-control">
                             <span className="label-text">Potongan Lainnya</span>
                             <input
@@ -417,6 +419,7 @@ function HRPayrollDirectorAdjustments() {
                                 value={form.other_deduction}
                                 onWheel={disableNumberWheelChange}
                                 onChange={(e) => setForm((prev) => ({ ...prev, other_deduction: e.target.value }))}
+                                  placeholder="Rp"
                             />
                         </label>
                     </div>
@@ -445,7 +448,7 @@ function HRPayrollDirectorAdjustments() {
 
             <div ref={historyCardRef}>
                 <TitleCard
-                    title="Riwayat Tambahan Tunjangan Lain"
+                    title="Riwayat Tunjangan Lain"
                     topMargin="mt-6"
                     TopSideButtons={isFinanceHistoryOnlyView ? backButton : null}
                 >
@@ -520,10 +523,11 @@ function HRPayrollDirectorAdjustments() {
                                     <th>Pegawai</th>
                                     <th>Periode</th>
                                     <th>Bonus</th>
-                                    <th>Tunjangan Lain</th>
                                     <th>Potongan Lain</th>
                                     <th>Status</th>
                                     <th>Catatan</th>
+                                    <th>Catatan Reviewer</th>
+                                    <th>Disetujui Oleh</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -535,15 +539,20 @@ function HRPayrollDirectorAdjustments() {
                                         </td>
                                         <td>{item.period_month}/{item.period_year}</td>
                                         <td>Rp {(Number(item.bonus) || 0).toLocaleString('id-ID')}</td>
-                                        <td>Rp {(Number(item.other_allowance) || 0).toLocaleString('id-ID')}</td>
                                         <td>Rp {(Number(item.other_deduction) || 0).toLocaleString('id-ID')}</td>
-                                        <td>{statusLabelMap[item.status] || item.status || '-'}</td>
+                                        <td>
+                                            <span className={`badge badge-lg ${getStatusBadgeColor(item.status)}`}>
+                                                {statusLabelMap[item.status] || item.status || '-'}
+                                            </span>
+                                        </td>
                                         <td className="max-w-xs whitespace-pre-wrap">{item.notes || '-'}</td>
+                                        <td className="max-w-xs whitespace-pre-wrap">{item.review_notes || '-'}</td>
+                                        <td>{item.reviewed_by_name || '-'}</td>
                                     </tr>
                                 ))}
                                 {!filteredHistoryRows.length && (
                                     <tr>
-                                        <td colSpan={7} className="text-center opacity-70">Belum ada data tunjangan lain untuk periode ini</td>
+                                        <td colSpan={8} className="text-center opacity-70">Belum ada data tunjangan lain untuk periode ini</td>
                                     </tr>
                                 )}
                             </tbody>

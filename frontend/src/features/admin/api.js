@@ -200,6 +200,24 @@ export const adminApi = {
         }
     },
 
+    async approvePayrollManagerAdjustment(adjustmentId) {
+        try {
+            const response = await axios.put(`/api/payroll/manager-adjustments/${adjustmentId}/approve`)
+            return response.data || {}
+        } catch (error) {
+            throw new Error(parseApiError(error, 'Gagal menyetujui adjustment payroll'))
+        }
+    },
+
+    async rejectPayrollManagerAdjustment(adjustmentId, reason = '') {
+        try {
+            const response = await axios.put(`/api/payroll/manager-adjustments/${adjustmentId}/reject`, { reason })
+            return response.data || {}
+        } catch (error) {
+            throw new Error(parseApiError(error, 'Gagal menolak adjustment payroll'))
+        }
+    },
+
     async getWarningLetterEligibleEmployees() {
         try {
             const response = await axios.get('/api/warning-letters/eligible-employees')

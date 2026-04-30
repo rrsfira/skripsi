@@ -263,7 +263,7 @@ router.get(
             }
 
             if (allowedStatuses.includes(status)) {
-                whereClause += " AND awl.status = ?";
+                whereClause += " AND alw.status = ?";
                 params.push(status);
             }
 
@@ -312,13 +312,6 @@ router.post(
             const userRoles = req.user.roles || [];
             const isAdminRequest = userRoles.includes("admin");
             const isHrRequest = userRoles.includes("hr");
-
-            if (!isAdminRequest && !isHrRequest) {
-                return res.status(403).json({
-                    message:
-                        "Akses ditolak. Hanya admin atau hr yang dapat mengubah adjustment payroll",
-                });
-            }
 
             const {
                 employee_id,
@@ -408,8 +401,8 @@ router.post(
             } else {
                 const [insertResult] = await db.promise().query(
                     `INSERT INTO allowance
-                     (employee_id, period_month, period_year, bonus, other_allowance, other_deduction, notes, status, submitted_by)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted', ?)`,
+                     (employee_id, period_month, period_year, bonus, other_allowance, other_deduction, notes, status, submitted_by, submitted_at)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted', ?, NOW())`,
                     [
                         employeeId,
                         periodMonth,
@@ -438,15 +431,67 @@ router.post(
     }
 );
 
+// Admin approve manager adjustments
 router.put(
-    "/manager-adjustments/:id/review",
+    "/manager-adjustments/:id/approve",
     verifyToken,
-    verifyRole(["finance", "admin"]),
+    verifyRole(["admin"]),
     async (req, res) => {
         try {
-            res.status(400).json({
-                message:
-                    "Review adjustment oleh finance dinonaktifkan. Adjustment atasan langsung dipakai dalam payroll.",
+            const { id } = req.params;
+            const adjustmentId = Number(id);
+            const reviewerId = Number(req.user.id);
+
+            if (!adjustmentId || adjustmentId <= 0) {
+                return res.status(400).json({ message: "ID adjustment tidak valid" });
+            }
+
+            // Update status menjadi approved dengan reviewer info
+            await db.promise().query(
+                "UPDATE allowance SET status = 'approved', reviewed_by = ?, reviewed_at = NOW(), updated_at = NOW() WHERE id = ?",
+                [reviewerId, adjustmentId]
+            );
+
+            res.json({
+                message: "Adjustment berhasil disetujui",
+                adjustmentId: adjustmentId,
+                status: "approved",
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(error.statusCode || 500).json({
+                message: error.message || "Server error",
+            });
+        }
+    }
+);
+
+// Admin reject manager adjustments
+router.put(
+    "/manager-adjustments/:id/reject",
+    verifyToken,
+    verifyRole(["admin"]),
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { reason } = req.body || {};
+            const adjustmentId = Number(id);
+            const reviewerId = Number(req.user.id);
+
+            if (!adjustmentId || adjustmentId <= 0) {
+                return res.status(400).json({ message: "ID adjustment tidak valid" });
+            }
+
+            // Update status menjadi rejected dengan reviewer info dan alasan
+            await db.promise().query(
+                "UPDATE allowance SET status = 'rejected', review_notes = ?, reviewed_by = ?, reviewed_at = NOW(), updated_at = NOW() WHERE id = ?",
+                [reason || "", reviewerId, adjustmentId]
+            );
+
+            res.json({
+                message: "Adjustment berhasil ditolak",
+                adjustmentId: adjustmentId,
+                status: "rejected",
             });
         } catch (error) {
             console.error(error);

@@ -20,6 +20,12 @@ const formatCurrency = (value) =>
 const formatPercent = (value) =>
   `${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value || 0) * 100)}%`;
 
+const normalizePercentValue = (value) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return parsed >= 1 ? parsed / 100 : parsed;
+};
+
 const monthOptions = [
   { value: "1", label: "Januari" },
   { value: "2", label: "Februari" },
@@ -236,15 +242,15 @@ function FinancePayroll() {
             payrollSettingsRow?.meal_per_day ??
               defaultPayrollSettings.meal_per_day,
           ),
-          health_percentage: Number(
+          health_percentage: normalizePercentValue(
             payrollSettingsRow?.health_percentage ??
               defaultPayrollSettings.health_percentage,
           ),
-          bpjs_percentage: Number(
+          bpjs_percentage: normalizePercentValue(
             payrollSettingsRow?.bpjs_percentage ??
               defaultPayrollSettings.bpjs_percentage,
           ),
-          tax: Number(
+          tax: normalizePercentValue(
             payrollSettingsRow?.tax ?? defaultPayrollSettings.tax,
           ),
         });
@@ -1248,12 +1254,12 @@ function FinancePayroll() {
                   />
                   <input
                     className="input input-bordered w-full"
-                    value={`Tunjangan Kesehatan: ${(Number(payrollSettings.health_percentage || 0) * 100).toFixed(2)}%`}
+                    value={`Tunjangan Kesehatan: ${formatPercent(payrollSettings.health_percentage || 0)}`}
                     disabled
                   />
                   <input
                     className="input input-bordered w-full"
-                    value={`Potongan BPJS: ${(Number(payrollSettings.bpjs_percentage || 0) * 100).toFixed(2)}%`}
+                    value={`Potongan BPJS: ${formatPercent(payrollSettings.bpjs_percentage || 0)}`}
                     disabled
                   />
                   <input

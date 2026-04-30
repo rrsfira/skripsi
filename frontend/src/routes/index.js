@@ -19,7 +19,7 @@ const AdminEmployees = lazy(() => import('../pages/protected/AdminEmployees'))
 const AdminActivityLogs = lazy(() => import('../pages/protected/AdminActivityLogs'))
 const AdminReimbursements = lazy(() => import('../pages/protected/AdminReimbursements'))
 const AdminAttendance = lazy(() => import('../pages/protected/AdminAttendance'))
-const AdminPayrollManagerAdjustments = lazy(() => import('../pages/protected/AdminPayrollManagerAdjustments'))
+const ApproveAllowance = lazy(() => import('../pages/protected/AdminApproveAllowance'))
 const AdminHRWarningLetters = lazy(() => import('../pages/protected/AdminHRWarningLetters'))
 
 // HR Pages
@@ -29,8 +29,8 @@ const HRAttendance = lazy(() => import('../pages/protected/HRAttendance'))
 const HRLeaveRequests = lazy(() => import('../pages/protected/HRLeaveRequests'))
 const HRReimbursements = lazy(() => import('../pages/protected/HRReimbursements'))
 const HRSalaryAppeals = lazy(() => import('../pages/protected/HRSalaryAppeals'))
-const HRAllowance = lazy(() => import('../pages/protected/HRAllowance'))
-const HRAllowanceOther = lazy(() => import('../pages/protected/HRAllowanceOther'))
+const Allowance = lazy(() => import('../pages/protected/HRAllowance'))
+const HRPayrollDirectorAdjustments = lazy(() => import('../pages/protected/HRAllowanceOther'))
 const HRWarningLetters = lazy(() => import('../pages/protected/HRWarningLetters'))
 const HRJobOpenings = lazy(() => import('../pages/protected/HRJobOpenings'));
 const HRRecruitmentProcess = lazy(() => import('../pages/protected/HRRecruitmentProcess'));
@@ -54,7 +54,7 @@ const FinancePayrollRevision = lazy(() => import('../pages/protected/FinancePayr
 const FinancePayrollTransfers = lazy(() => import('../pages/protected/FinancePayrollTransfers'))
 const FinanceAllowance = lazy(() => import('../pages/protected/FinanceAllowance'))
 const FinanceAllowancePayrollSettings = lazy(() => import('../pages/protected/FinanceAllowancePayrollSettings'))
-const PayrollAllowanceOther = lazy(() => import('../pages/protected/HRAllowanceOther'))
+const PositionSalary = lazy(() => import('../pages/protected/FinanceAllowanceAndBaseSalary'))
 const FinanceReimbursements = lazy(() => import('../pages/protected/FinanceReimbursements'))
 const FinanceSalaryAppeals = lazy(() => import('../pages/protected/FinanceSalaryAppeals'))
 const FinanceReports = lazy(() => import('../pages/protected/FinanceReports'))
@@ -93,8 +93,8 @@ const adminRoutes = [
     component: AdminActivityLogs,
   },
   {
-    path: '/payroll/manager-adjustments',
-    component: AdminPayrollManagerAdjustments,
+    path: '/allowance',
+    component: ApproveAllowance,
   },
   {
     path: '/warning-letters',
@@ -187,15 +187,19 @@ const hrRoutes = [
   },
   {
     path: '/hr-allowance',
-    component: HRAllowance,
+    component: Allowance,
   },
   {
-    path: '/payroll-settings',
+    path: '/hr/position-allowance',
+    component: PositionSalary,
+  },
+  {
+    path: '/hr/settings',
     component: FinanceAllowancePayrollSettings,
   },
   {
     path: '/hr/other-allowance',
-    component: HRAllowanceOther,
+    component: HRPayrollDirectorAdjustments,
   },
   {
     path: '/warning-letters',
@@ -276,12 +280,16 @@ const financeRoutes = [
     component: FinanceAllowance,
   },
   {
+    path: '/payroll/position-allowance',
+    component: PositionSalary,
+  },
+  {
     path: '/payroll/settings',
     component: FinanceAllowancePayrollSettings,
   },
   {
     path: '/payroll/other-allowance',
-    component: PayrollAllowanceOther,
+    component: HRPayrollDirectorAdjustments,
   },
   {
     path: '/reimbursements',

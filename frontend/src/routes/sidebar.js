@@ -40,6 +40,11 @@ const adminRoutes = [
     name: 'Persetujuan Cuti & Izin',
   },
   {
+    path: '/app/allowance',
+    icon: <BanknotesIcon className={iconClasses}/> ,
+    name: 'Approval Tunjangan Gaji',
+  },
+  {
     path: '/app/reimbursements',
     icon: <WalletIcon className={iconClasses}/> ,
     name: 'Approval Reimbursement',
@@ -48,11 +53,6 @@ const adminRoutes = [
     path: '/app/salary-appeals',
     icon: <ReceiptPercentIcon className={iconClasses}/> ,
     name: 'Review Banding Gaji',
-  },
-  {
-    path: '/app/hr-allowance',
-    icon: <BanknotesIcon className={iconClasses}/> ,
-    name: 'Manajemen Tunjangan',
   },
   {
     path: '/app/warning-letters',
@@ -155,17 +155,16 @@ const hrRoutes = [
   },
 
   {
-    path: '/app/salary-appeals',
-    icon: <ReceiptPercentIcon className={iconClasses}/>,
-    name: 'Review Banding Gaji',
-  },
-
-  {
      path: '/app/hr-allowance',
     icon: <BanknotesIcon className={iconClasses}/> ,
     name: 'Manajemen Payroll',
   },
-
+  
+  {
+    path: '/app/salary-appeals',
+    icon: <ReceiptPercentIcon className={iconClasses}/>,
+    name: 'Review Banding Gaji',
+  },
   {
     path: '/app/warning-letters',
     icon: <DocumentTextIcon className={iconClasses}/> ,

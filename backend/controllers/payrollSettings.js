@@ -6,7 +6,7 @@ const { verifyToken, verifyRole } = require("../middleware/authMiddleware");
 const normalizePercent = (value, fallback) => {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
-  return parsed > 1 ? parsed / 100 : parsed;
+  return parsed >= 1 ? parsed / 100 : parsed;
 };
 
 // Get current payroll settings (Finance/HR/Admin)
@@ -59,11 +59,11 @@ router.get(
   }
 );
 
-// Update payroll settings (Finance/Admin only) - Creates a new record
+// Update payroll settings (Finance/HR/Admin) - Creates a new record
 router.put(
   "/",
   verifyToken,
-  verifyRole(["finance", "admin"]),
+  verifyRole(["finance", "hr", "admin"]),
   async (req, res) => {
     try {
       const { transport_per_day, meal_per_day, health_percentage, bpjs_percentage, tax } = req.body;
@@ -72,18 +72,6 @@ router.put(
       const normalizedTax = normalizePercent(tax, 0.03);
 
       const updaterId = req.user.id;
-
-      console.log("PUT /api/payroll-settings - Payload:", {
-        transport_per_day,
-        meal_per_day,
-        health_percentage,
-        bpjs_percentage,
-        tax,
-        normalizedHealthPercentage,
-        normalizedBpjsPercentage,
-        normalizedTax,
-        updaterId,
-      });
 
       // Always INSERT new record instead of updating
       const [result] = await db.promise().query(
@@ -99,16 +87,12 @@ router.put(
         ]
       );
 
-      console.log("INSERT Result:", result);
-
       const [inserted] = await db
         .promise()
         .query(
           "SELECT id, transport_per_day, meal_per_day, health_percentage, bpjs_percentage, tax, updated_by, updated_at, created_at FROM payroll_settings WHERE id = ?",
           [result.insertId]
         );
-
-      console.log("Inserted Data:", inserted[0]);
 
       res.status(200).json({ message: "Settings saved as new version", settings: inserted[0] });
     } catch (err) {

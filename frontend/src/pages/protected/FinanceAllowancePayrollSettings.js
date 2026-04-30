@@ -19,7 +19,7 @@ const percentToInput = (value) => {
 const normalizePercentInput = (value) => {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return 0;
-  return parsed > 1 ? parsed / 100 : parsed;
+  return parsed >= 1 ? parsed / 100 : parsed;
 };
 
 function FinancePayrollSettings() {
@@ -326,6 +326,9 @@ function FinancePayrollSettings() {
             <div>
               <label className="label">
                 <span className="label-text font-semibold">Pajak (%)</span>
+                {activeRole !== "finance" && (
+                  <span className="label-text-alt text-warning">Hanya Finance yang dapat mengubah</span>
+                )}
               </label>
               <input
                 type="number"
@@ -337,8 +340,14 @@ function FinancePayrollSettings() {
                 min="0"
                 max="100"
                 className="input input-bordered w-full"
+                disabled={activeRole !== "finance" || submitting}
                 required
               />
+              {activeRole === "finance" && (
+                <label className="label">
+                  <span className="label-text-alt text-info">Anda hanya memiliki akses untuk mengubah nilai pajak</span>
+                </label>
+              )}
             </div>
           </div>
 

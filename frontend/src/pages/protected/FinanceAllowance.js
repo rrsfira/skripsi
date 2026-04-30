@@ -36,7 +36,7 @@ function FinanceAllowance() {
 
         <button
           className="btn btn-primary w-full"
-          onClick={() => navigate("/hr/position-allowance")}
+          onClick={() => navigate("/app/payroll/position-allowance")}
         >
           Lihat Gaji & Tunjangan
         </button>
