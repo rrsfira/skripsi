@@ -17,7 +17,7 @@ const adminRoutes = [
   {
     path: '/app/dashboard',
     icon: <Squares2X2Icon className={iconClasses}/>, 
-    name: 'Dashboard Direktur',
+    name: 'Dashboard Admin',
   },
   {
     path: '/app/users',
@@ -28,36 +28,6 @@ const adminRoutes = [
     path: '/app/employees',
     icon: <IdentificationIcon className={iconClasses}/>,
     name: 'Data Pegawai',
-  },
-  {
-    path: '/app/attendance',
-    icon: <CalendarDaysIcon className={iconClasses}/>,
-    name: 'Kehadiran Pegawai',
-  },
-  {
-    path: '/app/leave-requests',
-    icon: <DocumentTextIcon className={iconClasses}/> ,
-    name: 'Persetujuan Cuti & Izin',
-  },
-  {
-    path: '/app/allowance',
-    icon: <BanknotesIcon className={iconClasses}/> ,
-    name: 'Approval Tunjangan Gaji',
-  },
-  {
-    path: '/app/reimbursements',
-    icon: <WalletIcon className={iconClasses}/> ,
-    name: 'Approval Reimbursement',
-  },
-  {
-    path: '/app/salary-appeals',
-    icon: <ReceiptPercentIcon className={iconClasses}/> ,
-    name: 'Review Banding Gaji',
-  },
-  {
-    path: '/app/warning-letters',
-    icon: <DocumentTextIcon className={iconClasses}/> ,
-    name: 'Surat Peringatan Pegawai',
   },
   {
     path: '/app/activity-logs',

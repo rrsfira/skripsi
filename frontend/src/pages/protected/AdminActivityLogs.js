@@ -13,6 +13,47 @@ const INITIAL_FILTERS = {
     limit: 20,
 }
 
+// 🎯 Badge helpers
+const getActionBadge = (action) => {
+    switch (action?.toUpperCase()) {
+        case 'CREATE':
+        case 'TAMBAH':
+            return 'badge-success'
+        case 'UPDATE':
+        case 'EDIT':
+            return 'badge-info'
+        case 'DELETE':
+        case 'HAPUS':
+            return 'badge-error'
+        default:
+            return 'badge-ghost'
+    }
+}
+
+const getModuleBadge = (module) => {
+    switch (module?.toLowerCase()) {
+        case 'attendance':
+        case 'kehadiran':
+            return 'badge-success'
+        case 'leave':
+        case 'cuti':
+            return 'badge-secondary'
+        case 'permit':
+        case 'izin':
+            return 'badge-warning'
+        case 'reimbursement':
+            return 'badge-accent'
+        case 'payroll':
+        case 'gaji':
+            return 'badge-info'
+        case 'salary_appeals':
+        case 'banding gaji':
+            return 'badge-error'
+        default:
+            return 'badge-ghost'
+    }
+}
+
 function AdminActivityLogs() {
     const dispatch = useDispatch()
     const [filters, setFilters] = useState(INITIAL_FILTERS)
@@ -76,57 +117,39 @@ function AdminActivityLogs() {
         const action = String(log?.action || '').toUpperCase()
         const status = String(log?.status || '').toLowerCase()
         const moduleName = String(log?.module || '').toLowerCase()
-        const targetIdFromValues =
+        const targetId =
             log?.new_values?.target_id ||
             log?.new_values?.targetId ||
             log?.new_values?.id
-        const targetIdFromDescription = String(log?.description || '').match(/ID\s*:\s*(\d+)/i)?.[1]
-        const hasTargetId = Boolean(targetIdFromValues || targetIdFromDescription)
 
         return (
             action === 'DELETE' &&
             status === 'success' &&
             restorableModules.has(moduleName) &&
-            hasTargetId
+            targetId
         )
     }
 
     const getRelatedActivityLogId = (log) => {
-        const action = String(log?.action || '').toUpperCase()
-        if (action !== 'RESTORE') return null
+        if (String(log?.action).toUpperCase() !== 'RESTORE') return null
 
-        let activityLogIdFromValues = null
-        if (log?.new_values && typeof log.new_values === 'object') {
-            activityLogIdFromValues = log.new_values.activity_log_id || null
-        } else if (typeof log?.new_values === 'string') {
-            try {
-                const parsed = JSON.parse(log.new_values)
-                activityLogIdFromValues = parsed?.activity_log_id || null
-            } catch {
-                activityLogIdFromValues = null
-            }
+        try {
+            const parsed =
+                typeof log.new_values === 'string'
+                    ? JSON.parse(log.new_values)
+                    : log.new_values
+
+            return parsed?.activity_log_id || null
+        } catch {
+            return null
         }
-
-        if (activityLogIdFromValues) {
-            const asNumber = Number(activityLogIdFromValues)
-            return Number.isFinite(asNumber) ? asNumber : null
-        }
-
-        const desc = String(log?.description || '')
-        const match = desc.match(/activity\s*log\s*id\s*:\s*(\d+)/i)
-        if (!match) return null
-
-        const fromDesc = Number(match[1])
-        return Number.isFinite(fromDesc) ? fromDesc : null
     }
 
     const restoredLogIds = useMemo(() => {
         const ids = new Set()
         logs.forEach((log) => {
-            const restoredFromLogId = getRelatedActivityLogId(log)
-            if (restoredFromLogId) {
-                ids.add(restoredFromLogId)
-            }
+            const id = getRelatedActivityLogId(log)
+            if (id) ids.add(Number(id))
         })
         return ids
     }, [logs])
@@ -134,8 +157,7 @@ function AdminActivityLogs() {
     const handleRestore = async (log) => {
         if (!canRestoreLog(log)) return
 
-        const confirmed = window.confirm('Pulihkan data dari log ini?')
-        if (!confirmed) return
+        if (!window.confirm('Pulihkan data dari log ini?')) return
 
         try {
             setRestoringLogId(log.id)
@@ -150,70 +172,72 @@ function AdminActivityLogs() {
 
     return (
         <>
-            {error ? (
+            {error && (
                 <div className="alert alert-error mb-4">
                     <span>{error}</span>
                 </div>
-            ) : null}
+            )}
 
-            <TitleCard title="Ringkasan Aktivitas 7 Hari" topMargin="mt-0">
-                <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
-                    <div className="bg-base-200 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2">Per Aksi</h4>
-                        <div className="space-y-1">
-                            {(summary.byAction || []).slice(0, 5).map((item, idx) => (
-                                <div key={`${item.action}-${idx}`} className="flex justify-between text-sm">
-                                    <span>{item.action} ({item.status})</span>
+            {/* 📊 SUMMARY */}
+            <TitleCard title="Ringkasan Aktivitas 7 Hari">
+                <div className="grid md:grid-cols-3 gap-4">
+                    {['byAction', 'byModule', 'byRole'].map((key, i) => (
+                        <div key={i} className="bg-base-200 p-4 rounded-lg">
+                            <h4 className="font-semibold mb-2 capitalize">
+                                {key.replace('by', 'Per ')}
+                            </h4>
+                            {(summary[key] || []).slice(0, 5).map((item, idx) => (
+                                <div key={idx} className="flex justify-between text-sm">
+                                    <span>{item.action || item.module || item.role}</span>
                                     <span className="font-medium">{item.count}</span>
                                 </div>
                             ))}
                         </div>
-                    </div>
-                    <div className="bg-base-200 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2">Per Modul</h4>
-                        <div className="space-y-1">
-                            {(summary.byModule || []).slice(0, 5).map((item) => (
-                                <div key={item.module} className="flex justify-between text-sm">
-                                    <span>{item.module}</span>
-                                    <span className="font-medium">{item.count}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="bg-base-200 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2">Per Role</h4>
-                        <div className="space-y-1">
-                            {(summary.byRole || []).slice(0, 5).map((item) => (
-                                <div key={item.role} className="flex justify-between text-sm">
-                                    <span>{item.role}</span>
-                                    <span className="font-medium">{item.count}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </TitleCard>
 
-            <TitleCard title="Filter & Daftar Log" topMargin="mt-6">
-                <div className="grid md:grid-cols-5 grid-cols-1 gap-3 mb-4">
+            {/* 📋 LOG TABLE */}
+            <TitleCard title="Log Aktivitas" topMargin="mt-6">
+                <p className="text-sm opacity-70 mb-4">
+                    Memantau aktivitas tambah, edit, hapus pada kehadiran, cuti,
+                    izin, reimbursement, gaji, dan banding gaji
+                </p>
+
+                {/* 🔍 FILTER */}
+                <div className="flex flex-wrap gap-3 mb-4">
                     <input
-                        className="input input-bordered"
-                        placeholder="Cari username/deskripsi"
+                        className="input input-bordered w-full md:w-64"
+                        placeholder="Cari aktivitas..."
                         value={filters.search}
                         onChange={(e) => handleFilterChange('search', e.target.value)}
                     />
-                    <input
-                        className="input input-bordered"
-                        placeholder="Aksi (LOGIN/UPDATE)"
-                        value={filters.action}
-                        onChange={(e) => handleFilterChange('action', e.target.value)}
-                    />
-                    <input
-                        className="input input-bordered"
-                        placeholder="Modul"
+
+                    <select
+                        className="select select-bordered"
                         value={filters.module}
                         onChange={(e) => handleFilterChange('module', e.target.value)}
-                    />
+                    >
+                        <option value="">Semua Modul</option>
+                        <option value="attendance">Kehadiran</option>
+                        <option value="leave">Cuti</option>
+                        <option value="permit">Izin</option>
+                        <option value="reimbursement">Reimbursement</option>
+                        <option value="payroll">Gaji</option>
+                        <option value="salary_appeals">Banding Gaji</option>
+                    </select>
+
+                    <select
+                        className="select select-bordered"
+                        value={filters.action}
+                        onChange={(e) => handleFilterChange('action', e.target.value)}
+                    >
+                        <option value="">Semua Aksi</option>
+                        <option value="CREATE">Tambah</option>
+                        <option value="UPDATE">Edit</option>
+                        <option value="DELETE">Hapus</option>
+                    </select>
+
                     <select
                         className="select select-bordered"
                         value={filters.status}
@@ -223,54 +247,79 @@ function AdminActivityLogs() {
                         <option value="success">Success</option>
                         <option value="failed">Failed</option>
                     </select>
-                    <button className="btn btn-primary" onClick={handleApplyFilter}>Terapkan</button>
+
+                    <button className="btn btn-primary" onClick={handleApplyFilter}>
+                        Terapkan
+                    </button>
                 </div>
 
+                {/* 📊 TABLE */}
                 {loading ? (
-                    <div>Memuat log aktivitas...</div>
+                    <div>Memuat...</div>
                 ) : (
                     <>
                         <div className="overflow-x-auto">
-                            <table className="table table-zebra table-sm">
+                            <table className="table table-zebra">
                                 <thead>
                                     <tr>
                                         <th>Waktu</th>
-                                        <th>User</th>
-                                        <th>Role</th>
-                                        <th>Aksi</th>
+                                        <th>Pengguna</th>
                                         <th>Modul</th>
+                                        <th>Aksi</th>
                                         <th>Status</th>
                                         <th>Deskripsi</th>
-                                        <th>Aksi</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {logs.map((log) => (
                                         <tr key={log.id}>
-                                            <td>{new Date(log.created_at).toLocaleString('id-ID')}</td>
-                                            <td>{log.username}</td>
-                                            <td>{log.role}</td>
-                                            <td>{log.action}</td>
-                                            <td>{log.module}</td>
+                                            <td className="text-sm">
+                                                {new Date(log.created_at).toLocaleString('id-ID')}
+                                            </td>
+
+                                            <td>
+                                                <div className="font-medium">{log.username}</div>
+                                                <div className="text-xs opacity-60">{log.role}</div>
+                                            </td>
+
+                                            <td>
+                                                <span className={`badge ${getModuleBadge(log.module)}`}>
+                                                    {log.module}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span className={`badge ${getActionBadge(log.action)}`}>
+                                                    {log.action}
+                                                </span>
+                                            </td>
+
                                             <td>
                                                 <span className={`badge ${log.status === 'success' ? 'badge-success' : 'badge-error'}`}>
                                                     {log.status}
                                                 </span>
                                             </td>
-                                            <td>{log.description}</td>
+
+                                            <td className="max-w-xs truncate text-sm">
+                                                {log.description}
+                                            </td>
+
                                             <td>
                                                 {canRestoreLog(log) && !restoredLogIds.has(log.id) ? (
                                                     <button
-                                                        className="btn btn-xs btn-outline btn-warning"
+                                                        className="btn btn-xs btn-warning btn-outline"
                                                         onClick={() => handleRestore(log)}
                                                         disabled={restoringLogId === log.id}
                                                     >
                                                         {restoringLogId === log.id ? 'Memulihkan...' : 'Pulihkan'}
                                                     </button>
                                                 ) : restoredLogIds.has(log.id) ? (
-                                                    <span className="text-xs text-success font-medium">Sudah dipulihkan</span>
+                                                    <span className="text-xs text-success">
+                                                        Sudah dipulihkan
+                                                    </span>
                                                 ) : (
-                                                    <span className="text-xs opacity-60">-</span>
+                                                    <span className="text-xs opacity-50">-</span>
                                                 )}
                                             </td>
                                         </tr>
@@ -279,21 +328,22 @@ function AdminActivityLogs() {
                             </table>
                         </div>
 
+                        {/* 🔄 PAGINATION */}
                         <div className="join mt-4">
                             <button
                                 className="join-item btn"
-                                disabled={(pagination.page || 1) <= 1}
-                                onClick={() => changePage((pagination.page || 1) - 1)}
+                                disabled={pagination.page <= 1}
+                                onClick={() => changePage(pagination.page - 1)}
                             >
                                 Prev
                             </button>
                             <button className="join-item btn btn-disabled">
-                                Page {pagination.page || 1} / {pagination.totalPages || 1}
+                                Page {pagination.page} / {pagination.totalPages}
                             </button>
                             <button
                                 className="join-item btn"
-                                disabled={(pagination.page || 1) >= (pagination.totalPages || 1)}
-                                onClick={() => changePage((pagination.page || 1) + 1)}
+                                disabled={pagination.page >= pagination.totalPages}
+                                onClick={() => changePage(pagination.page + 1)}
                             >
                                 Next
                             </button>

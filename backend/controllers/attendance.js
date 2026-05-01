@@ -1172,11 +1172,16 @@ router.get(
             }
 
             if (managerScope) {
-                query += " AND p.department_id = ? AND e.id <> ?";
-                params.push(
-                    managerScope.departmentId,
-                    managerScope.managerEmployeeId
-                );
+                if (managerScope.isDirector) {
+                    query += " AND p.level = 'manager' AND e.id <> ?";
+                    params.push(managerScope.managerEmployeeId);
+                } else {
+                    query += " AND p.department_id = ? AND e.id <> ?";
+                    params.push(
+                        managerScope.departmentId,
+                        managerScope.managerEmployeeId
+                    );
+                }
             }
 
             query += " ORDER BY a.date DESC, u.name ASC";
@@ -1220,11 +1225,16 @@ router.get(
             const params = [];
 
             if (managerScope) {
-                query += " AND p.department_id = ? AND e.id <> ?";
-                params.push(
-                    managerScope.departmentId,
-                    managerScope.managerEmployeeId
-                );
+                if (managerScope.isDirector) {
+                    query += " AND p.level = 'manager' AND e.id <> ?";
+                    params.push(managerScope.managerEmployeeId);
+                } else {
+                    query += " AND p.department_id = ? AND e.id <> ?";
+                    params.push(
+                        managerScope.departmentId,
+                        managerScope.managerEmployeeId
+                    );
+                }
             }
 
             query += " ORDER BY u.name ASC";
@@ -1375,25 +1385,29 @@ router.put(
             }
 
             if (managerScope) {
+                let attendanceDeptClause = 'p.department_id = ? AND e.id <> ?';
+                const attendanceParams = [managerScope.departmentId, managerScope.managerEmployeeId];
+                if (managerScope.isDirector) {
+                    attendanceDeptClause = "p.level = 'manager' AND e.id <> ?";
+                    attendanceParams.splice(0, attendanceParams.length, managerScope.managerEmployeeId);
+                }
+
                 const [attendanceScope] = await db.promise().query(
                     `SELECT a.id
                      FROM attendance a
                      JOIN employees e ON a.employee_id = e.id
                      JOIN positions p ON e.position_id = p.id
                      WHERE a.id = ?
-                       AND p.department_id = ?
-                       AND e.id <> ?`,
-                    [
-                        id,
-                        managerScope.departmentId,
-                        managerScope.managerEmployeeId,
-                    ]
+                       AND ${attendanceDeptClause}`,
+                    [id, ...attendanceParams]
                 );
 
                 if (!attendanceScope.length) {
                     return res.status(403).json({
                         message:
-                            "Atasan hanya dapat mengubah absensi tim dalam departemen yang dipimpin",
+                            managerScope.isDirector
+                                ? "Direktur dapat mengubah status absensi tim manajer."
+                                : "Atasan hanya dapat mengubah status absensi tim dalam departemen yang dipimpin",
                     });
                 }
             }
@@ -1828,11 +1842,16 @@ router.get(
             }
 
             if (managerScope) {
-                query += " AND p.department_id = ? AND e.id <> ?";
-                params.push(
-                    managerScope.departmentId,
-                    managerScope.managerEmployeeId
-                );
+                if (managerScope.isDirector) {
+                    query += " AND p.level = 'manager' AND e.id <> ?";
+                    params.push(managerScope.managerEmployeeId);
+                } else {
+                    query += " AND p.department_id = ? AND e.id <> ?";
+                    params.push(
+                        managerScope.departmentId,
+                        managerScope.managerEmployeeId
+                    );
+                }
             }
 
             query += " ORDER BY lr.created_at DESC";
@@ -1940,25 +1959,29 @@ router.put(
             }
 
             if (managerScope) {
+                let leaveDeptClause = 'p.department_id = ? AND e.id <> ?';
+                const leaveParams = [managerScope.departmentId, managerScope.managerEmployeeId];
+                if (managerScope.isDirector) {
+                    leaveDeptClause = "p.level = 'manager' AND e.id <> ?";
+                    leaveParams.splice(0, leaveParams.length, managerScope.managerEmployeeId);
+                }
+
                 const [leaveScope] = await db.promise().query(
                     `SELECT lr.id
                      FROM leave_requests lr
                      JOIN employees e ON lr.employee_id = e.id
                      JOIN positions p ON e.position_id = p.id
                      WHERE lr.id = ?
-                       AND p.department_id = ?
-                       AND e.id <> ?`,
-                    [
-                        id,
-                        managerScope.departmentId,
-                        managerScope.managerEmployeeId,
-                    ]
+                       AND ${leaveDeptClause}`,
+                    [id, ...leaveParams]
                 );
 
                 if (!leaveScope.length) {
                     return res.status(403).json({
                         message:
-                            "Atasan hanya dapat memproses cuti/izin tim dalam departemen yang dipimpin",
+                            managerScope.isDirector
+                                ? "Direktur dapat memproses cuti/izin untuk pegawai level manager di departemen mana pun"
+                                : "Atasan hanya dapat memproses cuti/izin tim dalam departemen yang dipimpin",
                     });
                 }
             }

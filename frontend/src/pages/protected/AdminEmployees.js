@@ -5,6 +5,7 @@ import TitleCard from '../../components/Cards/TitleCard'
 import { adminApi } from '../../features/admin/api'
 
 const MANAGER_POSITION_NAMES = [
+    'director',
     'operations manager',
     'marketing & sales manager',
     'finance, accounting & tax manager',
@@ -38,6 +39,12 @@ const getDocumentUrl = (documentPath) => {
     return `http://localhost:5000${normalizedPath}`
 }
 
+const isDirectorPosition = (position) => {
+    const normalizedName = normalizeText(position?.name)
+    const normalizedLevel = normalizeText(position?.level)
+    return normalizedName === 'director' || normalizedLevel === 'director'
+}
+
 const getRawAutoRolesForCreateForm = (formState, allPositions) => {
     const autoRoles = new Set(['pegawai'])
 
@@ -57,7 +64,7 @@ const getRawAutoRolesForCreateForm = (formState, allPositions) => {
 
     const selectedPosition = allPositions.find((position) => String(position.id) === String(formState.position_id))
     const normalizedPosition = normalizeText(selectedPosition?.name)
-    if (MANAGER_POSITION_NAMES.includes(normalizedPosition)) {
+    if (MANAGER_POSITION_NAMES.includes(normalizedPosition) || isDirectorPosition(selectedPosition)) {
         autoRoles.add('atasan')
     }
 

@@ -26,17 +26,17 @@ function InternalPage(){
     }
 
     useEffect(() => {
-        dispatch(setPageTitle({ title : 'Dashboard Direktur'}))
+        dispatch(setPageTitle({ title : 'Dashboard Admin'}))
         loadDashboard()
             }, [dispatch])
 
     if (loading) {
-        return <div className="text-center py-10">Memuat dashboard direktur...</div>
+        return <div className="text-center py-10">Memuat dashboard admin...</div>
     }
 
     if (error) {
         return (
-            <TitleCard title="Dashboard Direktur" topMargin="mt-0">
+            <TitleCard title="Dashboard Admin" topMargin="mt-0">
                 <div className="alert alert-error">
                     <span>{error}</span>
                 </div>
@@ -47,40 +47,32 @@ function InternalPage(){
 
     const employees = dashboard?.overview?.employees || {}
     const users = dashboard?.overview?.users || {}
-    const attendanceToday = dashboard?.overview?.attendance_today || {}
-    const pending = dashboard?.overview?.pending_approvals || {}
-    const todayDate = new Date().toISOString().slice(0, 10)
-    const attendanceSummaryCards = [
-        { key: 'present', label: 'Hadir', value: attendanceToday.present || 0, path: `/app/attendance?status=hadir&date=${todayDate}` },
-        { key: 'late', label: 'Terlambat', value: attendanceToday.late || 0, path: `/app/attendance?status=late&date=${todayDate}` },
-        { key: 'alpha', label: 'Alpha', value: attendanceToday.alpha || 0, path: `/app/attendance?status=alpha&date=${todayDate}` },
-        { key: 'absent', label: 'Tidak Hadir', value: attendanceToday.absent || 0, path: `/app/attendance?status=absent&date=${todayDate}` },
-    ]
+    const recentUsers = dashboard?.recent_activity?.new_users || []
+    const recentEmployees = dashboard?.recent_activity?.new_employees || []
+    const departmentStats = dashboard?.departments || []
+    const shiftStats = dashboard?.shifts || []
 
-    const approvalQueueItems = [
+    const adminQuickActions = [
         {
-            key: 'leave',
-            title: 'Cuti / Izin',
-            count: pending.leave_requests || 0,
-            badgeClass: 'badge-primary',
-            path: '/app/leave-requests',
-            desc: 'Menunggu review persetujuan',
+            key: 'users',
+            title: 'Kelola Pengguna',
+            desc: 'Tambah, ubah, atau nonaktifkan akun dan peran pengguna.',
+            path: '/app/users',
+            badge: users.total_users || 0,
         },
         {
-            key: 'reimbursement',
-            title: 'Reimbursement',
-            count: pending.reimbursements || 0,
-            badgeClass: 'badge-secondary',
-            path: '/app/reimbursements',
-            desc: 'Menunggu approval reimbursement',
+            key: 'employees',
+            title: 'Data Pegawai',
+            desc: 'Pantau data pegawai, jabatan, dan kelengkapan informasi.',
+            path: '/app/employees',
+            badge: employees.total_employees || 0,
         },
         {
-            key: 'salary-appeal',
-            title: 'Banding Gaji',
-            count: pending.salary_appeals || 0,
-            badgeClass: 'badge-accent',
-            path: '/app/salary-appeals',
-            desc: 'Pengajuan banding gaji aktif',
+            key: 'activity-logs',
+            title: 'Log Aktivitas',
+            desc: 'Lihat aktivitas sistem, perubahan data, dan histori akses.',
+            path: '/app/activity-logs',
+            badge: recentUsers.length + recentEmployees.length,
         },
     ]
 
@@ -88,7 +80,7 @@ function InternalPage(){
         { title: 'Total Pegawai', value: employees.total_employees || 0, path: '/app/employees' },
         { title: 'Total User', value: users.total_users || 0, path: '/app/users' },
         { title: 'User Aktif', value: users.active_users || 0, path: '/app/users' },
-        { title: 'Pending Approval', value: pending.total || 0, path: '/app/leave-requests' },
+        { title: 'User Nonaktif', value: users.inactive_users || 0, path: '/app/users' },
     ]
 
     return(
@@ -109,42 +101,64 @@ function InternalPage(){
             </div>
 
             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mt-6">
-                <TitleCard title="Ringkasan Kehadiran Hari Ini" topMargin="mt-0">
-                    <div className="grid grid-cols-2 gap-4">
-                        {attendanceSummaryCards.map((item) => (
-                            <button
-                                key={item.key}
-                                type="button"
-                                onClick={() => navigate(item.path)}
-                                className="p-4 rounded-lg bg-base-200 hover:bg-base-300/70 transition text-left"
-                            >
-                                <p className="text-sm opacity-70">{item.label}</p>
-                                <p className="text-2xl font-bold">{item.value}</p>
-                                <p className="text-xs opacity-60 mt-1">Klik detail &rarr;</p>
-                            </button>
-                        ))}
+                <TitleCard title="Distribusi Departemen" topMargin="mt-0">
+                    <div className="overflow-x-auto">
+                        <table className="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Departemen</th>
+                                    <th>Jumlah Pegawai</th>
+                                    <th>Rata-rata Gaji</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {departmentStats.slice(0, 5).map((department) => (
+                                    <tr key={`${department.name}-${department.code}`}>
+                                        <td>
+                                            <div className="font-semibold">{department.name}</div>
+                                            <div className="text-xs opacity-70">{department.code || '-'}</div>
+                                        </td>
+                                        <td>{department.employee_count || 0}</td>
+                                        <td>Rp {(Number(department.avg_salary) || 0).toLocaleString('id-ID')}</td>
+                                    </tr>
+                                ))}
+                                {departmentStats.length === 0 && (
+                                    <tr>
+                                        <td colSpan={3} className="text-center opacity-70">Belum ada data departemen</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </TitleCard>
 
-                <TitleCard title="Antrian Persetujuan" topMargin="mt-0">
-                    <div className="space-y-3">
-                        {approvalQueueItems.map((item) => (
-                            <button
-                                key={item.key}
-                                type="button"
-                                onClick={() => navigate(item.path)}
-                                className="w-full p-4 rounded-xl border border-base-300 bg-base-100 hover:bg-base-200/60 transition text-left"
-                            >
-                                <div className="flex items-center justify-between gap-3">
-                                    <div className="min-w-0">
-                                        <p className="font-semibold truncate">{item.title}</p>
-                                        <p className="text-xs opacity-70 mt-0.5 truncate">{item.desc}</p>
-                                    </div>
-                                    <span className={`badge ${item.badgeClass} badge-lg shrink-0`}>{item.count}</span>
-                                </div>
-                            </button>
-                        ))}
-                        <div className="text-xs opacity-60 pt-1">Klik baris untuk membuka detail antrian.</div>
+                <TitleCard title="Informasi Shift" topMargin="mt-0">
+                    <div className="overflow-x-auto">
+                        <table className="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Shift</th>
+                                    <th>Jam Masuk</th>
+                                    <th>Jam Pulang</th>
+                                    <th>Pegawai</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {shiftStats.slice(0, 5).map((shift) => (
+                                    <tr key={`${shift.shift_name}-${shift.check_in_time}-${shift.check_out_time}`}>
+                                        <td className="font-semibold">{shift.shift_name}</td>
+                                        <td>{shift.check_in_time || '-'}</td>
+                                        <td>{shift.check_out_time || '-'}</td>
+                                        <td>{shift.employee_count || 0}</td>
+                                    </tr>
+                                ))}
+                                {shiftStats.length === 0 && (
+                                    <tr>
+                                        <td colSpan={4} className="text-center opacity-70">Belum ada data shift</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </TitleCard>
             </div>
@@ -161,13 +175,18 @@ function InternalPage(){
                                 </tr>
                             </thead>
                             <tbody>
-                                {(dashboard?.recent_activity?.new_users || []).map((user) => (
+                                {recentUsers.map((user) => (
                                     <tr key={user.id}>
                                         <td>{user.name}</td>
                                         <td>{user.email}</td>
                                         <td><span className="badge">{user.status}</span></td>
                                     </tr>
                                 ))}
+                                {recentUsers.length === 0 && (
+                                    <tr>
+                                        <td colSpan={3} className="text-center opacity-70">Belum ada user terbaru</td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -184,13 +203,18 @@ function InternalPage(){
                                 </tr>
                             </thead>
                             <tbody>
-                                {(dashboard?.recent_activity?.new_employees || []).map((employee) => (
+                                {recentEmployees.map((employee) => (
                                     <tr key={employee.employee_code}>
                                         <td>{employee.employee_code}</td>
                                         <td>{employee.name}</td>
                                         <td><span className="badge">{employee.employment_status}</span></td>
                                     </tr>
                                 ))}
+                                {recentEmployees.length === 0 && (
+                                    <tr>
+                                        <td colSpan={3} className="text-center opacity-70">Belum ada pegawai terbaru</td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

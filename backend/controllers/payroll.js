@@ -163,7 +163,7 @@ const getEffectiveManagerAdjustment = async (
 
 const getEmployeePositionContext = async (employeeId) => {
     const [rows] = await db.promise().query(
-        `SELECT e.id, e.user_id, e.position_id, p.level, p.name AS position_name, p.department_id
+        `SELECT e.id, e.user_id, e.position_id, p.level, p.name AS position_name, p.department_id, p.position_allowance
          FROM employees e
          JOIN positions p ON e.position_id = p.id
          WHERE e.id = ?
@@ -180,58 +180,14 @@ const isManagerLevelEmployee = (employeeContext) => {
         .toLowerCase()
         .trim();
 
-    return level === "manager" || positionName.includes("manager");
+    return level === "manager" || level === "director" || positionName.includes("manager") || positionName.includes("director");
 };
 
-const POSITION_ALLOWANCE_BY_ID = {
-    1: 5000000,
-    2: 4000000,
-    3: 2500000,
-    4: 1500000,
-    5: 1200000,
-    6: 750000,
-    7: 2200000,
-    8: 900000,
-    9: 1400000,
-    10: 2200000,
-    11: 900000,
-    12: 2000000,
-    13: 800000,
-};
-
-const POSITION_ALLOWANCE_BY_NAME = {
-    commissioner: 5000000,
-    director: 4000000,
-    "operations manager": 2500000,
-    "operations supervisor": 1500000,
-    "project manager": 1200000,
-    mentor: 750000,
-    "marketing & sales manager": 2200000,
-    "business development": 900000,
-    "marketing leader": 1400000,
-    "finance, accounting & tax manager": 2200000,
-    "finance team": 900000,
-    "hr & ga manager": 2000000,
-    "hr&ga manager": 2000000,
-    "general affair": 800000,
-};
-
+// Get position allowance from database instead of hardcoded mappings
 const resolveFixedOtherAllowance = (employeeContext = {}) => {
-    const positionId = Number(employeeContext.position_id || 0);
-    if (positionId && Object.prototype.hasOwnProperty.call(POSITION_ALLOWANCE_BY_ID, positionId)) {
-        return Number(POSITION_ALLOWANCE_BY_ID[positionId]);
-    }
-
-    const normalizedName = String(employeeContext.position_name || "")
-        .toLowerCase()
-        .replace(/\s+/g, " ")
-        .trim();
-
-    if (normalizedName && Object.prototype.hasOwnProperty.call(POSITION_ALLOWANCE_BY_NAME, normalizedName)) {
-        return Number(POSITION_ALLOWANCE_BY_NAME[normalizedName]);
-    }
-
-    return 0;
+    // Return position_allowance dari database positions table
+    const positionAllowance = Number(employeeContext.position_allowance || 0);
+    return positionAllowance;
 };
 
 // ============================
@@ -528,9 +484,9 @@ router.post(
                 });
             }
 
-            // Get employee data dengan working hours info
+            // Get employee data dengan working hours info dan position allowance
             const [employeeData] = await db.promise().query(
-                `SELECT e.id, e.position_id, p.name AS position_name, e.basic_salary, u.name, wh.check_in_time, wh.check_out_time
+                `SELECT e.id, e.position_id, p.name AS position_name, p.position_allowance, e.basic_salary, u.name, wh.check_in_time, wh.check_out_time
                      FROM employees e 
                      JOIN users u ON e.user_id = u.id
                      LEFT JOIN positions p ON e.position_id = p.id
@@ -915,6 +871,148 @@ router.get(
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Server error" });
+        }
+    }
+);
+
+// ============================
+// MONTHLY PAYROLL REPORTS (PDF / CSV)
+// ============================
+router.get(
+    "/reports/monthly/pdf",
+    verifyToken,
+    verifyRole(["finance", "hr", "admin"]),
+    async (req, res) => {
+        try {
+            const month = Number(req.query.month);
+            const year = Number(req.query.year);
+            if (!month || !year) {
+                return res.status(400).json({ message: "month and year are required" });
+            }
+
+            const [rows] = await db.promise().query(
+                `SELECT p.*, e.employee_code, COALESCE(NULLIF(e.full_name, ''), u.name) as employee_name,
+                                pos.name as position_name
+                 FROM payrolls p
+                 JOIN employees e ON p.employee_id = e.id
+                 JOIN users u ON e.user_id = u.id
+                 LEFT JOIN positions pos ON e.position_id = pos.id
+                 WHERE p.period_month = ? AND p.period_year = ? AND p.deleted_at IS NULL
+                 ORDER BY e.employee_code ASC`,
+                [month, year]
+            );
+
+            const doc = new PDFDocument({ size: "A4", margin: 36 });
+            const filename = `laporan-payroll-${month}-${year}.pdf`;
+            res.setHeader("Content-Type", "application/pdf");
+            res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+            doc.fontSize(16).text("Laporan Payroll Bulanan", { align: "center" });
+            doc.moveDown(0.2);
+            doc.fontSize(10).text(`Periode: ${month}/${year}`, { align: "center" });
+            doc.moveDown(0.6);
+
+            const tableTop = doc.y;
+            const itemHeight = 18;
+
+            doc.fontSize(9).fillColor("#000");
+            doc.text("No", 36, tableTop, { width: 24, align: "left" });
+            doc.text("Kode", 64, tableTop, { width: 72, align: "left" });
+            doc.text("Nama", 140, tableTop, { width: 160, align: "left" });
+            doc.text("Jabatan", 304, tableTop, { width: 120, align: "left" });
+            doc.text("Gaji Pokok", 428, tableTop, { width: 80, align: "right" });
+            doc.text("Tunjangan", 512, tableTop, { width: 80, align: "right" });
+            doc.text("Total Pot", 596, tableTop, { width: 80, align: "right" });
+            doc.text("Net", 680, tableTop, { width: 80, align: "right" });
+
+            let y = tableTop + 16;
+            const fmt = (v) => `Rp ${Number(v || 0).toLocaleString("id-ID")}`;
+
+            rows.forEach((r, idx) => {
+                if (y > doc.page.height - 72) {
+                    doc.addPage();
+                    y = 48;
+                }
+
+                doc.fontSize(9).fillColor("#222");
+                doc.text(String(idx + 1), 36, y, { width: 24, align: "left" });
+                doc.text(String(r.employee_code || "-"), 64, y, { width: 72, align: "left" });
+                doc.text(String(r.employee_name || "-"), 140, y, { width: 160, align: "left" });
+                doc.text(String(r.position_name || "-"), 304, y, { width: 120, align: "left" });
+                doc.text(fmt(r.basic_salary), 428, y, { width: 80, align: "right" });
+                doc.text(fmt(r.allowance), 512, y, { width: 80, align: "right" });
+                doc.text(fmt(r.deduction), 596, y, { width: 80, align: "right" });
+                doc.text(fmt(r.final_amount || r.net_salary), 680, y, { width: 80, align: "right" });
+
+                y += itemHeight;
+            });
+
+            doc.pipe(res);
+            doc.end();
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: error.message || "Server error" });
+        }
+    }
+);
+
+router.get(
+    "/reports/monthly/excel",
+    verifyToken,
+    verifyRole(["finance", "hr", "admin"]),
+    async (req, res) => {
+        try {
+            const month = Number(req.query.month);
+            const year = Number(req.query.year);
+            if (!month || !year) {
+                return res.status(400).json({ message: "month and year are required" });
+            }
+
+            const [rows] = await db.promise().query(
+                `SELECT p.*, e.employee_code, COALESCE(NULLIF(e.full_name, ''), u.name) as employee_name,
+                                pos.name as position_name
+                 FROM payrolls p
+                 JOIN employees e ON p.employee_id = e.id
+                 JOIN users u ON e.user_id = u.id
+                 LEFT JOIN positions pos ON e.position_id = pos.id
+                 WHERE p.period_month = ? AND p.period_year = ? AND p.deleted_at IS NULL
+                 ORDER BY e.employee_code ASC`,
+                [month, year]
+            );
+
+            const headers = [
+                "employee_code",
+                "employee_name",
+                "position_name",
+                "basic_salary",
+                "allowance",
+                "deduction",
+                "net_salary",
+            ];
+
+            const csvRows = [];
+            csvRows.push(headers.join(","));
+            rows.forEach((r) => {
+                const vals = [
+                    `"${String(r.employee_code || "").replace(/"/g, '""')}"`,
+                    `"${String(r.employee_name || "").replace(/"/g, '""')}"`,
+                    `"${String(r.position_name || "").replace(/"/g, '""')}"`,
+                    Number(r.basic_salary || 0),
+                    Number(r.allowance || 0),
+                    Number(r.deduction || 0),
+                    Number(r.final_amount || r.net_salary || 0),
+                ];
+                csvRows.push(vals.join(","));
+            });
+
+            const csvContent = csvRows.join("\n");
+            const filename = `laporan-payroll-${month}-${year}.csv`;
+            res.setHeader("Content-Type", "text/csv; charset=utf-8");
+            res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+            res.send(csvContent);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: error.message || "Server error" });
         }
     }
 );

@@ -344,22 +344,6 @@ function HRLeaveRequests() {
                                                 >
                                                     View
                                                 </button>
-                                                {item.status === 'pending' && (
-                                                    <>
-                                                        <button
-                                                            className="btn btn-success btn-xs"
-                                                            onClick={() => handleAction(item, 'approve')}
-                                                        >
-                                                            <CheckCircleIcon className="w-4 h-4" />
-                                                        </button>
-                                                        <button
-                                                            className="btn btn-error btn-xs"
-                                                            onClick={() => handleAction(item, 'reject')}
-                                                        >
-                                                            <XCircleIcon className="w-4 h-4" />
-                                                        </button>
-                                                    </>
-                                                )}
                                             </div>
                                         </td>
                                     </tr>

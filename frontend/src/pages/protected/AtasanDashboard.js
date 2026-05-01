@@ -268,7 +268,7 @@ function AtasanDashboard() {
             </div>
 
             <div className="grid lg:grid-cols-3 grid-cols-1 gap-6 mt-6">
-                <TitleCard title="Grafik Komposisi Kehadiran" topMargin="mt-0">
+                <TitleCard title="Grafik Kehadiran" topMargin="mt-0">
                     <div className="space-y-4">
                         <Doughnut data={attendanceCompositionChart} options={chartOptions} />
                         <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium">
@@ -297,15 +297,15 @@ function AtasanDashboard() {
                             </thead>
                             <tbody>
                                 {teamMembers.map((member) => (
-                                    <tr key={member.id}>
-                                        <td className="font-semibold">{member.employee_name}</td>
+                                    <tr key={member.id || member.employee_id || `${member.employee_code || 'member'}-${member.position_name || 'pos'}`}>
+                                        <td className="font-semibold">{member.employee_name || member.name || '-'}</td>
                                         <td>{member.employee_code || '-'}</td>
                                         <td>{member.position_name || '-'}</td>
                                     </tr>
                                 ))}
                                 {teamMembers.length === 0 && (
                                     <tr>
-                                        <td colSpan={2} className="text-center opacity-70">Belum ada anggota tim</td>
+                                        <td colSpan={3} className="text-center opacity-70">Belum ada anggota tim</td>
                                     </tr>
                                 )}
                             </tbody>

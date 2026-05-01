@@ -30,10 +30,15 @@ router.get(
           ? requestedYear
           : now.getFullYear();
 
-      const { managerEmployeeId, departmentId } = await resolveManagerScope(
+      const { managerEmployeeId, departmentId, isDirector } = await resolveManagerScope(
         db,
         req.user.id,
       );
+
+      const teamConditionSql = isDirector
+        ? "p.level = 'manager'"
+        : "p.department_id = ?";
+      const teamConditionParams = isDirector ? [] : [departmentId];
 
       // Ambil semua anggota tim (bawahan atasan, 1 departemen)
       // Ambil semua anggota tim (termasuk atasan/diri sendiri)
@@ -42,9 +47,9 @@ router.get(
          FROM employees e
          JOIN positions p ON e.position_id = p.id
          JOIN users u ON e.user_id = u.id
-         WHERE p.department_id = ?
+        WHERE ${teamConditionSql}
          ORDER BY u.name ASC`,
-        [departmentId]
+        teamConditionParams
       );
 
       // Generate semua tanggal kerja (Senin-Sabtu) sampai hari ini
@@ -57,11 +62,11 @@ router.get(
              JOIN employees e ON a.employee_id = e.id
              JOIN positions p ON e.position_id = p.id
              JOIN users u ON e.user_id = u.id
-             WHERE p.department_id = ?
+             WHERE ${teamConditionSql}
                AND e.id <> ?
                AND MONTH(a.date) = ?
                AND YEAR(a.date) = ?`,
-        [departmentId, managerEmployeeId, selectedMonth, selectedYear],
+        [...teamConditionParams, managerEmployeeId, selectedMonth, selectedYear],
       );
 
       // Buat map absensi: {date-employee_id: attendanceRow}
@@ -119,11 +124,15 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
       requestedYear <= 2100
         ? requestedYear
         : now.getFullYear();
-    const { managerEmployeeId, departmentId, departmentName, positionName } =
+    const { managerEmployeeId, departmentId, departmentName, positionName, isDirector: isDirectorScope } =
       await resolveManagerScope(db, req.user.id);
+    const teamConditionSql2 = isDirectorScope
+      ? "p.level = 'manager'"
+      : "p.department_id = ?";
+    const teamConditionParams2 = isDirectorScope ? [] : [departmentId];
 
     // 1. Team Members (bawahan atasan, 1 departemen)
-    const [teamStats] = await db.promise().query(
+      const [teamStats] = await db.promise().query(
       `
             SELECT 
                 COUNT(*) as total_team_members,
@@ -131,21 +140,27 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
                 SUM(CASE WHEN employment_status = 'contract' THEN 1 ELSE 0 END) as contract
             FROM employees e
             JOIN positions p ON e.position_id = p.id
-            WHERE p.department_id = ?
+            WHERE ${teamConditionSql2}
               AND e.id <> ?
         `,
-      [departmentId, managerEmployeeId],
+      [...teamConditionParams2, managerEmployeeId],
     );
 
     const [teamMembers] = await db.promise().query(
-      `SELECT e.id, e.employee_code, u.name as employee_name, p.name as position_name
+      `SELECT e.id, e.employee_code, u.name as employee_name, p.name as position_name, 1 as is_self
                          FROM employees e
                          JOIN positions p ON e.position_id = p.id
                          JOIN users u ON e.user_id = u.id
-                         WHERE p.department_id = ?
+                         WHERE e.id = ?
+                         UNION ALL
+                         SELECT e.id, e.employee_code, u.name as employee_name, p.name as position_name, 0 as is_self
+                         FROM employees e
+                         JOIN positions p ON e.position_id = p.id
+                         JOIN users u ON e.user_id = u.id
+                         WHERE ${teamConditionSql2}
                              AND e.id <> ?
-                         ORDER BY u.name ASC`,
-      [departmentId, managerEmployeeId],
+                         ORDER BY is_self DESC, employee_name ASC`,
+      [managerEmployeeId, ...teamConditionParams2, managerEmployeeId],
     );
 
     // 2. Team Attendance Today
@@ -158,9 +173,9 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
             JOIN employees e ON a.employee_id = e.id
             JOIN positions p ON e.position_id = p.id
             WHERE a.date = CURDATE()
-              AND p.department_id = ?
+                    AND ${teamConditionSql2}
               AND e.id <> ?`,
-      [departmentId, managerEmployeeId],
+                  [...teamConditionParams2, managerEmployeeId],
     );
 
     // 3. Pending Leave Requests (yang perlu diapprove atasan)
@@ -171,13 +186,13 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
                          JOIN positions p ON e.position_id = p.id
              JOIN users u ON e.user_id = u.id
              WHERE lr.status = 'pending'
-                             AND p.department_id = ?
+                             AND ${teamConditionSql2}
                              AND e.id <> ?
                              AND MONTH(lr.created_at) = ?
                              AND YEAR(lr.created_at) = ?
              ORDER BY lr.created_at DESC
                          LIMIT 10`,
-      [departmentId, managerEmployeeId, selectedMonth, selectedYear],
+      [...teamConditionParams2, managerEmployeeId, selectedMonth, selectedYear],
     );
 
     // 4. Pending Reimbursements (yang perlu diapprove atasan)
@@ -188,13 +203,13 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
                          JOIN positions p ON e.position_id = p.id
              JOIN users u ON e.user_id = u.id
              WHERE r.status = 'pending'
-                             AND p.department_id = ?
+                             AND ${teamConditionSql2}
                              AND e.id <> ?
                              AND MONTH(r.created_at) = ?
                              AND YEAR(r.created_at) = ?
              ORDER BY r.created_at DESC
                          LIMIT 10`,
-      [departmentId, managerEmployeeId, selectedMonth, selectedYear],
+      [...teamConditionParams2, managerEmployeeId, selectedMonth, selectedYear],
     );
 
     // 5. Team Attendance Summary (bulan ini)
@@ -211,9 +226,9 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
                         JOIN positions p ON e.position_id = p.id
                         WHERE MONTH(a.date) = ? 
                             AND YEAR(a.date) = ?
-                            AND p.department_id = ?
+                            AND ${teamConditionSql2}
                             AND e.id <> ?`,
-      [selectedMonth, selectedYear, departmentId, managerEmployeeId],
+      [...teamConditionParams2, selectedMonth, selectedYear, managerEmployeeId],
     );
 
     // 6. Employees late today (structured for frontend late_per_day table)
@@ -230,11 +245,11 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
          JOIN users u ON e.user_id = u.id
          WHERE a.is_late = 1
            AND a.date = CURDATE()
-           AND p.department_id = ?
+           AND ${teamConditionSql2}
            AND e.id <> ?
          ORDER BY a.late_minutes DESC, u.name ASC
          LIMIT 25`,
-      [departmentId, managerEmployeeId],
+      [...teamConditionParams2, managerEmployeeId],
     );
 
     const topLateEmployeesMap = new Map();
@@ -273,13 +288,13 @@ router.get("/", verifyToken, verifyRole(["atasan"]), async (req, res) => {
                          JOIN positions p ON e.position_id = p.id
              JOIN users u ON e.user_id = u.id
              WHERE lr.status IN ('approved', 'rejected')
-                             AND p.department_id = ?
+                             AND ${teamConditionSql2}
                              AND e.id <> ?
                              AND MONTH(lr.approved_at) = ?
                              AND YEAR(lr.approved_at) = ?
              ORDER BY lr.approved_at DESC
                          LIMIT 5`,
-      [departmentId, managerEmployeeId, selectedMonth, selectedYear],
+      [...teamConditionParams2, managerEmployeeId, selectedMonth, selectedYear],
     );
 
     res.json({

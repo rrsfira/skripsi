@@ -4,7 +4,7 @@ import TitleCard from '../../components/Cards/TitleCard'
 import { setPageTitle, showNotification } from '../../features/common/headerSlice'
 import { hrApi } from '../../features/hr/api'
 import { financeApi } from '../../features/finance/api'
-import { formatRupiah, resolveFixedPositionAllowance } from '../../utils/fixedPositionAllowance'
+import { resolveFixedPositionAllowance } from '../../utils/fixedPositionAllowance'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -13,6 +13,7 @@ const statusLabelMap = {
     submitted: 'Menunggu',
     approved: 'Disetujui',
     rejected: 'Ditolak',
+    included_in_payroll: 'Masuk Payroll',
 }
 
 const getStatusBadgeColor = (status) => {
@@ -25,9 +26,21 @@ const getStatusBadgeColor = (status) => {
             return 'badge-success'
         case 'rejected':
             return 'badge-error'
+        case 'included_in_payroll':
+            return 'badge-success'
         default:
             return 'badge-neutral'
     }
+}
+
+const isIncludedInPayroll = (item = {}) => {
+    const status = String(item?.status || '').toLowerCase().trim()
+
+    return status === 'included_in_payroll' || Number(item?.payroll_id || 0) > 0
+}
+
+const isApprovedAllowance = (item = {}) => {
+    return String(item?.status || '').toLowerCase().trim() === 'approved'
 }
 
 const getCurrentPeriod = () => {
@@ -301,8 +314,9 @@ function HRPayrollDirectorAdjustments() {
                 && (!selectedYear || Number(item.period_year) === selectedYear)
             const employeeMatch = !selectedHistoryEmployeeId
                 || String(item.employee_id || '') === selectedHistoryEmployeeId
+            const payrollMatch = !isFinanceHistoryOnlyView || isIncludedInPayroll(item)
 
-            return periodMatch && employeeMatch
+            return periodMatch && employeeMatch && payrollMatch
         }).slice().sort((a, b) => {
             const updatedA = new Date(a?.updated_at || a?.created_at || 0).getTime()
             const updatedB = new Date(b?.updated_at || b?.created_at || 0).getTime()
@@ -314,7 +328,34 @@ function HRPayrollDirectorAdjustments() {
 
             return Number(b?.id || 0) - Number(a?.id || 0)
         })
-    }, [historyAdjustments, historyFilters.employee_id, historyFilters.month, historyFilters.year])
+    }, [historyAdjustments, historyFilters.employee_id, historyFilters.month, historyFilters.year, isFinanceHistoryOnlyView])
+
+    const approvedHistoryRows = useMemo(() => {
+        if (!isFinanceHistoryOnlyView) return []
+
+        const selectedMonth = Number(historyFilters.month || 0)
+        const selectedYear = Number(historyFilters.year || 0)
+        const selectedHistoryEmployeeId = String(historyFilters.employee_id || '')
+
+        return historyAdjustments.filter((item) => {
+            const periodMatch = (!selectedMonth || Number(item.period_month) === selectedMonth)
+                && (!selectedYear || Number(item.period_year) === selectedYear)
+            const employeeMatch = !selectedHistoryEmployeeId
+                || String(item.employee_id || '') === selectedHistoryEmployeeId
+
+            return periodMatch && employeeMatch && isApprovedAllowance(item)
+        }).slice().sort((a, b) => {
+            const updatedA = new Date(a?.updated_at || a?.created_at || 0).getTime()
+            const updatedB = new Date(b?.updated_at || b?.created_at || 0).getTime()
+            if (updatedA !== updatedB) return updatedB - updatedA
+
+            const periodA = (Number(a?.period_year || 0) * 100) + Number(a?.period_month || 0)
+            const periodB = (Number(b?.period_year || 0) * 100) + Number(b?.period_month || 0)
+            if (periodA !== periodB) return periodB - periodA
+
+            return Number(b?.id || 0) - Number(a?.id || 0)
+        })
+    }, [historyAdjustments, historyFilters.employee_id, historyFilters.month, historyFilters.year, isFinanceHistoryOnlyView])
 
     const handleEmployeeInputChange = (value) => {
         setSelectedEmployeeInput(value)
@@ -446,11 +487,127 @@ function HRPayrollDirectorAdjustments() {
                 </TitleCard>
             )}
 
+            {isFinanceHistoryOnlyView && (
+                <TitleCard
+                    title="Tunjangan yang aktif untuk payroll"
+                    topMargin="mt-0"
+                    TopSideButtons={backButton}
+                >
+                    <div className="mb-4 rounded-lg border border-base-300 bg-base-200/40 p-4">
+                        <div className="grid lg:grid-cols-6 md:grid-cols-2 grid-cols-1 gap-4 items-end">
+                            <div className="form-control lg:col-span-3">
+                                <label className="label py-1">
+                                    <span className="label-text text-xs font-medium uppercase tracking-wide opacity-70">Pegawai</span>
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="search"
+                                        list="hr-history-approved-adjustment-employee-options"
+                                        className="input input-bordered w-full pr-10"
+                                        placeholder="Cari nama atau kode pegawai"
+                                        value={historyEmployeeInput}
+                                        onChange={(e) => handleHistoryEmployeeInputChange(e.target.value)}
+                                    />
+                                    <datalist id="hr-history-approved-adjustment-employee-options">
+                                        {employeeSelectionOptions.map((option) => (
+                                            <option key={`history-approved-${option.id}`} value={option.label} />
+                                        ))}
+                                    </datalist>
+                                    <MagnifyingGlassIcon className="w-5 h-5 absolute right-3 top-3 text-gray-400" />
+                                </div>
+                            </div>
+
+                            <div className="form-control lg:col-span-2">
+                                <label className="label py-1">
+                                    <span className="label-text text-xs font-medium uppercase tracking-wide opacity-70">Bulan Periode</span>
+                                </label>
+                                <select
+                                    className="select select-bordered"
+                                    value={historyFilters.month}
+                                    onChange={(e) => setHistoryFilters((prev) => ({ ...prev, month: e.target.value }))}
+                                >
+                                    <option value="">Semua Bulan</option>
+                                    {Array.from({ length: 12 }, (_, idx) => (
+                                        <option key={`history-approved-period-month-${idx + 1}`} value={idx + 1}>
+                                            {new Date(2000, idx).toLocaleString('id-ID', { month: 'long' })}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-control lg:col-span-1">
+                                <label className="label py-1">
+                                    <span className="label-text text-xs font-medium uppercase tracking-wide opacity-70">Tahun</span>
+                                </label>
+                                <select
+                                    className="select select-bordered"
+                                    value={historyFilters.year}
+                                    onChange={(e) => setHistoryFilters((prev) => ({ ...prev, year: e.target.value }))}
+                                >
+                                    <option value="">Semua Tahun</option>
+                                    {Array.from({ length: 5 }, (_, idx) => {
+                                        const year = new Date().getFullYear() - idx
+                                        return <option key={`history-approved-period-year-${year}`} value={year}>{year}</option>
+                                    })}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {loading ? (
+                        <div className="text-center py-10">Memuat data tunjangan lain...</div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="table table-zebra">
+                                <thead>
+                                    <tr>
+                                        <th>Pegawai</th>
+                                        <th>Periode</th>
+                                        <th>Bonus</th>
+                                        <th>Potongan Lain</th>
+                                        <th>Status</th>
+                                        <th>Catatan</th>
+                                        <th>Catatan Reviewer</th>
+                                        <th>Disetujui Oleh</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {approvedHistoryRows.map((item) => (
+                                        <tr key={item.id}>
+                                            <td>
+                                                <div className="font-semibold">{item.employee_name}</div>
+                                                <div className="text-xs opacity-70">{item.employee_code}</div>
+                                            </td>
+                                            <td>{item.period_month}/{item.period_year}</td>
+                                            <td>Rp {(Number(item.bonus) || 0).toLocaleString('id-ID')}</td>
+                                            <td>Rp {(Number(item.other_deduction) || 0).toLocaleString('id-ID')}</td>
+                                            <td>
+                                                <span className={`badge badge-lg ${getStatusBadgeColor(item.status)}`}>
+                                                    {statusLabelMap[item.status] || item.status || '-'}
+                                                </span>
+                                            </td>
+                                            <td className="max-w-xs whitespace-pre-wrap">{item.notes || '-'}</td>
+                                            <td className="max-w-xs whitespace-pre-wrap">{item.review_notes || '-'}</td>
+                                            <td>{item.reviewed_by_name || '-'}</td>
+                                        </tr>
+                                    ))}
+                                    {!approvedHistoryRows.length && (
+                                        <tr>
+                                            <td colSpan={8} className="text-center opacity-70">Belum ada data approved untuk periode ini</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </TitleCard>
+            )}
+
             <div ref={historyCardRef}>
                 <TitleCard
                     title="Riwayat Tunjangan Lain"
                     topMargin="mt-6"
-                    TopSideButtons={isFinanceHistoryOnlyView ? backButton : null}
+                
                 >
                 <div className="mb-4 rounded-lg border border-base-300 bg-base-200/40 p-4">
                     <div className="grid lg:grid-cols-6 md:grid-cols-2 grid-cols-1 gap-4 items-end">

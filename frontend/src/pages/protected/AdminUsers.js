@@ -366,7 +366,6 @@ function AdminUsers() {
                                 <select className="select select-bordered w-full" value={editingUser.status || 'active'} onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}>
                                     <option value="active">Aktif</option>
                                     <option value="inactive">Tidak Aktif</option>
-                                    <option value="pending">Menunggu</option>
                                 </select>
                             </div>
                             <div className="md:col-span-2">

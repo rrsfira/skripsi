@@ -19,12 +19,17 @@ router.get(
       const [rows] = await db.promise().query(
         "SELECT id, transport_per_day, meal_per_day, health_percentage, bpjs_percentage, tax, updated_by, updated_at, created_at FROM payroll_settings ORDER BY created_at DESC LIMIT 1"
       );
+      // Exclude Commissioner positions from validation counts
       const [positionValidationRows] = await db.promise().query(
         `SELECT
             COUNT(*) AS total_positions,
-          SUM(CASE WHEN base_salary IS NULL THEN 1 ELSE 0 END) AS missing_base_salary,
-          SUM(CASE WHEN position_allowance IS NULL THEN 1 ELSE 0 END) AS missing_position_allowance
-         FROM positions`
+            SUM(CASE WHEN base_salary IS NULL THEN 1 ELSE 0 END) AS missing_base_salary,
+            SUM(CASE WHEN position_allowance IS NULL THEN 1 ELSE 0 END) AS missing_position_allowance
+         FROM positions
+         WHERE NOT (
+           LOWER(COALESCE(name, '')) LIKE '%commissioner%'
+           OR LOWER(COALESCE(level, '')) = 'commissioner'
+         )`
       );
       const positionValidation = positionValidationRows[0] || {};
       const validation = {

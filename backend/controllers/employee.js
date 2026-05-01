@@ -140,6 +140,9 @@ router.put(
             basic_salary,
             employment_status,
             working_hours_id,
+            username,
+            status,
+            user_status,
         } = req.body;
 
         try {
@@ -346,14 +349,48 @@ router.put(
 
             await db.promise().query(updateQuery, values);
 
-            // Update nama di users jika full_name diubah dan employee punya user_id
-            if (full_name && employee.user_id) {
-                await db
-                    .promise()
-                    .query(
-                        "UPDATE users SET name = ?, updated_at = NOW() WHERE id = ?",
-                        [full_name, employee.user_id]
-                    );
+            // Sinkronkan field akun ke tabel users agar data yang tampil di tabel konsisten.
+            if (employee.user_id) {
+                const userUpdates = [];
+                const userValues = [];
+
+                if (full_name) {
+                    userUpdates.push("name = ?");
+                    userValues.push(full_name);
+                }
+                if (email) {
+                    userUpdates.push("email = ?");
+                    userValues.push(email);
+                }
+                if (phone) {
+                    userUpdates.push("phone = ?");
+                    userValues.push(phone);
+                }
+                if (username) {
+                    userUpdates.push("username = ?");
+                    userValues.push(username);
+                }
+
+                const normalizedUserStatus = String(
+                    user_status !== undefined ? user_status : status
+                )
+                    .toLowerCase()
+                    .trim();
+                if (["active", "inactive", "pending"].includes(normalizedUserStatus)) {
+                    userUpdates.push("status = ?");
+                    userValues.push(normalizedUserStatus);
+                }
+
+                if (userUpdates.length > 0) {
+                    userUpdates.push("updated_at = NOW()");
+                    userValues.push(employee.user_id);
+                    await db
+                        .promise()
+                        .query(
+                            `UPDATE users SET ${userUpdates.join(", ")} WHERE id = ?`,
+                            userValues
+                        );
+                }
             }
 
             // Log employee update
@@ -533,6 +570,111 @@ router.put(
                 message: "Leave quota reset successfully",
                 new_quota: quotaValue,
             });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error" });
+        }
+    }
+);
+
+// ============================
+// GET ALL POSITIONS (Finance/HR/Admin - for salary management)
+// ============================
+router.get(
+    "/positions/list/all",
+    verifyToken,
+    verifyRole(["admin", "hr", "finance"]),
+    async (req, res) => {
+        try {
+            const [positions] = await db.promise().query(`
+                SELECT 
+                    p.id,
+                    p.name,
+                    p.level,
+                    p.base_salary,
+                    p.position_allowance,
+                    p.status,
+                    d.name as department_name,
+                    p.created_at,
+                    p.updated_at
+                FROM positions p
+                LEFT JOIN departments d ON p.department_id = d.id
+                ORDER BY p.level DESC, p.name ASC
+            `);
+
+            res.json({
+                message: "Positions retrieved successfully",
+                data: positions,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error" });
+        }
+    }
+);
+
+// ============================
+// UPDATE POSITION SALARY (Finance/HR/Admin - for salary management)
+// ============================
+router.put(
+    "/positions/update/:id",
+    verifyToken,
+    verifyRole(["admin", "hr", "finance"]),
+    async (req, res) => {
+        const { id } = req.params;
+        const { base_salary, position_allowance } = req.body;
+
+        try {
+            // Validasi position exists
+            const [positionCheck] = await db
+                .promise()
+                .query("SELECT id FROM positions WHERE id = ?", [id]);
+
+            if (positionCheck.length === 0) {
+                return res.status(404).json({ message: "Position not found" });
+            }
+
+            // Build dynamic update query
+            const updates = [];
+            const values = [];
+
+            if (base_salary !== undefined && base_salary !== null) {
+                updates.push("base_salary = ?");
+                values.push(Number(base_salary) || 0);
+            }
+
+            if (position_allowance !== undefined && position_allowance !== null) {
+                updates.push("position_allowance = ?");
+                values.push(Number(position_allowance) || 0);
+            }
+
+            if (updates.length === 0) {
+                return res.status(400).json({ message: "No fields to update" });
+            }
+
+            updates.push("updated_at = NOW()");
+            values.push(id);
+
+            const updateQuery = `UPDATE positions SET ${updates.join(
+                ", "
+            )} WHERE id = ?`;
+
+            await db.promise().query(updateQuery, values);
+
+            // Log position update
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username,
+                role: req.user.roles?.[0] || req.user.role,
+                action: "UPDATE",
+                module: "positions",
+                description: `Updated position salary/allowance for ID: ${id}`,
+                newValues: req.body,
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
+
+            res.json({ message: "Position salary updated successfully" });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Server error" });

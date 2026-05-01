@@ -10,7 +10,7 @@ export const adminApi = {
             const response = await axios.get('/api/dashboard/admin')
             return response.data
         } catch (error) {
-            throw new Error(parseApiError(error, 'Gagal memuat dashboard direktur'))
+            throw new Error(parseApiError(error, 'Gagal memuat dashboard admin'))
         }
     },
 

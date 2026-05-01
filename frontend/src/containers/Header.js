@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 const DEFAULT_AVATAR = "https://placeimg.com/80/80/people";
 
 const ROLE_LABELS = {
-  admin: "Direktur",
+  admin: "Admin",
   hr: "HR",
   atasan: "Atasan",
   finance: "Keuangan",

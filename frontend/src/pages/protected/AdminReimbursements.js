@@ -15,7 +15,7 @@ const getStatusLabel = (status) => {
     if (status === 'approved') return 'Disetujui'
     if (status === 'included_in_payroll') return 'Masuk Payroll'
     if (status === 'rejected') return 'Ditolak'
-    return 'Menunggu Persetujuan Direktur'
+    return 'Menunggu Persetujuan Admin'
 }
 
 function AdminReimbursements() {

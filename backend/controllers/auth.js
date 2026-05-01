@@ -104,6 +104,7 @@ router.post(
             "hr",
             "finance",
             "commissioner",
+            "director",
         ];
         if (!roles.every((r) => validRoles.includes(r))) {
             return res.status(400).json({ message: "Invalid role" });
@@ -116,6 +117,7 @@ router.post(
             "hr",
             "finance",
             "commissioner",
+            "director",
         ];
         const normalizedRolesSet = new Set(roles);
         const hasHierarchyRole = Array.from(normalizedRolesSet).some((r) =>
@@ -794,6 +796,7 @@ router.put(
                     "hr",
                     "finance",
                     "commissioner",
+                    "director",
                     "kandidat",
                 ];
                 const rolesFiltered = roles.filter((role) => validRoles.includes(role));
@@ -804,6 +807,7 @@ router.put(
                     "hr",
                     "finance",
                     "commissioner",
+                    "director",
                 ];
                 const rolesSet = new Set(rolesFiltered);
                 if (Array.from(rolesSet).some((role) => hierarchicalRoles.includes(role))) {

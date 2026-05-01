@@ -33,15 +33,18 @@ const resolveManagerScope = async (db, userId) => {
     }
 
     const level = String(scope.level || "").toLowerCase();
-    if (level !== "manager") {
-        throw buildError("Akses atasan hanya untuk jabatan level manager", 403);
+    if (level !== "manager" && level !== "director") {
+        throw buildError("Akses atasan hanya untuk jabatan level manager atau director", 403);
     }
 
+    const normalizedLevel = String(scope.level || "").toLowerCase();
     return {
         managerEmployeeId: scope.employee_id,
         departmentId: scope.department_id,
         positionName: scope.position_name,
         departmentName: scope.department_name,
+        level: normalizedLevel,
+        isDirector: normalizedLevel === 'director',
     };
 };
 

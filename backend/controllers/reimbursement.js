@@ -222,13 +222,26 @@ router.get(
                 managerScope = await resolveManagerScope(db, requesterUserId);
             }
 
-            const [rows] = await db.promise().query(
-                `SELECT r.*, e.employee_code, u.name as employee_name, u.id as submitter_user_id, p.department_id
+            // Build department scoping clause: if managerScope exists, restrict by department and exclude the manager him/herself.
+            // If the manager is a director, further restrict to employees whose position level is 'manager'.
+            let deptClause = '1=1';
+            const deptParams = [];
+            if (managerScope) {
+                if (managerScope.isDirector) {
+                    deptClause = "p.level = 'manager' AND e.id <> ?";
+                    deptParams.push(managerScope.managerEmployeeId);
+                } else {
+                    deptClause = 'p.department_id = ? AND e.id <> ?';
+                    deptParams.push(managerScope.departmentId, managerScope.managerEmployeeId);
+                }
+            }
+
+            const baseQuery = `SELECT r.*, e.employee_code, u.name as employee_name, u.id as submitter_user_id, p.department_id
                  FROM reimbursements r
                  JOIN employees e ON r.employee_id = e.id
                  JOIN positions p ON e.position_id = p.id
                  JOIN users u ON e.user_id = u.id
-                 WHERE (? IS NULL OR (p.department_id = ? AND e.id <> ?))
+                 WHERE ${deptClause}
                                      AND (
                                          ? IS NULL OR EXISTS (
                                              SELECT 1
@@ -241,17 +254,11 @@ router.get(
                                          ? = 0
                                          OR r.status IN ('approved', 'included_in_payroll')
                                      )
-                 ORDER BY r.created_at DESC`
-                ,
-                [
-                    managerScope ? managerScope.departmentId : null,
-                    managerScope ? managerScope.departmentId : null,
-                    managerScope ? managerScope.managerEmployeeId : null,
-                    submitterRole,
-                    submitterRole,
-                    shouldScopeAsFinance ? 1 : 0,
-                ]
-            );
+                 ORDER BY r.created_at DESC`;
+
+            const queryParams = [...deptParams, submitterRole, submitterRole, shouldScopeAsFinance ? 1 : 0];
+
+            const [rows] = await db.promise().query(baseQuery, queryParams);
 
             res.json({ data: rows });
         } catch (error) {
@@ -294,6 +301,18 @@ router.put(
                 managerScope = await resolveManagerScope(db, requesterUserId);
             }
 
+            let deptClauseCheck = '1=1';
+            const deptParamsCheck = [];
+            if (managerScope) {
+                if (managerScope.isDirector) {
+                    deptClauseCheck = "p.level = 'manager' AND e.id <> ?";
+                    deptParamsCheck.push(managerScope.managerEmployeeId);
+                } else {
+                    deptClauseCheck = 'p.department_id = ? AND e.id <> ?';
+                    deptParamsCheck.push(managerScope.departmentId, managerScope.managerEmployeeId);
+                }
+            }
+
             const [rows] = await db
                 .promise()
                 .query(
@@ -302,13 +321,10 @@ router.put(
                          JOIN employees e ON r.employee_id = e.id
                          JOIN positions p ON e.position_id = p.id
                          JOIN users u ON e.user_id = u.id
-                         WHERE r.id = ?
-                           AND (? IS NULL OR (p.department_id = ? AND e.id <> ?))`,
+                         WHERE r.id = ? AND (${deptClauseCheck})`,
                     [
                         id,
-                        managerScope ? managerScope.departmentId : null,
-                        managerScope ? managerScope.departmentId : null,
-                        managerScope ? managerScope.managerEmployeeId : null,
+                        ...deptParamsCheck,
                     ]
                 );
 

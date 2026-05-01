@@ -258,10 +258,24 @@ function FinancePayroll() {
         const missingPayrollSettings =
           Boolean(payrollSetupValidation.has_missing_payroll_settings) ||
           !payrollSettingsResult?.value?.id;
-        const missingPositionBaseSalary =
-          Number(payrollSetupValidation.missing_base_salary_count || 0) > 0;
-        const missingPositionAllowance =
-          Number(payrollSetupValidation.missing_position_allowance_count || 0) > 0;
+
+        // Hitung jumlah posisi commissioner dari data referensi employee (unique position ids)
+        const commissionerPositionIds = new Set(
+          (employeeRows || [])
+            .filter((r) =>
+              String(r.position_name || "").toLowerCase().includes("commissioner"),
+            )
+            .map((r) => String(r.position_id || r.position_id)),
+        );
+
+        const rawMissingBase = Number(payrollSetupValidation.missing_base_salary_count || 0);
+        const rawMissingAllowance = Number(payrollSetupValidation.missing_position_allowance_count || 0);
+
+        const adjustedMissingBaseCount = Math.max(0, rawMissingBase - commissionerPositionIds.size);
+        const adjustedMissingAllowanceCount = Math.max(0, rawMissingAllowance - commissionerPositionIds.size);
+
+        const missingPositionBaseSalary = adjustedMissingBaseCount > 0;
+        const missingPositionAllowance = adjustedMissingAllowanceCount > 0;
 
         if (missingPayrollSettings || missingPositionBaseSalary || missingPositionAllowance) {
           const warningParts = [];
@@ -272,13 +286,13 @@ function FinancePayroll() {
 
           if (missingPositionBaseSalary) {
             warningParts.push(
-              `${payrollSetupValidation.missing_base_salary_count} posisi masih belum punya gaji pokok`,
+              `${adjustedMissingBaseCount} posisi masih belum punya gaji pokok`,
             );
           }
 
           if (missingPositionAllowance) {
             warningParts.push(
-              `${payrollSetupValidation.missing_position_allowance_count} posisi masih belum punya tunjangan jabatan`,
+              `${adjustedMissingAllowanceCount} posisi masih belum punya tunjangan jabatan`,
             );
           }
 

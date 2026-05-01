@@ -91,6 +91,24 @@ export const financeApi = {
         }
     },
 
+    async downloadMonthlyPayrollPdf(params = {}) {
+        try {
+            const response = await axios.get('/api/payroll/reports/monthly/pdf', { params, responseType: 'blob' })
+            return response.data
+        } catch (error) {
+            throw new Error(parseApiError(error, 'Gagal mengunduh PDF laporan payroll'))
+        }
+    },
+
+    async downloadMonthlyPayrollExcel(params = {}) {
+        try {
+            const response = await axios.get('/api/payroll/reports/monthly/excel', { params, responseType: 'blob' })
+            return response.data
+        } catch (error) {
+            throw new Error(parseApiError(error, 'Gagal mengunduh Excel laporan payroll'))
+        }
+    },
+
     async getReimbursements() {
         try {
             const response = await axios.get('/api/reimbursements')
@@ -169,6 +187,24 @@ export const financeApi = {
             return response.data || {}
         } catch (error) {
             throw new Error(parseApiError(error, 'Gagal memproses review adjustment payroll'))
+        }
+    },
+
+    async getPositions() {
+        try {
+            const response = await axios.get('/api/employees/positions/list/all')
+            return response.data?.data || []
+        } catch (error) {
+            throw new Error(parseApiError(error, 'Gagal memuat data posisi'))
+        }
+    },
+
+    async updatePositionSalary(positionId, payload) {
+        try {
+            const response = await axios.put(`/api/employees/positions/update/${positionId}`, payload)
+            return response.data || {}
+        } catch (error) {
+            throw new Error(parseApiError(error, 'Gagal menyimpan gaji posisi'))
         }
     },
 }

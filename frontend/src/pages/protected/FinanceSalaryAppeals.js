@@ -209,10 +209,10 @@ function FinanceSalaryAppeals() {
         <>
             {error && <div className="alert alert-error mb-4"><span>{error}</span></div>}
 
-            <TitleCard title="Daftar Banding Gaji Disetujui HR / Direktur" topMargin="mt-0">
+            <TitleCard title="Daftar Banding Gaji Disetujui HR / Admin" topMargin="mt-0">
                 <div className="grid md:grid-cols-3 grid-cols-1 gap-3 mb-4">
                     <div className="rounded-lg p-4 bg-base-200">
-                        <p className="text-sm opacity-70">Total Disetujui HR / Direktur</p>
+                        <p className="text-sm opacity-70">Total Disetujui HR / Admin</p>
                         <p className="text-2xl font-semibold">{activeApprovedAppeals.length}</p>
                     </div>
                     <div className="rounded-lg p-4 bg-base-200">
@@ -290,7 +290,7 @@ function FinanceSalaryAppeals() {
                                 </tr>
                             ))}
                             {filteredAppeals.length === 0 && (
-                                <tr><td colSpan={7} className="text-center opacity-70">Belum ada banding gaji yang disetujui HR / Direktur</td></tr>
+                                <tr><td colSpan={7} className="text-center opacity-70">Belum ada banding gaji yang disetujui HR / Admin</td></tr>
                             )}
                         </tbody>
                     </table>
