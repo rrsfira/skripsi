@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 const statusLabelMap = {
     draft: 'Draft',
-    submitted: 'Menunggu',
+    submitted: 'Siap Diproses',
     approved: 'Disetujui',
     rejected: 'Ditolak',
     included_in_payroll: 'Masuk Payroll',
@@ -39,8 +39,12 @@ const isIncludedInPayroll = (item = {}) => {
     return status === 'included_in_payroll' || Number(item?.payroll_id || 0) > 0
 }
 
-const isApprovedAllowance = (item = {}) => {
-    return String(item?.status || '').toLowerCase().trim() === 'approved'
+const isDoneAllowance = (item = {}) => {
+    return String(item?.status || '').toLowerCase().trim() === 'done'
+}
+
+const isSubmittedAllowance = (item = {}) => {
+    return String(item?.status || '').toLowerCase().trim() === 'submitted'
 }
 
 const getCurrentPeriod = () => {
@@ -185,40 +189,10 @@ function HRPayrollDirectorAdjustments() {
             ])
 
             const employeeRows = employeesResult?.data || []
-            const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
-            const currentUserId = Number(currentUser?.user_id || currentUser?.id || 0)
-            const currentUserEmail = String(currentUser?.email || '').toLowerCase().trim()
-            const currentUsername = String(currentUser?.username || '').toLowerCase().trim()
 
-            const filteredRows = employeeRows.filter((item) => {
-                const employeeUserId = Number(item?.user_id || 0)
-                const employeeEmail = String(item?.email || '').toLowerCase().trim()
-                const employeeName = String(item?.name || '').toLowerCase().trim()
-
-                if (currentUserId && employeeUserId && employeeUserId === currentUserId) {
-                    return false
-                }
-
-                if (currentUserEmail && employeeEmail && employeeEmail === currentUserEmail) {
-                    return false
-                }
-
-                if (currentUsername && employeeName && employeeName === currentUsername) {
-                    return false
-                }
-
-                return true
-            })
-
-            setAvailableEmployees(filteredRows)
+            setAvailableEmployees(employeeRows)
             setPeriodAdjustments(adjustmentResult?.data || [])
             setHistoryAdjustments(allAdjustmentsResult?.data || [])
-
-            setSelectedEmployeeId((prev) => {
-                if (!prev) return prev
-                const existsInFiltered = filteredRows.some((row) => String(row.id) === String(prev))
-                return existsInFiltered ? prev : ''
-            })
         } catch (error) {
             dispatch(showNotification({ message: error.message, status: 0 }))
         } finally {
@@ -314,6 +288,11 @@ function HRPayrollDirectorAdjustments() {
                 && (!selectedYear || Number(item.period_year) === selectedYear)
             const employeeMatch = !selectedHistoryEmployeeId
                 || String(item.employee_id || '') === selectedHistoryEmployeeId
+            // If opened by finance, riwayat table should only show items with status 'done'
+            if (isFinanceHistoryOnlyView) {
+                return periodMatch && employeeMatch && isDoneAllowance(item)
+            }
+
             const payrollMatch = !isFinanceHistoryOnlyView || isIncludedInPayroll(item)
 
             return periodMatch && employeeMatch && payrollMatch
@@ -330,32 +309,7 @@ function HRPayrollDirectorAdjustments() {
         })
     }, [historyAdjustments, historyFilters.employee_id, historyFilters.month, historyFilters.year, isFinanceHistoryOnlyView])
 
-    const approvedHistoryRows = useMemo(() => {
-        if (!isFinanceHistoryOnlyView) return []
-
-        const selectedMonth = Number(historyFilters.month || 0)
-        const selectedYear = Number(historyFilters.year || 0)
-        const selectedHistoryEmployeeId = String(historyFilters.employee_id || '')
-
-        return historyAdjustments.filter((item) => {
-            const periodMatch = (!selectedMonth || Number(item.period_month) === selectedMonth)
-                && (!selectedYear || Number(item.period_year) === selectedYear)
-            const employeeMatch = !selectedHistoryEmployeeId
-                || String(item.employee_id || '') === selectedHistoryEmployeeId
-
-            return periodMatch && employeeMatch && isApprovedAllowance(item)
-        }).slice().sort((a, b) => {
-            const updatedA = new Date(a?.updated_at || a?.created_at || 0).getTime()
-            const updatedB = new Date(b?.updated_at || b?.created_at || 0).getTime()
-            if (updatedA !== updatedB) return updatedB - updatedA
-
-            const periodA = (Number(a?.period_year || 0) * 100) + Number(a?.period_month || 0)
-            const periodB = (Number(b?.period_year || 0) * 100) + Number(b?.period_month || 0)
-            if (periodA !== periodB) return periodB - periodA
-
-            return Number(b?.id || 0) - Number(a?.id || 0)
-        })
-    }, [historyAdjustments, historyFilters.employee_id, historyFilters.month, historyFilters.year, isFinanceHistoryOnlyView])
+    
 
     const handleEmployeeInputChange = (value) => {
         setSelectedEmployeeInput(value)
@@ -489,7 +443,7 @@ function HRPayrollDirectorAdjustments() {
 
             {isFinanceHistoryOnlyView && (
                 <TitleCard
-                    title="Tunjangan yang aktif untuk payroll"
+                    title="Tunjangan yang siap diproses payroll"
                     topMargin="mt-0"
                     TopSideButtons={backButton}
                 >
@@ -502,15 +456,15 @@ function HRPayrollDirectorAdjustments() {
                                 <div className="relative">
                                     <input
                                         type="search"
-                                        list="hr-history-approved-adjustment-employee-options"
+                                        list="hr-history-submitted-adjustment-employee-options"
                                         className="input input-bordered w-full pr-10"
                                         placeholder="Cari nama atau kode pegawai"
                                         value={historyEmployeeInput}
                                         onChange={(e) => handleHistoryEmployeeInputChange(e.target.value)}
                                     />
-                                    <datalist id="hr-history-approved-adjustment-employee-options">
+                                    <datalist id="hr-history-submitted-adjustment-employee-options">
                                         {employeeSelectionOptions.map((option) => (
-                                            <option key={`history-approved-${option.id}`} value={option.label} />
+                                            <option key={`history-submitted-${option.id}`} value={option.label} />
                                         ))}
                                     </datalist>
                                     <MagnifyingGlassIcon className="w-5 h-5 absolute right-3 top-3 text-gray-400" />
@@ -528,7 +482,7 @@ function HRPayrollDirectorAdjustments() {
                                 >
                                     <option value="">Semua Bulan</option>
                                     {Array.from({ length: 12 }, (_, idx) => (
-                                        <option key={`history-approved-period-month-${idx + 1}`} value={idx + 1}>
+                                        <option key={`history-submitted-period-month-${idx + 1}`} value={idx + 1}>
                                             {new Date(2000, idx).toLocaleString('id-ID', { month: 'long' })}
                                         </option>
                                     ))}
@@ -545,9 +499,9 @@ function HRPayrollDirectorAdjustments() {
                                     onChange={(e) => setHistoryFilters((prev) => ({ ...prev, year: e.target.value }))}
                                 >
                                     <option value="">Semua Tahun</option>
-                                    {Array.from({ length: 5 }, (_, idx) => {
+                                        {Array.from({ length: 5 }, (_, idx) => {
                                         const year = new Date().getFullYear() - idx
-                                        return <option key={`history-approved-period-year-${year}`} value={year}>{year}</option>
+                                        return <option key={`history-submitted-period-year-${year}`} value={year}>{year}</option>
                                     })}
                                 </select>
                             </div>
@@ -567,12 +521,11 @@ function HRPayrollDirectorAdjustments() {
                                         <th>Potongan Lain</th>
                                         <th>Status</th>
                                         <th>Catatan</th>
-                                        <th>Catatan Reviewer</th>
-                                        <th>Disetujui Oleh</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {approvedHistoryRows.map((item) => (
+                                    { /* finance payroll view should show submitted items */ }
+                                    {historyAdjustments.filter(isSubmittedAllowance).map((item) => (
                                         <tr key={item.id}>
                                             <td>
                                                 <div className="font-semibold">{item.employee_name}</div>
@@ -587,13 +540,11 @@ function HRPayrollDirectorAdjustments() {
                                                 </span>
                                             </td>
                                             <td className="max-w-xs whitespace-pre-wrap">{item.notes || '-'}</td>
-                                            <td className="max-w-xs whitespace-pre-wrap">{item.review_notes || '-'}</td>
-                                            <td>{item.reviewed_by_name || '-'}</td>
                                         </tr>
                                     ))}
-                                    {!approvedHistoryRows.length && (
+                                    {!historyAdjustments.filter(isSubmittedAllowance).length && (
                                         <tr>
-                                            <td colSpan={8} className="text-center opacity-70">Belum ada data approved untuk periode ini</td>
+                                            <td colSpan={8} className="text-center opacity-70">Belum ada data yang di input untuk periode ini</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -683,8 +634,6 @@ function HRPayrollDirectorAdjustments() {
                                     <th>Potongan Lain</th>
                                     <th>Status</th>
                                     <th>Catatan</th>
-                                    <th>Catatan Reviewer</th>
-                                    <th>Disetujui Oleh</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -703,13 +652,11 @@ function HRPayrollDirectorAdjustments() {
                                             </span>
                                         </td>
                                         <td className="max-w-xs whitespace-pre-wrap">{item.notes || '-'}</td>
-                                        <td className="max-w-xs whitespace-pre-wrap">{item.review_notes || '-'}</td>
-                                        <td>{item.reviewed_by_name || '-'}</td>
                                     </tr>
                                 ))}
                                 {!filteredHistoryRows.length && (
                                     <tr>
-                                        <td colSpan={8} className="text-center opacity-70">Belum ada data tunjangan lain untuk periode ini</td>
+                                        <td colSpan={6} className="text-center opacity-70">Belum ada data tunjangan lain untuk periode ini</td>
                                     </tr>
                                 )}
                             </tbody>

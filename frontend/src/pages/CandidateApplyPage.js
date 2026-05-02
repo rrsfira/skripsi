@@ -9,12 +9,15 @@ import axios from "axios";
 function CandidateApplyPage() {
   // State untuk menyimpan daftar job yang sudah pernah dilamar
   const [appliedJobIds, setAppliedJobIds] = useState([]);
+  const [isApplicationBlocked, setIsApplicationBlocked] = useState(false);
+  const [blockReasons, setBlockReasons] = useState([]);
 
   // Ambil daftar aplikasi user saat mount
   useEffect(() => {
     const fetchAppliedJobs = async () => {
       try {
         const res = await axios.get("/api/candidates/applications");
+
         if (res.data.applications) {
           // Ambil semua job_opening_id dari aplikasi user
           const ids = res.data.applications
@@ -26,13 +29,51 @@ function CandidateApplyPage() {
                 app.jobId,
             )
             .filter(Boolean);
+
           setAppliedJobIds(ids);
+
+          let acceptedJobTitle = null;
+          let hasOnboarding = false;
+
+          // 🔹 Cek status accepted
+          for (const app of res.data.applications) {
+            const status = (app.status || "").toLowerCase();
+
+            if (status === "accepted" || status === "diterima") {
+              acceptedJobTitle =
+                app.job_title || app.title || app.job_opening_id || "";
+              break; // cukup ambil 1 saja
+            }
+          }
+
+          // 🔹 Cek onboarding (opsional)
+          try {
+            const callRes = await axios.get("/api/candidate-calls/me");
+            if (callRes && callRes.data) {
+              hasOnboarding = true;
+            }
+          } catch (err) {
+            // abaikan jika tidak ada onboarding
+          }
+
+          // 🔥 Gabungkan jadi 1 paragraf
+          if (acceptedJobTitle) {
+            setIsApplicationBlocked(true);
+
+            let message = `Anda sudah diterima pada lowongan ${acceptedJobTitle}.`;
+
+            if (hasOnboarding) {
+              message += " Anda juga telah memiliki undangan untuk onboarding.";
+            }
+
+            setBlockReasons([message]); // tetap array biar kompatibel
+          }
         }
       } catch (err) {
-        // Tidak fatal, biarkan kosong jika gagal
         setAppliedJobIds([]);
       }
     };
+
     fetchAppliedJobs();
   }, []);
   // Untuk menampilkan detail lowongan pada step Pilih Lowongan
@@ -232,12 +273,12 @@ function CandidateApplyPage() {
           // Jika datang dari halaman lamar (jobFromPage), set selectedJob dan applicationData.job_opening_id
           if (jobFromPage && jobFromPage.id) {
             // Cari job yang sesuai di filtered
-            const foundJob = filtered.find(j => j.id === jobFromPage.id);
+            const foundJob = filtered.find((j) => j.id === jobFromPage.id);
             if (foundJob) {
               setSelectedJob(foundJob);
-              setApplicationData(prev => ({
+              setApplicationData((prev) => ({
                 ...prev,
-                job_opening_id: foundJob.id
+                job_opening_id: foundJob.id,
               }));
             }
           }
@@ -444,6 +485,14 @@ function CandidateApplyPage() {
 
   // ========== SUBMIT APPLICATION ==========
   const handleSubmitApplication = async () => {
+    if (isApplicationBlocked) {
+      NotificationManager.error(
+        blockReasons.join(" \n"),
+        "Tidak Bisa Mengajukan",
+        5000,
+      );
+      return;
+    }
     if (!applicationData.job_opening_id) {
       NotificationManager.error("Lowongan belum dipilih", "Gagal", 3000);
       return;
@@ -1193,8 +1242,16 @@ function CandidateApplyPage() {
                       <div className="card-actions justify-end">
                         <button
                           className="btn btn-primary btn-sm"
-                          disabled={alreadyApplied}
+                          disabled={alreadyApplied || isApplicationBlocked}
                           onClick={() => {
+                            if (isApplicationBlocked) {
+                              NotificationManager.info(
+                                blockReasons.join(" \n"),
+                                "Tidak Bisa Melamar",
+                                6000,
+                              );
+                              return;
+                            }
                             if (alreadyApplied) {
                               NotificationManager.info(
                                 "Anda sudah pernah melamar posisi ini. Tidak bisa melamar dua kali.",
@@ -1898,6 +1955,15 @@ function CandidateApplyPage() {
 
   return (
     <TitleCard title="Ajukan Lamaran Pekerjaan">
+      {isApplicationBlocked && (
+        <div className="alert alert-warning mb-4">
+          <div className="mt-2">
+            {blockReasons.map((r, idx) => (
+              <p key={idx}>{r}</p>
+            ))}
+          </div>
+        </div>
+      )}
       {/* Stepper */}
       {allSteps.length > 0 && (
         <ul className="steps steps-horizontal w-full mb-8 overflow-x-auto">
@@ -1941,6 +2007,14 @@ function CandidateApplyPage() {
             <button
               className="btn btn-primary"
               onClick={async () => {
+                if (isApplicationBlocked) {
+                  NotificationManager.error(
+                    blockReasons.join("\n"),
+                    "Tidak Bisa Melamar",
+                    5000,
+                  );
+                  return;
+                }
                 if (validateCurrentStep()) {
                   // Simpan data diri jika step sekarang adalah "Isi Data Diri"
                   if (allSteps[currentStep] === "Isi Data Diri") {

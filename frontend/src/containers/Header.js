@@ -18,7 +18,7 @@ const ROLE_LABELS = {
   kandidat: "Kandidat",
 };
 
-const getResolvedPhotoUrl = (photoPath) => {
+const getResolvedPhotoUrl = (photoPath, cacheBuster) => {
   if (!photoPath) return DEFAULT_AVATAR;
   if (/^https?:\/\//i.test(photoPath) || /^data:/i.test(photoPath))
     return photoPath;
@@ -27,14 +27,15 @@ const getResolvedPhotoUrl = (photoPath) => {
   const fallbackBaseUrl = "http://localhost:5000";
   const baseUrl = (configuredBaseUrl || fallbackBaseUrl).replace(/\/$/, "");
   const normalizedPath = String(photoPath).replace(/^\/+/, "");
-  return `${baseUrl}/${normalizedPath}`;
+  const resolvedUrl = `${baseUrl}/${normalizedPath}`;
+  return cacheBuster ? `${resolvedUrl}?v=${cacheBuster}` : resolvedUrl;
 };
 
 const getStoredUserAvatar = () => {
   try {
     const rawUser = localStorage.getItem("user");
     const parsedUser = rawUser ? JSON.parse(rawUser) : null;
-    return getResolvedPhotoUrl(parsedUser?.photo);
+    return getResolvedPhotoUrl(parsedUser?.photo, parsedUser?.photoVersion);
   } catch (error) {
     return DEFAULT_AVATAR;
   }
@@ -50,7 +51,6 @@ function Header() {
     localStorage.getItem("activeRole") || "",
   );
   const [avatarSrc, setAvatarSrc] = useState(getStoredUserAvatar());
-  const [avatarTrigger, setAvatarTrigger] = useState(0);
 
   useEffect(() => {
     themeChange(false);
@@ -80,9 +80,18 @@ function Header() {
       }
     }
 
-    const handleStorageChange = () => {
-      setAvatarSrc(getStoredUserAvatar());
-      setAvatarTrigger((t) => t + 1); // paksa re-render
+    const handleStorageChange = (e) => {
+      try {
+        let newSrc = getStoredUserAvatar();
+        // Keep a short-lived refresh marker for browsers that reuse the same image URL
+        if (newSrc && newSrc !== DEFAULT_AVATAR && (e?.type === 'user-profile-updated' || e?.type === 'storage')) {
+          const sep = newSrc.includes('?') ? '&' : '?';
+          newSrc = `${newSrc}${sep}_=${Date.now()}`;
+        }
+        setAvatarSrc(newSrc);
+      } catch (err) {
+        setAvatarSrc(DEFAULT_AVATAR);
+      }
     };
 
     setAvatarSrc(getStoredUserAvatar());

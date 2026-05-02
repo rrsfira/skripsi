@@ -51,7 +51,7 @@ router.put("/admin/applications/accept-by-job", async (req, res) => {
   if (!job_opening_id)
     return res.status(400).json({ message: "job_opening_id wajib diisi" });
   try {
-    await db.query(
+    await db.promise().query(
       `UPDATE applications SET status = 'diterima' WHERE job_opening_id = ? AND status != 'diterima'`,
       [job_opening_id],
     );
@@ -65,7 +65,7 @@ router.put("/admin/applications/accept-by-job", async (req, res) => {
 router.put("/job-openings/:jobId/complete", async (req, res) => {
   const { jobId } = req.params;
   try {
-    await db.query(
+    await db.promise().query(
       `UPDATE job_openings SET status = 'closed', hiring_status = 'completed' WHERE id = ?`,
       [jobId],
     );
@@ -81,7 +81,7 @@ router.put("/admin/interviews/update-result-by-job", async (req, res) => {
   if (!job_opening_id)
     return res.status(400).json({ message: "job_opening_id wajib diisi" });
   try {
-    await db.query(
+    await db.promise().query(
       `UPDATE interviews SET result = 'passed' WHERE job_opening_id = ? AND status = 'completed' AND (result IS NULL OR result = 'pending')`,
       [job_opening_id],
     );
@@ -97,11 +97,28 @@ router.put("/admin/interviews/:id/result", async (req, res) => {
   const { rating, recommendation, interviewer_notes, result, status } =
     req.body;
   try {
-    const [rows] = await db.query(
+    const [rows] = await db.promise().query(
       `UPDATE interviews SET rating = ?, recommendation = ?, interviewer_notes = ?, result = ?, status = ? WHERE id = ?`,
       [rating, recommendation, interviewer_notes, result, status, id],
     );
     if (rows.affectedRows === 0) {
+      return res.status(404).json({ message: "Interview tidak ditemukan" });
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Cancel interview (set status to canceled)
+router.put("/admin/interviews/:id/cancel", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [result] = await db.promise().query(
+      `UPDATE interviews SET status = 'canceled' WHERE id = ?`,
+      [id],
+    );
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Interview tidak ditemukan" });
     }
     res.json({ success: true });

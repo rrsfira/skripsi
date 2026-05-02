@@ -11,6 +11,17 @@ const getStatusBadge = (status) => {
     return 'badge-warning'
 }
 
+const statusLabelMap = {
+    pending: 'Menunggu Persetujuan',
+    approved: 'Disetujui Atasan',
+    rejected: 'Ditolak',
+    included_in_payroll: 'Masuk Payroll',
+}
+
+const getStatusLabel = (status) => {
+    return statusLabelMap[status] || status
+}
+
 const isProcessedByHr = (status) => ['included_in_payroll', 'rejected'].includes(status)
 const HR_REJECTION_MARKER = '[HR_REJECTION_REASON]'
 
@@ -247,7 +258,7 @@ function HRReimbursements() {
                                             <td>{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : '-'}</td>
                                             <td>
                                                 <span className={`badge ${getStatusBadge(item.status)}`}>
-                                                    {item.status}
+                                                    {getStatusLabel(item.status)}
                                                 </span>
                                             </td>
                                             <td>
@@ -359,7 +370,7 @@ function HRReimbursements() {
                                         <td>{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : '-'}</td>
                                         <td>
                                             <span className={`badge ${getStatusBadge(item.status)}`}>
-                                                {item.status}
+                                                {getStatusLabel(item.status)}
                                             </span>
                                         </td>
                                         <td>{isProcessedByHr(item.status) && item.updated_at ? new Date(item.updated_at).toLocaleDateString('id-ID') : '-'}</td>
@@ -399,7 +410,7 @@ function HRReimbursements() {
                             <div>
                                 <p className="text-xs opacity-70">Status</p>
                                 <span className={`badge ${getStatusBadge(selectedItem.status)}`}>
-                                    {selectedItem.status}
+                                    {getStatusLabel(selectedItem.status)}
                                 </span>
                             </div>
                             <div>

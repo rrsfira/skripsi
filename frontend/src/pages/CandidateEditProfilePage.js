@@ -174,6 +174,7 @@ export default function CandidateEditProfilePage() {
         phone: form.phone,
         username: form.username && form.username.trim() !== "" ? form.username : user.username,
         photo: finalPhoto,
+        photoVersion: Date.now(),
       };
       localStorage.setItem('user', JSON.stringify(updatedUser));
 

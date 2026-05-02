@@ -337,6 +337,7 @@ router.put(
             const submitterUserId = rows[0].submitter_user_id;
             const submitterRoles = await getRoleNamesByUserId(submitterUserId);
             const submitterIsAtasan = submitterRoles.includes("atasan");
+            const submitterIsHr = submitterRoles.includes("hr");
 
             if (rows[0].status !== "pending") {
                 return res.status(400).json({ message: "Only pending can be processed" });
@@ -360,7 +361,12 @@ router.put(
                 });
             }
 
-            const newStatus = action === "approve" ? "approved" : "rejected";
+            // If the submitter is HR and the manager approves, skip HR validation
+            // and mark the reimbursement as already included in payroll.
+            const newStatus = action === "approve"
+                ? (submitterIsHr ? "included_in_payroll" : "approved")
+                : "rejected";
+
             await db.promise().query(
                 `UPDATE reimbursements 
                  SET status = ?, approved_by = ?, approved_at = NOW(), updated_at = NOW() 

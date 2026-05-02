@@ -8,7 +8,7 @@ router.put('/admin/applications/accept-by-job', async (req, res) => {
   const { job_opening_id } = req.body;
   if (!job_opening_id) return res.status(400).json({ message: 'job_opening_id wajib diisi' });
   try {
-    await db.query(
+    await db.promise().query(
       `UPDATE applications SET status = 'diterima' WHERE job_opening_id = ? AND status != 'diterima'`,
       [job_opening_id]
     );
@@ -22,7 +22,7 @@ router.put('/admin/applications/accept-by-job', async (req, res) => {
 router.put('/job-openings/:jobId/complete', async (req, res) => {
   const { jobId } = req.params;
   try {
-    await db.query(
+    await db.promise().query(
       `UPDATE job_openings SET status = 'closed', hiring_status = 'completed' WHERE id = ?`,
       [jobId]
     );
@@ -37,7 +37,7 @@ router.put('/admin/interviews/update-result-by-job', async (req, res) => {
   const { job_opening_id } = req.body;
   if (!job_opening_id) return res.status(400).json({ message: 'job_opening_id wajib diisi' });
   try {
-    await db.query(
+    await db.promise().query(
       `UPDATE interviews SET result = 'passed' WHERE job_opening_id = ? AND status = 'completed' AND (result IS NULL OR result = 'pending')`,
       [job_opening_id]
     );

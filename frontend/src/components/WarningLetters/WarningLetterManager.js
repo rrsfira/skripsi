@@ -175,15 +175,10 @@ function WarningLetterManager({
             const employeeId = Number(item.employee_id)
             if (!Number.isFinite(employeeId) || employeeId <= 0) return false
 
-            const targetUserId = Number(item.employee_user_id || 0)
-            if (currentUserId > 0 && targetUserId > 0 && currentUserId === targetUserId) {
-                return false
-            }
-
             // Pegawai yang sudah memiliki surat masuk ke card riwayat, bukan kandidat pembuatan lagi.
             return !issuedEmployeeIds.has(employeeId)
         })
-    }, [employees, letters, currentUserId])
+    }, [employees, letters])
 
     const impactedEmployeeOptions = useMemo(() => {
         return impactedEmployees

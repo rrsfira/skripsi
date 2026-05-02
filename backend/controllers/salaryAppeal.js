@@ -836,40 +836,6 @@ router.get(
         if (isFinanceRequester) {
             query += " AND sa.status = 'approved'";
         } else {
-            if (isAdminRequester) {
-            query += ` AND EXISTS (
-                SELECT 1
-                FROM user_roles submitter_ur
-                JOIN roles submitter_role ON submitter_role.id = submitter_ur.role_id
-                WHERE submitter_ur.user_id = e.user_id
-                  AND submitter_role.name = 'hr'
-            )
-            AND EXISTS (
-                SELECT 1
-                FROM user_roles submitter_ur
-                JOIN roles submitter_role ON submitter_role.id = submitter_ur.role_id
-                WHERE submitter_ur.user_id = e.user_id
-                  AND submitter_role.name = 'atasan'
-            )`;
-            } else if (isHrRequester) {
-                query += ` AND NOT (
-                    EXISTS (
-                        SELECT 1
-                        FROM user_roles submitter_ur
-                        JOIN roles submitter_role ON submitter_role.id = submitter_ur.role_id
-                        WHERE submitter_ur.user_id = e.user_id
-                          AND submitter_role.name = 'hr'
-                    )
-                    AND EXISTS (
-                        SELECT 1
-                        FROM user_roles submitter_ur
-                        JOIN roles submitter_role ON submitter_role.id = submitter_ur.role_id
-                        WHERE submitter_ur.user_id = e.user_id
-                          AND submitter_role.name = 'atasan'
-                    )
-                )`;
-            }
-
             if (status) {
                 query += " AND sa.status = ?";
                 params.push(status);
@@ -1017,23 +983,7 @@ router.put("/:id/review", verifyToken, verifyRole(["hr", "admin"]), async (req, 
                         sa.payroll_id,
                         sa.status,
                         sa.reason,
-                        sa.employee_id,
-                        EXISTS (
-                            SELECT 1
-                            FROM employees submitter_emp
-                            JOIN user_roles submitter_ur ON submitter_ur.user_id = submitter_emp.user_id
-                            JOIN roles submitter_role ON submitter_role.id = submitter_ur.role_id
-                            WHERE submitter_emp.id = sa.employee_id
-                              AND submitter_role.name = 'hr'
-                        ) AS is_submitter_hr,
-                        EXISTS (
-                            SELECT 1
-                            FROM employees submitter_emp
-                            JOIN user_roles submitter_ur ON submitter_ur.user_id = submitter_emp.user_id
-                            JOIN roles submitter_role ON submitter_role.id = submitter_ur.role_id
-                            WHERE submitter_emp.id = sa.employee_id
-                            AND submitter_role.name = 'atasan'
-                        ) AS is_submitter_atasan
+                        sa.employee_id
                  FROM salary_appeals sa
                  WHERE sa.id = ? AND sa.deleted_at IS NULL`,
                 [id]
@@ -1044,23 +994,6 @@ router.put("/:id/review", verifyToken, verifyRole(["hr", "admin"]), async (req, 
         }
 
         const appeal = appealRows[0];
-        const submitterIsHr = Number(appeal.is_submitter_hr) === 1;
-        const submitterIsAtasan = Number(appeal.is_submitter_atasan) === 1;
-        const submitterIsHrAtasan = submitterIsHr && submitterIsAtasan;
-
-        if (submitterIsHrAtasan && !requesterIsAdmin) {
-            return res.status(403).json({
-                message:
-                    "Banding gaji dari HR yang menjadi atasan hanya dapat direview oleh direktur (admin)",
-            });
-        }
-
-        if (!submitterIsHrAtasan && requesterIsAdmin && !requesterIsHr) {
-            return res.status(403).json({
-                message:
-                    "Direktur (admin) hanya dapat mereview banding gaji yang diajukan HR yang menjadi atasan",
-            });
-        }
 
         if (appeal.status !== "pending") {
             return res.status(400).json({

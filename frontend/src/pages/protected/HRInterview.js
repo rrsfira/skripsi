@@ -1288,10 +1288,17 @@ export default function HRInterview() {
               }
             }
             try {
-              if (mode === "update" && selectedCandidate?.id) {
+              // Determine interview id: prefer selectedCandidate.id, fallback to interview_id, or find by application_id in data
+              const interviewId =
+                (selectedCandidate && (selectedCandidate.id || selectedCandidate.interview_id)) ||
+                (selectedCandidate && selectedCandidate.application_id
+                  ? (data.find((d) => d.application_id === selectedCandidate.application_id) || {}).id
+                  : null);
+
+              if ((mode === "update" || mode === "reschedule") && interviewId) {
                 // Update interview (reschedule)
                 await axios.put(
-                  `/api/hr/interviews/${selectedCandidate.id}`,
+                  `/api/candidates/admin/interviews/${interviewId}`,
                   {
                     interview_type: form.interview_type,
                     scheduled_date: form.scheduled_date,
@@ -1304,23 +1311,25 @@ export default function HRInterview() {
                 alert("Jadwal interview berhasil diupdate");
                 // Fetch data interview terbaru agar langsung update di UI
                 const res = await axios.get("/api/hr/interviews");
-                setData(
-                  (res.data.interviews || []).map((i) => ({
-                    ...i,
-                    status: i.status || i.interview_status || "scheduled",
-                    job_title:
-                      i.job_title ||
-                      i.position_name ||
-                      i.base_position ||
-                      "Lainnya",
-                    id: i.id || i.interview_id,
-                    candidate_name: i.candidate_name || i.name || "-",
-                    scheduled_date: i.scheduled_date || i.date,
-                    interview_type: i.interview_type || i.type || "-",
-                    interviewer_name:
-                      i.interviewer_name || i.interviewer || i.full_name || "-",
-                  })),
-                );
+                if (activeMenu === "list") {
+                  setData(
+                    (res.data.interviews || []).map((i) => ({
+                      ...i,
+                      status: i.status || i.interview_status || "scheduled",
+                      job_title:
+                        i.job_title ||
+                        i.position_name ||
+                        i.base_position ||
+                        "Lainnya",
+                      id: i.id || i.interview_id,
+                      candidate_name: i.candidate_name || i.name || "-",
+                      scheduled_date: i.scheduled_date || i.date,
+                      interview_type: i.interview_type || i.type || "-",
+                      interviewer_name:
+                        i.interviewer_name || i.interviewer || i.full_name || "-",
+                    })),
+                  );
+                }
               } else {
                 // Buat interview baru
                 const res = await axios.post(
@@ -1401,6 +1410,7 @@ export default function HRInterview() {
                 }
                 // Fetch data interview terbaru agar langsung update di UI
                 const resList = await axios.get("/api/hr/interviews");
+                // After creating we set active menu to 'list', so update state accordingly
                 setData(
                   (resList.data.interviews || []).map((i) => ({
                     ...i,
@@ -1430,10 +1440,39 @@ export default function HRInterview() {
               );
             }
           }}
-          onCancelSubmit={() => {
+          onCancelSubmit={async () => {
             if (!cancelNotes) return alert("Notes wajib diisi!");
-            console.log("CANCEL:", cancelNotes);
-            setIsCancelModalOpen(false);
+            if (!selectedCandidate || !selectedCandidate.id) {
+              return alert("ID interview tidak ditemukan!");
+            }
+            try {
+              // Set result = 'failed' and add notes; mark status completed so it appears in history
+              await axios.put(`/api/admin/interviews/${selectedCandidate.id}/result`, {
+                interviewer_notes: cancelNotes,
+                result: 'failed',
+                status: 'completed',
+              });
+
+              // Update local state: mark interview as completed/failed
+              setData((prev) =>
+                prev.map((item) =>
+                  item.id === selectedCandidate.id
+                    ? { ...item, status: 'completed', result: 'failed', interviewer_notes: cancelNotes }
+                    : item,
+                ),
+              );
+
+              // If currently in schedule view, move to history by switching menu
+              setIsCancelModalOpen(false);
+              alert('Interview berhasil digugurkan dan dipindah ke riwayat.');
+              setActiveMenu('history');
+            } catch (err) {
+              let msg = 'Gagal menggugurkan interview.';
+              if (err?.response?.data?.message) msg += ' ' + err.response.data.message;
+              else if (err?.message) msg += ' ' + err.message;
+              alert(msg);
+              console.error('[Gugurkan Interview Error]', err);
+            }
           }}
         />
 

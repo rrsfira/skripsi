@@ -430,13 +430,7 @@ export default function HRJobOpenings() {
               <input
                 type="date"
                 name="deadline"
-                value={form.deadline ? (() => {
-                  const d = new Date(form.deadline);
-                  const year = d.getFullYear();
-                  const month = String(d.getMonth() + 1).padStart(2, '0');
-                  const day = String(d.getDate()).padStart(2, '0');
-                  return `${year}-${month}-${day}`;
-                })() : ""}
+                value={form.deadline ? form.deadline.substring(0, 10) : ""}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />

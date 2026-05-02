@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2026 at 06:37 PM
+-- Generation Time: May 02, 2026 at 10:08 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -1228,7 +1228,44 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `username`, `role`, `action`, `mod
 (1325, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-01 14:53:26', '2026-05-01 14:53:26'),
 (1326, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-01 14:58:29', '2026-05-01 14:58:29'),
 (1327, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-01 15:41:05', '2026-05-01 15:41:05'),
-(1328, 13, 'user6', 'admin', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-01 16:28:09', '2026-05-01 16:28:09');
+(1328, 13, 'user6', 'admin', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-01 16:28:09', '2026-05-01 16:28:09'),
+(1329, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 13:44:12', '2026-05-02 13:44:12'),
+(1330, 5, 'shafira', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 13:59:36', '2026-05-02 13:59:36'),
+(1331, 5, 'shafira', 'pegawai', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 13:59:56', '2026-05-02 13:59:56'),
+(1332, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 14:02:04', '2026-05-02 14:02:04'),
+(1333, 19, 'user9', 'unknown', 'LOGIN', 'auth', 'Failed login attempt - invalid password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'failed', 'Invalid password', '2026-05-02 14:02:20', '2026-05-02 14:02:20'),
+(1334, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 14:02:24', '2026-05-02 14:02:24'),
+(1335, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 14:36:25', '2026-05-02 14:36:25'),
+(1336, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 14:49:17', '2026-05-02 14:49:17'),
+(1337, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 14:54:35', '2026-05-02 14:54:35'),
+(1338, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 15:01:00', '2026-05-02 15:01:00'),
+(1339, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 15:12:12', '2026-05-02 15:12:12'),
+(1340, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 15:49:51', '2026-05-02 15:49:51'),
+(1341, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 16:03:59', '2026-05-02 16:03:59'),
+(1342, 9, 'user4', 'finance', 'CREATE', 'payroll', 'Generated payroll for employee ID: 12, Period: 4/2026', NULL, '{\"employee_id\":12,\"period_month\":4,\"period_year\":2026,\"net_salary\":5049242,\"status\":\"created\"}', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 16:04:29', '2026-05-02 16:04:29'),
+(1343, 9, 'user4', 'finance', 'CREATE', 'payroll', 'Generated payroll for employee ID: 5, Period: 4/2026', NULL, '{\"employee_id\":5,\"period_month\":4,\"period_year\":2026,\"net_salary\":13386024,\"status\":\"created\"}', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 16:04:54', '2026-05-02 16:04:54'),
+(1344, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 16:05:09', '2026-05-02 16:05:09'),
+(1345, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 16:07:37', '2026-05-02 16:07:37'),
+(1346, 9, 'user4', 'finance', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 16:39:51', '2026-05-02 16:39:51'),
+(1347, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:13:51', '2026-05-02 17:13:51'),
+(1348, 13, 'user6', 'admin', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:17:14', '2026-05-02 17:17:14'),
+(1349, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:17:32', '2026-05-02 17:17:32'),
+(1350, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:20:33', '2026-05-02 17:20:33'),
+(1351, 13, 'user6', 'admin', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:20:47', '2026-05-02 17:20:47'),
+(1352, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:21:17', '2026-05-02 17:21:17'),
+(1353, 13, 'user6', 'admin', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:26:35', '2026-05-02 17:26:35'),
+(1354, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 17:26:53', '2026-05-02 17:26:53'),
+(1355, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 18:23:58', '2026-05-02 18:23:58'),
+(1356, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 18:30:11', '2026-05-02 18:30:11'),
+(1357, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 19:07:04', '2026-05-02 19:07:04'),
+(1358, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 19:07:23', '2026-05-02 19:07:23'),
+(1359, 19, 'user9', 'unknown', 'LOGIN', 'auth', 'Failed login attempt - invalid password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'failed', 'Invalid password', '2026-05-02 19:11:53', '2026-05-02 19:11:53'),
+(1360, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 19:11:56', '2026-05-02 19:11:56'),
+(1361, 12, 'user5', 'unknown', 'LOGIN', 'auth', 'Failed login attempt - invalid password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'failed', 'Invalid password', '2026-05-02 19:12:05', '2026-05-02 19:12:05'),
+(1362, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 19:12:09', '2026-05-02 19:12:09'),
+(1363, 19, 'user9', 'kandidat', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 19:26:56', '2026-05-02 19:26:56'),
+(1364, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 19:27:12', '2026-05-02 19:27:12'),
+(1365, 12, 'user5', 'hr', 'LOGIN', 'auth', 'Successful login', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', 'success', NULL, '2026-05-02 19:54:24', '2026-05-02 19:54:24');
 
 -- --------------------------------------------------------
 
@@ -1246,12 +1283,9 @@ CREATE TABLE `allowance` (
   `other_allowance` decimal(12,2) NOT NULL DEFAULT 0.00,
   `other_deduction` decimal(12,2) NOT NULL DEFAULT 0.00,
   `notes` text DEFAULT NULL,
-  `status` enum('draft','submitted','approved','rejected','done') NOT NULL DEFAULT 'draft',
+  `status` enum('draft','submitted','done') NOT NULL DEFAULT 'draft',
   `submitted_by` int(11) NOT NULL,
   `submitted_at` datetime DEFAULT NULL,
-  `reviewed_by` int(11) DEFAULT NULL,
-  `reviewed_at` datetime DEFAULT NULL,
-  `review_notes` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1260,18 +1294,19 @@ CREATE TABLE `allowance` (
 -- Dumping data for table `allowance`
 --
 
-INSERT INTO `allowance` (`id`, `payroll_id`, `employee_id`, `period_month`, `period_year`, `bonus`, `other_allowance`, `other_deduction`, `notes`, `status`, `submitted_by`, `submitted_at`, `reviewed_by`, `reviewed_at`, `review_notes`, `created_at`, `updated_at`) VALUES
-(1, NULL, 5, 2, 2026, 100000.00, 1000000.00, 0.00, 'mengikuti business trip', 'approved', 8, '2026-03-06 21:44:58', 9, '2026-03-06 21:45:21', NULL, '2026-03-06 14:44:51', '2026-03-06 14:45:21'),
-(2, NULL, 8, 2, 2026, 1000000.00, 3000000.00, 0.00, 'bagus', 'rejected', 13, NULL, NULL, NULL, 'woi', '2026-03-06 15:48:22', '2026-04-30 17:13:59'),
-(3, NULL, 12, 2, 2026, 200000.00, 0.00, 0.00, NULL, 'submitted', 13, NULL, NULL, NULL, NULL, '2026-03-06 15:51:00', '2026-03-06 15:51:00'),
-(4, NULL, 13, 2, 2026, 5000000.00, 5000000.00, 0.00, 'iseng aja', 'submitted', 12, NULL, NULL, NULL, NULL, '2026-03-06 16:06:40', '2026-03-06 16:06:40'),
-(6, NULL, 13, 3, 2026, 3500000.00, 4000000.00, 0.00, NULL, 'approved', 12, NULL, 13, '2026-05-01 00:32:26', NULL, '2026-03-07 16:08:12', '2026-04-30 17:32:26'),
-(7, NULL, 1, 2, 2026, 200000.00, 1500000.00, 0.00, NULL, 'rejected', 12, NULL, NULL, NULL, 'testestes', '2026-03-08 14:19:13', '2026-04-30 17:14:23'),
-(8, NULL, 5, 3, 2026, 2000000.00, 1200000.00, 0.00, NULL, 'submitted', 12, NULL, NULL, NULL, NULL, '2026-03-10 16:44:20', '2026-03-10 16:44:20'),
-(9, NULL, 9, 3, 2026, 500000.00, 2200000.00, 0.00, 'test', 'submitted', 12, NULL, NULL, NULL, NULL, '2026-04-22 16:28:52', '2026-04-22 16:28:52'),
-(10, NULL, 2, 4, 2026, 20000.00, 1400000.00, 0.00, 'test', 'rejected', 12, NULL, NULL, NULL, NULL, '2026-04-30 11:33:04', '2026-04-30 17:10:25'),
-(11, NULL, 3, 4, 2026, 2000.00, 1500000.00, 0.00, 'test3', 'rejected', 12, NULL, 12, NULL, 'testes', '2026-04-30 15:33:00', '2026-04-30 17:24:42'),
-(12, NULL, 5, 5, 2026, 2000000.00, 1200000.00, 0.00, 'mei', 'approved', 12, '2026-05-01 00:29:27', 13, '2026-05-01 00:30:47', NULL, '2026-04-30 17:29:27', '2026-04-30 17:30:47');
+INSERT INTO `allowance` (`id`, `payroll_id`, `employee_id`, `period_month`, `period_year`, `bonus`, `other_allowance`, `other_deduction`, `notes`, `status`, `submitted_by`, `submitted_at`, `created_at`, `updated_at`) VALUES
+(1, NULL, 5, 2, 2026, 100000.00, 1000000.00, 0.00, 'mengikuti business trip', 'done', 8, '2026-03-06 21:44:58', '2026-03-06 14:44:51', '2026-05-02 16:50:40'),
+(2, NULL, 8, 2, 2026, 1000000.00, 3000000.00, 0.00, 'bagus', 'submitted', 13, NULL, '2026-03-06 15:48:22', '2026-05-02 16:31:50'),
+(3, NULL, 12, 2, 2026, 200000.00, 0.00, 0.00, NULL, 'done', 13, NULL, '2026-03-06 15:51:00', '2026-05-02 16:50:52'),
+(4, NULL, 13, 2, 2026, 5000000.00, 5000000.00, 0.00, 'iseng aja', 'done', 12, NULL, '2026-03-06 16:06:40', '2026-05-02 16:51:03'),
+(6, NULL, 13, 3, 2026, 3500000.00, 4000000.00, 0.00, NULL, 'submitted', 12, NULL, '2026-03-07 16:08:12', '2026-05-02 16:31:50'),
+(7, NULL, 1, 2, 2026, 200000.00, 1500000.00, 0.00, NULL, 'submitted', 12, NULL, '2026-03-08 14:19:13', '2026-05-02 16:31:50'),
+(8, NULL, 5, 3, 2026, 2000000.00, 1200000.00, 0.00, NULL, 'submitted', 12, NULL, '2026-03-10 16:44:20', '2026-03-10 16:44:20'),
+(9, NULL, 9, 3, 2026, 500000.00, 2200000.00, 0.00, 'test', 'submitted', 12, NULL, '2026-04-22 16:28:52', '2026-04-22 16:28:52'),
+(10, NULL, 2, 4, 2026, 20000.00, 1400000.00, 0.00, 'test', 'submitted', 12, NULL, '2026-04-30 11:33:04', '2026-05-02 16:31:50'),
+(11, NULL, 3, 4, 2026, 2000.00, 1500000.00, 0.00, 'test3', 'submitted', 12, NULL, '2026-04-30 15:33:00', '2026-05-02 16:31:50'),
+(12, NULL, 5, 5, 2026, 2000000.00, 1200000.00, 0.00, 'mei', 'submitted', 12, '2026-05-01 00:29:27', '2026-04-30 17:29:27', '2026-05-02 16:31:50'),
+(13, NULL, 12, 5, 2026, 5000000.00, 2000000.00, 0.00, 'TESSSSSSSSSSS', 'submitted', 12, '2026-05-02 23:27:38', '2026-05-02 16:27:38', '2026-05-02 16:27:38');
 
 -- --------------------------------------------------------
 
@@ -1325,10 +1360,10 @@ INSERT INTO `applications` (`id`, `candidate_id`, `job_opening_id`, `cover_lette
 (11, 2, 3, '', 'uploads/candidate_documents/user10/LamaranMentor_742026/cv_file-1775574699818-59952087.png', 'uploads/candidate_documents/user10/LamaranMentor_742026/portfolio_file-1775574699972-365033028.pdf', 'uploads/candidate_documents/user10/LamaranMentor_742026/ijazah_file-1775574699846-456199464.pdf', 'uploads/candidate_documents/user10/LamaranMentor_742026/transcript_file-1775574699847-720335299.pdf', 'uploads/candidate_documents/user10/LamaranMentor_742026/certificate_file-1775574699857-908771532.pdf', 'uploads/candidate_documents/user10/LamaranMentor_742026/ktp_file-1775574699840-698198222.jpeg', 'uploads/candidate_documents/user10/LamaranMentor_742026/photo_file-1775574699845-746592761.jpeg', NULL, NULL, 'uploads/candidate_documents/user10/LamaranMentor_742026/skck_file-1775574699961-298453225.pdf', NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', NULL, NULL, NULL, 'wawancara', NULL, '2026-04-07 15:11:39', '2026-04-11 10:09:04', 12, '2026-04-07 15:11:39', '2026-04-11 10:09:04', NULL, NULL, NULL, NULL),
 (12, 1, 2, '', 'uploads/candidate_documents/user9/LamaranMentor_742026/cv_file-1775580455257-379342257.png', 'uploads/candidate_documents/user9/LamaranMentor_742026/portfolio_file-1775580455341-838203375.png', 'uploads/candidate_documents/user9/LamaranMentor_742026/ijazah_file-1775580455303-845446548.png', 'uploads/candidate_documents/user9/LamaranMentor_742026/transcript_file-1775580455312-369990556.png', 'uploads/candidate_documents/user9/LamaranMentor_742026/certificate_file-1775580455322-84286997.png', 'uploads/candidate_documents/user9/LamaranMentor_742026/ktp_file-1775580455283-305920768.png', 'uploads/candidate_documents/user9/LamaranMentor_742026/photo_file-1775580455298-232180247.jpeg', NULL, NULL, 'uploads/candidate_documents/user9/LamaranMentor_742026/skck_file-1775580455333-289482475.png', 'uploads/candidate_documents/user9/LamaranMentor_742026/other_document-1775580455350-561994919.pdf', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', NULL, NULL, NULL, NULL, 'canceled_by_company', 'Lowongan dibatalkan oleh perusahaan', '2026-04-07 16:47:35', '2026-04-10 12:18:30', 12, '2026-04-07 16:47:35', '2026-04-10 12:18:30', NULL, NULL, NULL, NULL),
 (13, 2, 2, '', 'uploads/candidate_documents/user10/LamaranMentor_842026/cv_file-1775639775327-75627435.png', 'uploads/candidate_documents/user10/LamaranMentor_842026/portfolio_file-1775639775495-868260755.png', 'uploads/candidate_documents/user10/LamaranMentor_842026/ijazah_file-1775639775405-202309774.png', 'uploads/candidate_documents/user10/LamaranMentor_842026/transcript_file-1775639775422-259145704.png', 'uploads/candidate_documents/user10/LamaranMentor_842026/certificate_file-1775639775440-683590516.png', 'uploads/candidate_documents/user10/LamaranMentor_842026/ktp_file-1775639775375-600296445.png', 'uploads/candidate_documents/user10/LamaranMentor_842026/photo_file-1775639775404-783206375.jpeg', NULL, NULL, 'uploads/candidate_documents/user10/LamaranMentor_842026/skck_file-1775639775464-430367411.png', NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', NULL, NULL, NULL, NULL, 'canceled_by_company', 'Lowongan dibatalkan oleh perusahaan', '2026-04-08 09:16:15', '2026-04-10 12:18:30', 12, '2026-04-08 09:16:15', '2026-04-10 12:18:30', NULL, NULL, NULL, NULL),
-(15, 1, 4, '', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/cv_file-1775839841911-634736524.png', NULL, 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/ijazah_file-1775839841952-980946887.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/transcript_file-1775839841964-745220920.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/certificate_file-1775839841978-482680946.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/ktp_file-1775839841931-455345566.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/photo_file-1775839841950-410427064.jpg', NULL, NULL, 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/skck_file-1775839841993-311370914.pdf', NULL, NULL, NULL, NULL, NULL, NULL, 'lolos_dokumen', NULL, '2026-04-10 16:50:42', '2026-04-11 15:59:15', 12, '2026-04-10 16:50:42', '2026-04-11 15:59:15', NULL, NULL, NULL, NULL),
-(16, 1, 5, '', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/cv_file-1775839921445-997328734.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/portfolio_file-1775839921503-529258181.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/ijazah_file-1775839921477-737989733.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/transcript_file-1775839921485-932540907.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/certificate_file-1775839921498-99990999.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/ktp_file-1775839921462-403122168.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/photo_file-1775839921476-307968120.jpg', NULL, NULL, 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/skck_file-1775839921500-962207437.pdf', NULL, NULL, NULL, NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'wawancara', NULL, '2026-04-10 16:52:01', '2026-04-10 17:56:35', 12, '2026-04-10 16:52:01', '2026-04-10 17:56:35', NULL, NULL, NULL, NULL),
+(15, 1, 4, '', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/cv_file-1775839841911-634736524.png', NULL, 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/ijazah_file-1775839841952-980946887.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/transcript_file-1775839841964-745220920.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/certificate_file-1775839841978-482680946.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/ktp_file-1775839841931-455345566.png', 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/photo_file-1775839841950-410427064.jpg', NULL, NULL, 'uploads/candidate_documents/user9/LamaranFinanceteam_1042026/skck_file-1775839841993-311370914.pdf', NULL, NULL, NULL, NULL, NULL, NULL, 'diterima', NULL, '2026-04-10 16:50:42', '2026-04-11 15:59:15', 12, '2026-04-10 16:50:42', '2026-05-02 15:01:58', NULL, NULL, NULL, NULL),
+(16, 1, 5, '', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/cv_file-1775839921445-997328734.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/portfolio_file-1775839921503-529258181.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/ijazah_file-1775839921477-737989733.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/transcript_file-1775839921485-932540907.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/certificate_file-1775839921498-99990999.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/ktp_file-1775839921462-403122168.png', 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/photo_file-1775839921476-307968120.jpg', NULL, NULL, 'uploads/candidate_documents/user9/LamaranMarketingsalesmanager_1042026/skck_file-1775839921500-962207437.pdf', NULL, NULL, NULL, NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'withdrawn', NULL, '2026-04-10 16:52:01', '2026-04-10 17:56:35', 12, '2026-04-10 16:52:01', '2026-05-02 18:24:44', NULL, NULL, '2026-05-02 18:24:44', 'maaf pak'),
 (17, 3, 3, '', 'uploads/candidate_documents/user11/LamaranMentor_1142026/cv_file-1775844883613-549624619.png', 'uploads/candidate_documents/user11/LamaranMentor_1142026/portfolio_file-1775844883693-204424361.pdf', 'uploads/candidate_documents/user11/LamaranMentor_1142026/ijazah_file-1775844883654-889110588.png', 'uploads/candidate_documents/user11/LamaranMentor_1142026/transcript_file-1775844883663-468248894.png', 'uploads/candidate_documents/user11/LamaranMentor_1142026/certificate_file-1775844883680-523658284.png', 'uploads/candidate_documents/user11/LamaranMentor_1142026/ktp_file-1775844883640-176068444.png', 'uploads/candidate_documents/user11/LamaranMentor_1142026/photo_file-1775844883651-998440548.jpeg', NULL, NULL, 'uploads/candidate_documents/user11/LamaranMentor_1142026/skck_file-1775844883692-401765417.png', NULL, NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', NULL, NULL, NULL, 'wawancara', NULL, '2026-04-10 18:14:43', '2026-04-11 14:35:11', 12, '2026-04-10 18:14:43', '2026-04-11 14:35:11', NULL, NULL, NULL, NULL),
-(18, 2, 5, '', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/cv_file-1775921917521-632126170.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/portfolio_file-1775921917673-71461695.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/ijazah_file-1775921917583-480310249.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/transcript_file-1775921917597-740647380.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/certificate_file-1775921917613-692970212.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/ktp_file-1775921917553-317266830.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/photo_file-1775921917581-307097285.jpg', NULL, NULL, 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/skck_file-1775921917637-526617472.png', NULL, NULL, NULL, NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'wawancara', NULL, '2026-04-11 15:38:37', '2026-04-11 16:18:21', 12, '2026-04-11 15:38:37', '2026-04-11 16:18:21', NULL, NULL, NULL, NULL),
+(18, 2, 5, '', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/cv_file-1775921917521-632126170.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/portfolio_file-1775921917673-71461695.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/ijazah_file-1775921917583-480310249.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/transcript_file-1775921917597-740647380.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/certificate_file-1775921917613-692970212.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/ktp_file-1775921917553-317266830.png', 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/photo_file-1775921917581-307097285.jpg', NULL, NULL, 'uploads/candidate_documents/user10/LamaranMarketingsalesmanager_1142026/skck_file-1775921917637-526617472.png', NULL, NULL, NULL, NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'wawancara', NULL, '2026-04-11 15:38:37', '2026-05-02 19:23:58', 12, '2026-04-11 15:38:37', '2026-05-02 19:23:58', NULL, NULL, NULL, NULL),
 (19, 3, 5, '', 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/cv_file-1775922874904-698674101.png', 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/portfolio_file-1775922875061-738079593.png', 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/ijazah_file-1775922874939-865833671.png', 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/transcript_file-1775922874949-938651711.png', 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/certificate_file-1775922874961-864836090.png', 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/ktp_file-1775922874916-943160930.png', 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/photo_file-1775922874930-426930211.png', NULL, NULL, 'uploads/candidate_documents/user11/LamaranMarketingsalesmanager_1142026/skck_file-1775922875006-3339908.png', NULL, NULL, NULL, NULL, 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'wawancara', NULL, '2026-04-11 15:54:35', '2026-04-11 16:09:05', 12, '2026-04-11 15:54:35', '2026-04-11 16:09:05', NULL, NULL, NULL, NULL),
 (20, 3, 4, '', 'uploads/candidate_documents/user11/LamaranFinanceteam_1142026/cv_file-1775923014758-194104141.png', NULL, 'uploads/candidate_documents/user11/LamaranFinanceteam_1142026/ijazah_file-1775923014783-212504689.png', 'uploads/candidate_documents/user11/LamaranFinanceteam_1142026/transcript_file-1775923014794-543020408.png', 'uploads/candidate_documents/user11/LamaranFinanceteam_1142026/certificate_file-1775923014806-797178440.png', 'uploads/candidate_documents/user11/LamaranFinanceteam_1142026/ktp_file-1775923014768-332132321.png', 'uploads/candidate_documents/user11/LamaranFinanceteam_1142026/photo_file-1775923014782-917185611.jpeg', NULL, NULL, 'uploads/candidate_documents/user11/LamaranFinanceteam_1142026/skck_file-1775923014823-829770872.png', NULL, NULL, NULL, NULL, NULL, NULL, 'lolos_dokumen', NULL, '2026-04-11 15:56:54', '2026-04-11 15:59:15', 12, '2026-04-11 15:56:54', '2026-04-11 15:59:15', NULL, NULL, NULL, NULL),
 (21, 2, 4, '', 'uploads/candidate_documents/user10/LamaranFinanceteam_1142026/cv_file-1775923091684-2985847.png', NULL, 'uploads/candidate_documents/user10/LamaranFinanceteam_1142026/ijazah_file-1775923091723-320450994.png', 'uploads/candidate_documents/user10/LamaranFinanceteam_1142026/transcript_file-1775923091732-721514946.png', 'uploads/candidate_documents/user10/LamaranFinanceteam_1142026/certificate_file-1775923091742-802935976.png', 'uploads/candidate_documents/user10/LamaranFinanceteam_1142026/ktp_file-1775923091693-468408541.png', 'uploads/candidate_documents/user10/LamaranFinanceteam_1142026/photo_file-1775923091711-879060577.png', NULL, NULL, 'uploads/candidate_documents/user10/LamaranFinanceteam_1142026/skck_file-1775923091761-403414020.png', NULL, NULL, NULL, NULL, NULL, NULL, 'wawancara', NULL, '2026-04-11 15:58:11', '2026-04-11 18:45:04', 12, '2026-04-11 15:58:11', '2026-04-11 18:45:04', NULL, NULL, NULL, NULL);
@@ -3445,7 +3480,10 @@ INSERT INTO `attendance` (`id`, `employee_id`, `date`, `check_in`, `check_out`, 
 (2368, 7, '2026-04-30', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-05-01 22:00:25', '2026-05-01 15:00:25'),
 (2369, 9, '2026-04-30', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-05-01 22:00:25', '2026-05-01 15:00:25'),
 (2370, 12, '2026-04-30', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-05-01 22:00:25', '2026-05-01 15:00:25'),
-(2371, 15, '2026-04-30', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-05-01 22:00:25', '2026-05-01 15:00:25');
+(2371, 15, '2026-04-30', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-05-01 22:00:25', '2026-05-01 15:00:25'),
+(2372, 5, '2026-05-01', NULL, NULL, 'libur', 0, 0, NULL, 0.00, 'Libur: Hari Buruh Internasional', '2026-05-02 20:59:37', '2026-05-02 13:59:37'),
+(2374, 12, '2026-05-01', NULL, NULL, 'libur', 0, 0, NULL, 0.00, 'Libur: Hari Buruh Internasional', '2026-05-02 23:05:17', '2026-05-02 16:05:17'),
+(2376, 12, '2026-05-02', NULL, NULL, 'alpha', 0, 0, NULL, 0.00, NULL, '2026-05-03 00:17:41', '2026-05-02 17:17:41');
 
 -- --------------------------------------------------------
 
@@ -3598,11 +3636,11 @@ INSERT INTO `employees` (`id`, `user_id`, `employee_code`, `full_name`, `gender`
 (1, 2, 'EMP001', 'Yuliana Putri ', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '08123456789', 'yulianaputri@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '2026-01-09', 8000000.00, 'permanent', 1, 12, 12, 176, 176, 'evaluasi_hr', '2026-05-01 22:00:25', NULL, '2026-01-12 14:43:08', '2026-05-01 22:00:25', NULL),
 (2, 1, 'EMP002', 'Dimas Setia Budi', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '08111111111', 'dimassetiabudi@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 9, NULL, 7000000.00, 'permanent', 1, 12, 12, 27, 175, 'evaluasi_hr', '2026-05-01 22:00:25', NULL, '2026-01-12 14:44:10', '2026-05-01 22:00:25', NULL),
 (3, 3, 'EMP003', 'Gita Safitri', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '22222222', 'gitasafitri@otakkanan.co.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '2026-01-10', 8000000.00, 'permanent', 1, 12, 12, 27, 151, 'evaluasi_hr', '2026-05-01 22:00:25', NULL, '2026-01-13 14:50:44', '2026-05-01 22:00:25', NULL),
-(5, 5, 'EMP004', 'shafira', 'female', 'Jember', '2003-04-23', 'single', 'Indonesian', 'GWA 1', '0911097213921', 'shafira@gmail.com', '9012840194819041', '092438', '0291840219', '9082018421', 'Reihan Rachma Shafira', 'BNI', 'uploads/employee_documents/ktp_document-1772111243307-844121372.pdf', 'uploads/employee_documents/diploma_document-1772469288003-392959580.pdf', NULL, 5, '2026-02-16', 7000000.00, 'permanent', 1, 12, 9, 5, 146, 'evaluasi_hr', '2026-05-01 19:05:04', NULL, '2026-02-20 16:21:34', '2026-05-01 19:05:04', NULL),
+(5, 5, 'EMP004', 'shafira', 'female', 'Jember', '2003-04-22', 'single', 'Indonesian', 'GWA 1', '0911097213921', 'shafira@gmail.com', '9012840194819041', '092438', '0291840219', '9082018421', 'Reihan Rachma Shafira', 'BNI', 'uploads/employee_documents/ktp_document-1772111243307-844121372.pdf', 'uploads/employee_documents/diploma_document-1772469288003-392959580.pdf', NULL, 5, '2026-02-16', 7000000.00, 'permanent', 1, 12, 9, 5, 146, 'evaluasi_hr', '2026-05-02 20:59:57', NULL, '2026-02-20 16:21:34', '2026-05-02 21:01:49', NULL),
 (7, 7, 'EMP005', 'aku', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '0824019248', 'user2@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, '2026-02-20', 9000000.00, 'permanent', 1, 12, 12, 27, 175, 'evaluasi_hr', '2026-05-01 22:00:25', NULL, '2026-02-22 21:17:07', '2026-05-01 22:00:25', NULL),
 (8, 8, 'EMP006', 'user3', 'male', NULL, NULL, NULL, 'Indonesian', NULL, '08324209432', 'user3@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, '2026-02-19', 10000000.00, 'permanent', 1, 12, 10, 20, 141, 'evaluasi_hr', '2026-05-01 19:05:41', NULL, '2026-02-22 21:20:01', '2026-05-01 19:05:41', NULL),
 (9, 9, 'EMP007', 'user4', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user4@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 10, '2026-02-24', 9000000.00, 'permanent', 1, 12, 12, 20, 141, 'evaluasi_hr', '2026-05-01 22:00:25', NULL, '2026-02-25 16:11:00', '2026-05-01 22:00:25', NULL),
-(12, 12, 'EMP008', 'HR', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user5@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 12, '2026-02-27', 8500000.00, 'permanent', 1, 12, 12, 20, 144, 'evaluasi_hr', '2026-05-01 22:00:25', NULL, '2026-02-27 15:18:28', '2026-05-01 22:00:25', NULL),
+(12, 12, 'EMP008', 'HR', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user5@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 12, '2026-02-27', 8500000.00, 'permanent', 1, 12, 12, 21, 145, 'evaluasi_hr', '2026-05-03 00:17:43', NULL, '2026-02-27 15:18:28', '2026-05-03 00:17:43', NULL),
 (13, 13, 'EMP009', 'DIREKTUR', 'male', NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user6@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '2026-02-27', 15000000.00, 'permanent', 1, 12, 10, 27, 170, 'evaluasi_hr', '2026-05-01 17:45:15', NULL, '2026-02-27 15:28:56', '2026-05-01 17:45:15', NULL),
 (15, 16, 'EMP010', 'user7', NULL, NULL, NULL, NULL, 'Indonesian', NULL, '-', 'user7@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 13, '2026-03-08', 5500000.00, 'permanent', 1, 12, 12, 175, 175, 'evaluasi_hr', '2026-05-01 22:00:25', NULL, '2026-03-10 23:20:42', '2026-05-01 22:00:25', NULL);
 
@@ -3639,16 +3677,13 @@ INSERT INTO `interviews` (`id`, `candidate_id`, `application_id`, `scheduled_dat
 (1, 1, 4, '2026-04-04 16:05:00', 90, 'offline', '', 'Graha Pena', 12, 4, 'hire', 'bentar y', 'passed', 'completed', '2026-03-30 08:22:16', '2026-04-10 17:55:12'),
 (6, 1, 9, '2026-04-06 10:30:00', 90, 'online', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', '', 12, NULL, NULL, NULL, NULL, 'canceled', '2026-04-03 15:26:20', '2026-04-10 14:27:02'),
 (9, 3, 10, '2026-04-13 13:00:00', 90, 'offline', '', 'Graha Pena', 12, 3, 'reject', 'wait', 'failed', 'completed', '2026-04-08 09:48:32', '2026-04-10 18:06:07'),
-(13, 1, 12, '2026-04-08 07:30:00', 90, 'offline', NULL, 'grapen', 12, NULL, NULL, NULL, NULL, 'canceled_by_company', '2026-04-08 15:28:08', '2026-04-10 12:18:30'),
-(15, 1, 16, '2026-04-14 13:00:00', 90, 'offline', '', 'Grapen', 12, NULL, '', NULL, '', 'rescheduled', '2026-04-10 17:56:35', '2026-04-11 16:34:44'),
+(15, 1, 16, '2026-04-14 13:00:00', 90, 'offline', '', 'Grapen', 12, NULL, '', NULL, '', 'rescheduled', '2026-04-10 17:56:35', '2026-05-02 18:29:43'),
 (16, 2, 11, '2026-04-13 10:00:00', 90, 'offline', NULL, 'Grapen', 12, NULL, NULL, NULL, NULL, 'scheduled', '2026-04-11 10:09:04', '2026-04-11 18:24:14'),
-(17, 1, 9, '2026-04-13 10:30:00', 90, 'offline', NULL, 'upn', 12, 4, 'hire', '', 'passed', 'completed', '2026-04-11 11:37:54', '2026-04-12 09:04:48'),
-(18, 3, 17, '2026-04-11 10:00:00', 90, 'offline', NULL, 'manasaja', 12, 4, 'consider', '', 'pending', 'completed', '2026-04-11 14:35:11', '2026-04-11 15:17:17'),
+(17, 1, 15, '2026-04-13 10:30:00', 90, 'offline', NULL, 'upn', 12, 4, 'hire', '', 'passed', 'completed', '2026-04-11 11:37:54', '2026-05-02 14:57:11'),
+(18, 3, 17, '2026-04-11 10:00:00', 90, 'offline', NULL, 'manasaja', 12, NULL, NULL, NULL, NULL, 'scheduled', '2026-04-11 14:35:11', '2026-05-02 19:18:30'),
 (19, 3, 19, '2026-04-14 10:00:00', 90, 'offline', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'Graha Pena', 12, NULL, NULL, NULL, NULL, 'rescheduled', '2026-04-11 16:09:05', '2026-04-11 16:25:00'),
-(20, 2, 18, '2026-04-14 14:30:00', 90, 'offline', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', 'Grapen', 12, NULL, NULL, NULL, NULL, 'rescheduled', '2026-04-11 16:18:21', '2026-04-11 16:35:20'),
-(21, 2, 21, '2026-04-14 10:35:00', 90, 'online', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', '', 12, NULL, NULL, NULL, NULL, 'canceled', '2026-04-11 16:36:09', '2026-04-11 16:36:32'),
-(22, 2, 21, '2026-04-15 11:30:00', 60, 'offline', '', 'adadeh', 12, NULL, NULL, NULL, NULL, 'canceled', '2026-04-11 18:32:24', '2026-04-11 18:37:47'),
-(23, 2, 21, '2026-04-13 13:44:00', 30, 'online', 'https://ilmu2.upnjatim.ac.id/', '', 12, NULL, NULL, NULL, NULL, 'scheduled', '2026-04-11 18:45:04', '2026-04-11 18:45:04');
+(21, 2, 21, '2026-04-14 10:35:00', 90, 'online', 'https://siamik.upnjatim.ac.id/html/siamik/index.asp', '', 12, NULL, NULL, NULL, NULL, 'scheduled', '2026-04-11 16:36:09', '2026-05-02 19:40:04'),
+(24, 2, 18, '2026-05-04 07:30:00', 60, 'offline', '', 'iwaw', 12, NULL, NULL, NULL, NULL, 'scheduled', '2026-05-02 19:23:58', '2026-05-02 19:23:58');
 
 -- --------------------------------------------------------
 
@@ -3688,7 +3723,9 @@ INSERT INTO `job_openings` (`id`, `position_id`, `base_position`, `title`, `desc
 (3, 6, 'UI/UX Designer', 'Hiring Mentor UI/UX Designer', 'Kami membuka lowongan untuk posisi Mentor UI/UX Designer yang akan bertanggung jawab dalam membimbing, mengarahkan, serta mengembangkan kemampuan di bidang desain antarmuka dan pengalaman pengguna.\n\nBergabunglah dengan tim kami dan kembangkan karir Anda!', '- Memiliki pengalaman di bidang UI/UX Design (minimal 1–2 tahun lebih disukai)\n- Menguasai tools desain seperti Figma, Adobe XD, atau Sketch\n- Memahami prinsip UI/UX, usability, dan user-centered design\n- Memiliki kemampuan komunikasi dan mentoring yang baik\n- Mampu bekerja secara remote maupun onsite\n- Memiliki portofolio desain menjadi nilai tambah\n\nNilai Tambah\n- Pernah menjadi mentor, trainer, atau pengajar\n- Memahami UX research (user persona, usability testing, dll)\n- Terbiasa bekerja dalam tim produk atau startup', 'Memberikan mentoring dan arahan terkait konsep dasar hingga lanjutan UI/UX Design\nMembimbing peserta dalam proses design thinking (research, ideation, prototyping, testing)\nMelakukan review dan evaluasi hasil desain peserta\nMemberikan feedback yang konstruktif dan solutif\nMembantu peserta memahami tools desain seperti Figma, Adobe XD, atau tools sejenis\nMengikuti perkembangan tren UI/UX terbaru dan membagikannya kepada peserta', 1, 'contract', 3000000.00, 7000000.00, 'Bandung', '2026-04-29', 'closed', 'ongoing', 12, '2026-03-24 09:47:45', '2026-04-30 16:45:26', NULL),
 (4, 11, '', 'Open Hiring Finance Staff', 'open', '- wonge jujur\n- isok ngitung\n- wes pokoke gadue kenalan ordal\n', '- ngitung\n- ngelola duit\n- nggae slip gaji', 1, 'contract', 3000000.00, 6000000.00, 'Surabaya', '2026-04-29', 'closed', 'ongoing', 12, '2026-03-24 11:10:24', '2026-04-30 16:45:26', NULL),
 (5, 7, '', 'Hiring Marketing Manager', 'OPEN HIRING REK', '- S3 Marketing\n- Pengalaman Kerja 10 tahun\n- Umur 20 tahun\n- Tidak punya ordal', 'bertanggung jawab atas income perusahaan', 2, 'contract', 2500000.00, 8000000.00, 'Darjo', '2026-04-29', 'closed', 'ongoing', 12, '2026-03-24 11:18:16', '2026-04-30 16:45:26', NULL),
-(6, 9, '', 'Open', 'open ges', '- isok opoae', '- jujur\n- baik\n- tanggung jawab', 1, 'intern', 1000000.00, 1500000.00, 'Sabang', '2026-04-19', 'closed', 'ongoing', 12, '2026-04-12 13:55:09', '2026-04-20 02:55:57', NULL);
+(6, 9, '', 'Open', 'open ges', '- isok opoae', '- jujur\n- baik\n- tanggung jawab', 1, 'intern', 1000000.00, 1500000.00, 'Sabang', '2026-04-19', 'closed', 'ongoing', 12, '2026-04-12 13:55:09', '2026-04-20 02:55:57', NULL),
+(7, 11, '', 'HIRING CUY', 'DAFTAR REK ', '- bisa apapun dengan bayaran sepeser', '- JUJUR\n- TANGGUNG JAWAB', 1, 'permanent', 1000.00, 100000.00, 'Surabaya', '2027-05-30', 'open', 'ongoing', 12, '2026-05-02 14:39:54', '2026-05-02 14:46:32', NULL),
+(8, 6, 'Frontend Web Developer', 'HIRING', 'masih buka', '- bisa dipikir sendiri menurut apa posisi yang dicari ', '- pokoknya tanggungjawab\n- jujur\n- ganteng', 1, 'contract', 1000.00, 10000.00, 'di seluruh kota yang butuh', '2026-06-30', 'open', 'ongoing', 12, '2026-05-02 14:48:37', '2026-05-02 14:48:37', NULL);
 
 -- --------------------------------------------------------
 
@@ -3730,6 +3767,37 @@ INSERT INTO `leave_requests` (`id`, `employee_id`, `leave_type`, `start_date`, `
 (18, 8, 'izin', '2026-03-30', '2026-03-30', 1, 'izin setengah hari', 'uploads/izin/leave-1774843406984-473384864.png', 'pending', NULL, NULL, '2026-03-30 11:03:26', '2026-03-30 11:03:26'),
 (19, 8, 'cuti_tahunan', '2026-05-02', '2026-05-02', 1, 'kecepit', 'uploads/cuti/leave-1777632407937-146023556.pdf', 'approved', 13, '2026-05-01 18:05:05', '2026-05-01 17:46:47', '2026-05-01 18:05:05'),
 (20, 5, 'cuti_tahunan', '2026-05-02', '2026-05-02', 1, 'kecepit', 'uploads/cuti/leave-1777637132106-922115267.png', 'pending', NULL, NULL, '2026-05-01 19:05:32', '2026-05-01 19:05:32');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token_hash` varchar(255) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `used_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`id`, `user_id`, `token_hash`, `expires_at`, `used_at`, `created_at`) VALUES
+(1, 5, '9db57d33013ea7608ce464cfc64252da10c3ebcf2e7344ffb165e2c06ea4ea7c', '2026-05-03 01:45:25', NULL, '2026-05-03 00:45:25'),
+(2, 5, '6204236a2d984c5a3e3dc2b4181d941f79a5b4751fae69d3efb52ef228f3df29', '2026-05-03 01:46:32', NULL, '2026-05-03 00:46:32'),
+(3, 5, '9d082bd50e6605efbd0e03546ab90c1d37f2f6b1e883a03ac41f63f969774c49', '2026-05-03 01:51:13', NULL, '2026-05-03 00:51:13'),
+(4, 5, '0f22e14b807b49ee87cbea847bb53f94ca8ed013eafc43642ca2b06e2998002e', '2026-05-03 01:51:51', NULL, '2026-05-03 00:51:51'),
+(5, 5, '3e30f159fbe5d9b04c9cec7885fab5144951a89d59512de20c00948285455e63', '2026-05-03 01:53:39', NULL, '2026-05-03 00:53:39'),
+(6, 5, 'cba9983952b6b52b713e60006b827db0fbf97d3c31681d47e51159e18b42b821', '2026-05-03 01:54:03', NULL, '2026-05-03 00:54:03'),
+(7, 5, 'bb6848f0eaed6abda8372d7c0c5061869b61a97c7d018006949e5486624b4486', '2026-05-03 02:04:37', NULL, '2026-05-03 01:04:37'),
+(8, 5, '310cb9b776adc948f657570b13b4c492f9cb827768b4265ecab5c99e7d817734', '2026-05-03 02:05:47', NULL, '2026-05-03 01:05:47'),
+(9, 5, 'fbbe4e5833b14e61af0c67dace309b682f1bf83e26a4e1d44f040f6bb9ac65cd', '2026-05-03 02:07:00', NULL, '2026-05-03 01:07:00'),
+(10, 5, '182303a936d4c50628bc6190a346058746984694c3bf371b7e5280e07c39dd4d', '2026-05-03 02:10:19', NULL, '2026-05-03 01:10:19');
 
 -- --------------------------------------------------------
 
@@ -3785,7 +3853,9 @@ INSERT INTO `payrolls` (`id`, `employee_id`, `period_month`, `period_year`, `bas
 (17, 13, 2, '2026', 0.00, 10000000.00, 0.00, 0.00, 0.00, 5000000.00, 5000000.00, 10000000.00, 10000000.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0, 22, 0, 2, 0, 10000000.00, 'claimed', '2026-03-06 23:08:41', '2026-03-30 11:42:02', NULL, '2026-03-06 23:08:35', '2026-03-30 11:42:02', NULL, '', NULL),
 (18, 9, 2, '2026', 9000000.00, 4540000.00, 1500000.00, 750000.00, 90000.00, 0.00, 2200000.00, 13540000.00, 14590000.00, 1050000.00, 366150.00, 6150.00, 0.00, 90000.00, 270000.00, 0.00, 0, 0, 0, 0, 30, 14223850.00, 'claimed', '2026-03-08 00:46:21', '2026-03-08 00:46:40', '2026-03-08 00:46:52', '2026-03-08 00:13:39', '2026-03-08 00:46:52', NULL, '', 14223850.00),
 (19, 15, 2, '2026', 5500000.00, 855000.00, 0.00, 0.00, 55000.00, 0.00, 800000.00, 6355000.00, 6355000.00, 0.00, 4436667.00, 0.00, 4216667.00, 55000.00, 165000.00, 0.00, 0, 23, 0, 0, 0, 1918333.00, 'draft', NULL, NULL, NULL, '2026-03-14 00:44:16', '2026-03-14 00:44:22', '2026-03-14 00:44:22', 'none', NULL),
-(20, 12, 3, '2026', 8500000.00, 2310000.00, 150000.00, 75000.00, 85000.00, 0.00, 2000000.00, 10810000.00, 11010000.00, 200000.00, 5440000.00, 0.00, 5100000.00, 85000.00, 255000.00, 0.00, 0, 18, 0, 0, 3, 5570000.00, 'draft', NULL, NULL, NULL, '2026-03-30 11:26:22', '2026-03-30 11:26:22', NULL, 'none', NULL);
+(20, 12, 3, '2026', 8500000.00, 2310000.00, 150000.00, 75000.00, 85000.00, 0.00, 2000000.00, 10810000.00, 11010000.00, 200000.00, 5440000.00, 0.00, 5100000.00, 85000.00, 255000.00, 0.00, 0, 18, 0, 0, 3, 5570000.00, 'draft', NULL, NULL, NULL, '2026-03-30 11:26:22', '2026-03-30 11:26:22', NULL, 'none', NULL),
+(21, 12, 4, '2026', 8500000.00, 2535000.00, 300000.00, 150000.00, 85000.00, 0.00, 2000000.00, 11035000.00, 11055909.00, 20909.00, 6006667.00, 0.00, 5666667.00, 85000.00, 255000.00, 0.00, 0, 20, 0, 0, 6, 5049242.00, 'published', '2026-05-02 23:04:39', NULL, NULL, '2026-05-02 23:04:29', '2026-05-02 23:06:59', NULL, 'pending', NULL),
+(22, 5, 4, '2026', 7000000.00, 1570000.00, 200000.00, 100000.00, 70000.00, 0.00, 1200000.00, 8570000.00, 18570000.00, 10000000.00, 5183976.00, 3976.00, 4900000.00, 70000.00, 210000.00, 0.00, 0, 21, 0, 0, 4, 13386024.00, 'published', '2026-05-02 23:05:00', NULL, NULL, '2026-05-02 23:04:53', '2026-05-02 23:05:00', NULL, 'none', NULL);
 
 -- --------------------------------------------------------
 
@@ -3896,10 +3966,11 @@ INSERT INTO `reimbursements` (`id`, `employee_id`, `reimbursement_type`, `amount
 (8, 9, 'makan', 1000000.00, 'makan bareng', 'uploads/reimbursements/reimbursement-1772904765540-521445336.jpg', 'rejected', NULL, 13, '2026-02-08 00:33:00', '2026-02-08 00:32:45', '2026-03-08 21:16:35'),
 (9, 12, 'transport', 200000.00, 'bensin', 'uploads/reimbursements/reimbursement-1773383185293-714186664.png', 'included_in_payroll', 20, 13, '2026-03-13 13:27:00', '2026-03-13 13:26:25', '2026-03-30 11:26:22'),
 (10, 8, 'makan', 200000.00, 'sego goreng', 'uploads/reimbursements/reimbursement-1774843618995-469184501.png', 'pending', NULL, NULL, NULL, '2026-03-30 11:06:59', '2026-03-30 11:06:59'),
-(11, 5, 'makan', 10000000.00, 'm', 'uploads/reimbursements/reimbursement-1775539533205-149522492.png', 'approved', NULL, 8, '2026-04-07 12:25:50', '2026-04-07 12:25:33', '2026-04-07 12:25:50'),
+(11, 5, 'makan', 10000000.00, 'm', 'uploads/reimbursements/reimbursement-1775539533205-149522492.png', 'included_in_payroll', 22, 8, '2026-04-07 12:25:50', '2026-04-07 12:25:33', '2026-05-02 23:04:53'),
 (12, 8, 'makan', 2000000.00, 'dj', 'uploads/reimbursements/reimbursement-1775539600770-272976480.pdf', 'approved', NULL, 13, '2026-04-07 12:27:56', '2026-04-07 12:26:40', '2026-04-07 12:27:56'),
-(13, 12, 'makan', 20909.00, 'ksahkald', 'uploads/reimbursements/reimbursement-1775539723383-698942401.png', 'approved', NULL, 13, '2026-04-07 12:28:56', '2026-04-07 12:28:43', '2026-04-07 12:28:56'),
-(14, 8, 'transport', 2000000.00, 'minta duit', 'uploads/reimbursements/reimbursement-1777632446118-800327218.pdf', 'included_in_payroll', NULL, 13, '2026-05-01 17:47:59', '2026-05-01 17:47:26', '2026-05-01 17:48:46');
+(13, 12, 'makan', 20909.00, 'ksahkald', 'uploads/reimbursements/reimbursement-1775539723383-698942401.png', 'included_in_payroll', 21, 13, '2026-04-07 12:28:56', '2026-04-07 12:28:43', '2026-05-02 23:04:29'),
+(14, 8, 'transport', 2000000.00, 'minta duit', 'uploads/reimbursements/reimbursement-1777632446118-800327218.pdf', 'included_in_payroll', NULL, 13, '2026-05-01 17:47:59', '2026-05-01 17:47:26', '2026-05-01 17:48:46'),
+(15, 12, 'makan', 200000.00, 'laper', 'uploads/reimbursements/reimbursement-1777742424198-699896813.png', 'included_in_payroll', NULL, 13, '2026-05-03 00:26:46', '2026-05-03 00:20:24', '2026-05-03 00:26:46');
 
 -- --------------------------------------------------------
 
@@ -3954,7 +4025,8 @@ INSERT INTO `salary_appeals` (`id`, `employee_id`, `payroll_id`, `reason`, `expe
 (6, 5, 14, '[appeal_option:other_allowance] mengikuti business trip\n[appeal_option:reimbursement_total] ada yang belum di acc HR\n[appeal_option:late_deduction] sudah konfirmasi atasan', 2500000.00, 'uploads/banding_gaji/appeal-1772641679078-746338100.pdf', 'approved', 12, '[Pendapatan - Tunjangan Lainnya] disetujui, nominal perbaikan: 1500000\n[Pendapatan - Reimbursement] disetujui, nominal perbaikan: 1000000\n[Potongan - Keterlambatan] ditolak, alasan: alasan terlambat tidak valid', '2026-03-04 23:28:56', '2026-03-04 23:27:59', '2026-03-04 23:28:56', NULL),
 (8, 12, 16, '[appeal_option:reimbursement_total] masih ada yang belum di acc\n[appeal_option:other_allowance] kurang', 1000000.00, 'uploads/banding_gaji/appeal-1772725803484-438654978.jpg', 'approved', 13, '[Pendapatan - Reimbursement] disetujui, nominal perbaikan: 1000000\n[Pendapatan - Tunjangan Lainnya] ditolak, alasan: cukup', '2026-03-05 22:52:15', '2026-03-05 22:50:03', '2026-03-05 22:52:15', NULL),
 (9, 13, 17, '[appeal_option:basic_salary] kok 0', NULL, 'uploads/banding_gaji/appeal-1772813365283-685707177.png', 'rejected', 12, '[Pendapatan - Gaji Pokok] ditolak, alasan: belum di input', '2026-03-06 23:11:40', '2026-03-06 23:09:25', '2026-03-06 23:11:40', NULL),
-(10, 9, 18, '[appeal_option:reimbursement_total] ada deh', 1000000.00, 'uploads/banding_gaji/appeal-1772903690854-561416821.pdf', 'approved', 12, '[Pendapatan - Reimbursement] disetujui, nominal perbaikan: 1000000', '2026-03-08 00:16:23', '2026-03-08 00:14:50', '2026-03-08 00:16:23', NULL);
+(10, 9, 18, '[appeal_option:reimbursement_total] ada deh', 1000000.00, 'uploads/banding_gaji/appeal-1772903690854-561416821.pdf', 'approved', 12, '[Pendapatan - Reimbursement] disetujui, nominal perbaikan: 1000000', '2026-03-08 00:16:23', '2026-03-08 00:14:50', '2026-03-08 00:16:23', NULL),
+(11, 12, 21, '[appeal_option:deduction] banyak sekali waw', NULL, 'uploads/banding_gaji/appeal-1777738019298-479661577.jpg', 'pending', NULL, NULL, NULL, '2026-05-02 23:06:59', '2026-05-02 23:07:11', NULL);
 
 -- --------------------------------------------------------
 
@@ -3983,14 +4055,14 @@ INSERT INTO `users` (`id`, `name`, `email`, `username`, `password`, `phone`, `ph
 (1, 'Dimas Setia Budi', 'dimassetiabudi@otakkanan.co.id', 'dimas', '$2b$10$cp9Aj/9pN7d1NsTlKTMrHe6ZoxteOoEMUCPpnpTNNiB3pr1Zfz0qO', '08111111111', '', 'active', '2026-01-12 07:38:14', '2026-05-01 11:46:14'),
 (2, 'Yuliana Putri ', 'yulianaputri@otakkanan.co.id', 'yuliana putri', '$2b$10$Yw7CYlef2TwFqTeoQucBT.VuWPDxUQqo86TEInzuwrJG4UVQaqaqi', '08123456789', 'photo.jpg', 'inactive', '2026-01-12 07:43:08', '2026-05-01 11:29:03'),
 (3, 'Gita Safitri', 'gitasafitri@otakkanan.co.id', 'gita safitri', '$2a$12$pDuKH8JCUhENA1Q2HlELheXKIdIJXizST52cSYdreNqvLLo7rrCYm', '22222222', '', 'active', '2026-01-13 07:50:44', '2026-03-08 14:03:31'),
-(5, 'shafira', 'shafira@gmail.com', 'shafira', '$2b$10$l0AVnQe.Qhp6DCv4Ezvve.ewFdDCNkdZC13yFNdYM4LfssXdID5Y.', '0911097213921', 'uploads/profile_photos/photo-1772039749954-432195677.jpeg', 'active', '2026-02-20 09:21:34', '2026-03-02 16:34:48'),
+(5, 'shafira', 'shafira@gmail.com', 'shafira', '$2b$10$l0AVnQe.Qhp6DCv4Ezvve.ewFdDCNkdZC13yFNdYM4LfssXdID5Y.', '0911097213921', 'uploads/profile_photos/photo-1777730509248-386898396.jpg', 'active', '2026-02-20 09:21:34', '2026-05-02 18:23:52'),
 (7, 'aku', 'user2@gmail.com', 'aku', '$2b$10$ah.A.bKlu9XoPgQGPd4mxemfbft0WH9GVUPgCvvj.ZwVNyWlhNfwC', '0824019248', '', 'active', '2026-02-22 14:17:07', '2026-02-27 07:14:54'),
 (8, 'user3', 'user3@gmail.com', 'user3', '$2b$10$X2aF0LPWTsPuZt/p/ovEmuqY.gGRMU.Wy.P36mJa1lOF01lRfcszG', '08324209432', 'uploads/profile_photos/photo-1772126385424-868760039.jpg', 'active', '2026-02-22 14:20:00', '2026-03-07 15:23:59'),
 (9, 'user4', 'user4@gmail.com', 'user4', '$2b$10$EXWmt4OG0M1UVG0IoBTIO.Voi9iK.IpA6wPS7X8XoVRSt4i0/lgUu', '-', 'uploads/profile_photos/photo-1772012935521-238705581.jpg', 'active', '2026-02-25 09:11:00', '2026-02-27 07:12:03'),
 (12, 'HR', 'user5@gmail.com', 'user5', '$2b$10$f4K0uI4JAcBcex9PqeSfy.HdlYkhXdC8I7bo1zTv15zO490utEMTa', '-', 'uploads/profile_photos/photo-1774874486351-619301161.png', 'active', '2026-02-27 08:18:28', '2026-03-30 12:41:26'),
 (13, 'DIREKTUR', 'user6@gmail.com', 'user6', '$2b$10$zBMuFpAMdag5dsEQQ0fR.uUZhlZv90OOEjgwY.Eg6uBUs6DF2r8s2', '-', '', 'active', '2026-02-27 08:28:56', '2026-05-01 07:52:49'),
 (16, 'user7', 'user7@gmail.com', 'user7', '$2b$10$mogFwFEccv9JDicrE5NEzeMJYF/3bSRaZFzl3O77E3ZWKb4cBlV0e', '-', '', 'active', '2026-03-10 16:20:42', '2026-03-30 05:00:50'),
-(19, 'user9', 'user9@gmail.com', 'user9', '$2b$10$ljtsVOGtKRO2ECIXmdvpzOUmekvNFjytuk1ciV87omTG/fGmwAdwy', '-', 'uploads/profile_photos/photo-1774874760116-570781364.jpeg', 'active', '2026-03-16 17:08:54', '2026-03-30 12:50:30'),
+(19, 'user9', 'user9@gmail.com', 'user9', '$2b$10$ljtsVOGtKRO2ECIXmdvpzOUmekvNFjytuk1ciV87omTG/fGmwAdwy', '085706531718', 'uploads/profile_photos/photo-1777730557660-835116504.jpeg', 'active', '2026-03-16 17:08:54', '2026-05-02 14:12:59'),
 (20, 'user10', 'user10@gmail.com', 'user10', '$2b$10$uCAYxJWNr4YfVx7FYjpBo.M.wI7NWcbPrdPTo4jZq3R79Tm9YwN9G', '21904710470219', 'uploads/profile_photos/photo-1774873525369-482885646.jpeg', 'active', '2026-03-30 05:21:00', '2026-03-30 12:25:25'),
 (21, 'user11', 'user11@gmail.com', 'user11', '$2b$10$mbDy3mcVOHitRwZfxnrhtuwMROtr6sCsqIRkex3KCzWiiTvWgnCcG', '-', '-', 'active', '2026-03-30 15:50:04', '2026-03-30 15:50:04');
 
@@ -4122,8 +4194,7 @@ ALTER TABLE `allowance`
   ADD UNIQUE KEY `uniq_employee_period` (`employee_id`,`period_month`,`period_year`),
   ADD KEY `idx_status` (`status`),
   ADD KEY `idx_payroll_id` (`payroll_id`),
-  ADD KEY `idx_submitted_by` (`submitted_by`),
-  ADD KEY `idx_reviewed_by` (`reviewed_by`);
+  ADD KEY `idx_submitted_by` (`submitted_by`);
 
 --
 -- Indexes for table `applications`
@@ -4216,6 +4287,13 @@ ALTER TABLE `leave_requests`
   ADD KEY `approved_by` (`approved_by`);
 
 --
+-- Indexes for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `payrolls`
 --
 ALTER TABLE `payrolls`
@@ -4301,13 +4379,13 @@ ALTER TABLE `working_hours`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1329;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1366;
 
 --
 -- AUTO_INCREMENT for table `allowance`
 --
 ALTER TABLE `allowance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `applications`
@@ -4319,7 +4397,7 @@ ALTER TABLE `applications`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2372;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2377;
 
 --
 -- AUTO_INCREMENT for table `candidates`
@@ -4349,13 +4427,13 @@ ALTER TABLE `employees`
 -- AUTO_INCREMENT for table `interviews`
 --
 ALTER TABLE `interviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `job_openings`
 --
 ALTER TABLE `job_openings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `leave_requests`
@@ -4364,10 +4442,16 @@ ALTER TABLE `leave_requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
+-- AUTO_INCREMENT for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `payrolls`
 --
 ALTER TABLE `payrolls`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `payroll_settings`
@@ -4385,7 +4469,7 @@ ALTER TABLE `positions`
 -- AUTO_INCREMENT for table `salary_appeals`
 --
 ALTER TABLE `salary_appeals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -4415,7 +4499,6 @@ ALTER TABLE `activity_logs`
 ALTER TABLE `allowance`
   ADD CONSTRAINT `fk_pma_employee` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_pma_payroll` FOREIGN KEY (`payroll_id`) REFERENCES `payrolls` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_pma_reviewed_by` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_pma_submitted_by` FOREIGN KEY (`submitted_by`) REFERENCES `users` (`id`);
 
 --
@@ -4473,6 +4556,12 @@ ALTER TABLE `job_openings`
 ALTER TABLE `leave_requests`
   ADD CONSTRAINT `fk_leave_approver` FOREIGN KEY (`approved_by`) REFERENCES `employees` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_leave_employee` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD CONSTRAINT `password_resets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `payrolls`

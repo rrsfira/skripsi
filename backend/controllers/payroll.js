@@ -229,9 +229,11 @@ router.get(
             }
 
             const [rows] = await db.promise().query(
-                `SELECT alw.*, e.employee_code, u.name AS employee_name,
+                `SELECT alw.id, alw.employee_id, alw.bonus, alw.other_allowance, alw.other_deduction, 
+                        alw.notes, alw.status, alw.period_month, alw.period_year, 
+                        alw.submitted_at, alw.updated_at, alw.payroll_id,
+                        e.employee_code, u.name AS employee_name,
                         submitter.name AS submitted_by_name,
-                        reviewer.name AS reviewed_by_name,
                         pos.name AS position_name, dept.name AS department_name
                  FROM allowance alw
                  JOIN employees e ON alw.employee_id = e.id
@@ -239,7 +241,6 @@ router.get(
                  LEFT JOIN positions pos ON e.position_id = pos.id
                  LEFT JOIN departments dept ON pos.department_id = dept.id
                  LEFT JOIN users submitter ON alw.submitted_by = submitter.id
-                 LEFT JOIN users reviewer ON alw.reviewed_by = reviewer.id
                  ${whereClause}
                  ORDER BY alw.period_year DESC, alw.period_month DESC, u.name ASC`,
                 params
@@ -310,23 +311,7 @@ router.post(
                 });
             }
 
-            if (isAdminRequest) {
-                if (!isManagerLevelEmployee(employeeContext)) {
-                    return res.status(403).json({
-                        message:
-                            "Admin hanya dapat mengisi adjustment untuk pegawai level atasan/manager",
-                    });
-                }
-            }
 
-            if (isHrRequest) {
-                if (Number(employeeContext.user_id) === Number(req.user.id)) {
-                    return res.status(403).json({
-                        message:
-                            "HR tidak dapat mengisi adjustment payroll untuk dirinya sendiri",
-                    });
-                }
-            }
 
             const [existing] = await db.promise().query(
                 `SELECT id, status
