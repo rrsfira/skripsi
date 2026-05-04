@@ -1,21 +1,26 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import LandingIntro from "./LandingIntro";
 import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
-import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 
 function ForgotPassword() {
   const INITIAL_USER_OBJ = {
     emailId: "",
   };
 
+  const INITIAL_OTP_OBJ = {
+    otp: "",
+  };
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [linkSent, setLinkSent] = useState(false);
+  const [stage, setStage] = useState("email");
   const [userObj, setUserObj] = useState(INITIAL_USER_OBJ);
+  const [otpObj, setOtpObj] = useState(INITIAL_OTP_OBJ);
+  const navigate = useNavigate();
 
-  const submitForm = async (e) => {
+  const submitEmail = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -40,19 +45,35 @@ function ForgotPassword() {
         const data = await response.json();
 
         if (!response.ok) {
-          return setErrorMessage(
-            data.message || "Gagal mengirim link reset password",
-          );
+          return setErrorMessage(data.message || "Gagal mengirim kode OTP");
         }
 
-        // Jika backend berada di mode development dan mengembalikan link (devLink), langsung arahkan pengguna
-        if (data.devLink) {
-          window.location.href = data.devLink;
-          return;
+        if (data.devOTP) {
+          console.log("Development OTP:", data.devOTP);
+          setErrorMessage(`[DEV] OTP: ${data.devOTP}`);
         }
 
-        setLinkSent(true);
-        setUserObj(INITIAL_USER_OBJ);
+        setStage("otp");
+      } catch (error) {
+        setErrorMessage(error.message || "Terjadi kesalahan");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const submitOTP = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (otpObj.otp.trim() === "")
+      return setErrorMessage("Kode OTP adalah wajib diisi");
+    else {
+      try {
+        setLoading(true);
+        navigate(
+          `/reset-password?email=${encodeURIComponent(userObj.emailId.trim())}&otp=${otpObj.otp.trim()}`,
+        );
       } catch (error) {
         setErrorMessage(error.message || "Terjadi kesalahan");
       } finally {
@@ -64,6 +85,11 @@ function ForgotPassword() {
   const updateFormValue = ({ updateType, value }) => {
     setErrorMessage("");
     setUserObj({ ...userObj, [updateType]: value });
+  };
+
+  const updateOTPValue = ({ updateType, value }) => {
+    setErrorMessage("");
+    setOtpObj({ ...otpObj, [updateType]: value });
   };
 
   return (
@@ -78,33 +104,12 @@ function ForgotPassword() {
               Lupa Password
             </h2>
 
-            {linkSent && (
-              <>
-                <div className="text-center mt-8">
-                  <CheckCircleIcon className="inline-block w-32 text-success" />
-                </div>
-                <p className="my-4 text-xl font-bold text-center">
-                  Link Terkirim
-                </p>
-                <p className="mt-4 mb-8 font-semibold text-center">
-                  Periksa email Anda untuk mereset password
-                </p>
-                <div className="text-center mt-4">
-                  <Link to="/login">
-                    <button className="btn btn-block btn-primary ">
-                      Login
-                    </button>
-                  </Link>
-                </div>
-              </>
-            )}
-
-            {!linkSent && (
+            {stage === "email" && (
               <>
                 <p className="my-8 font-semibold text-center">
-                  Kami akan mengirimkan link reset password ke email Anda
+                  Masukkan email Anda untuk menerima kode OTP
                 </p>
-                <form onSubmit={(e) => submitForm(e)}>
+                <form onSubmit={(e) => submitEmail(e)}>
                   <div className="mb-4">
                     <InputText
                       type="emailId"
@@ -124,7 +129,7 @@ function ForgotPassword() {
                       (loading ? " loading" : "")
                     }
                   >
-                    Kirim Link Reset
+                    Kirim Kode OTP
                   </button>
 
                   <div className="text-center mt-4">
@@ -134,6 +139,52 @@ function ForgotPassword() {
                         Daftar
                       </button>
                     </Link>
+                  </div>
+                </form>
+              </>
+            )}
+
+            {stage === "otp" && (
+              <>
+                <p className="my-8 font-semibold text-center">
+                  Masukkan kode OTP yang telah dikirim ke email Anda
+                </p>
+                <form onSubmit={(e) => submitOTP(e)}>
+                  <div className="mb-4">
+                    <InputText
+                      type="text"
+                      defaultValue={otpObj.otp}
+                      updateType="otp"
+                      containerStyle="mt-4"
+                      labelTitle="Kode OTP"
+                      updateFormValue={updateOTPValue}
+                      placeholder="Masukkan 6 digit kode OTP"
+                    />
+                  </div>
+
+                  <ErrorText styleClass="mt-12">{errorMessage}</ErrorText>
+                  <button
+                    type="submit"
+                    className={
+                      "btn mt-2 w-full btn-primary" +
+                      (loading ? " loading" : "")
+                    }
+                  >
+                    Verifikasi OTP
+                  </button>
+
+                  <div className="text-center mt-4">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStage("email");
+                        setOtpObj(INITIAL_OTP_OBJ);
+                        setErrorMessage("");
+                      }}
+                      className="inline-block hover:text-primary hover:underline hover:cursor-pointer transition duration-200"
+                    >
+                      Ubah Email
+                    </button>
                   </div>
                 </form>
               </>
