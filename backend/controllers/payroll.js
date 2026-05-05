@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const PDFDocument = require("pdfkit");
@@ -196,7 +196,7 @@ const resolveFixedOtherAllowance = (employeeContext = {}) => {
 router.get(
     "/manager-adjustments",
     verifyToken,
-    verifyRole(["finance", "admin", "hr"]),
+    verifyRole(["finance", "hr"]),
     async (req, res) => {
         try {
             const month = parsePeriodValue(req.query.month);
@@ -263,11 +263,11 @@ router.get(
 router.post(
     "/manager-adjustments/upsert",
     verifyToken,
-    verifyRole(["admin", "hr"]),
+    verifyRole(["hr"]),
     async (req, res) => {
         try {
             const userRoles = req.user.roles || [];
-            const isAdminRequest = userRoles.includes("admin");
+            
             const isHrRequest = userRoles.includes("hr");
 
             const {
@@ -376,7 +376,7 @@ router.post(
 router.put(
     "/manager-adjustments/:id/approve",
     verifyToken,
-    verifyRole(["admin"]),
+    verifyRole(["hr", "finance"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -392,6 +392,20 @@ router.put(
                 "UPDATE allowance SET status = 'approved', reviewed_by = ?, reviewed_at = NOW(), updated_at = NOW() WHERE id = ?",
                 [reviewerId, adjustmentId]
             );
+
+            // Log approval activity
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "UPDATE",
+                module: "manager_adjustments",
+                description: `Approved manager adjustment id ${adjustmentId}`,
+                oldValues: { id: adjustmentId, status: 'submitted' },
+                newValues: { id: adjustmentId, status: 'approved' },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
 
             res.json({
                 message: "Adjustment berhasil disetujui",
@@ -411,7 +425,7 @@ router.put(
 router.put(
     "/manager-adjustments/:id/reject",
     verifyToken,
-    verifyRole(["admin"]),
+    verifyRole(["hr", "finance"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -428,6 +442,20 @@ router.put(
                 "UPDATE allowance SET status = 'rejected', review_notes = ?, reviewed_by = ?, reviewed_at = NOW(), updated_at = NOW() WHERE id = ?",
                 [reason || "", reviewerId, adjustmentId]
             );
+
+            // Log rejection activity
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "UPDATE",
+                module: "manager_adjustments",
+                description: `Rejected manager adjustment id ${adjustmentId}`,
+                oldValues: { id: adjustmentId, status: 'submitted' },
+                newValues: { id: adjustmentId, status: 'rejected', reason: reason || null },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
 
             res.json({
                 message: "Adjustment berhasil ditolak",
@@ -450,7 +478,7 @@ router.put(
 router.post(
     "/generate",
     verifyToken,
-    verifyRole(["hr", "admin", "finance"]),
+    verifyRole(["hr", "finance"]),
     async (req, res) => {
         try {
             const {
@@ -817,7 +845,7 @@ router.post(
 router.get(
     "/",
     verifyToken,
-    verifyRole(["hr", "admin", "finance"]),
+    verifyRole(["hr", "finance"]),
     async (req, res) => {
         try {
             const supportsTransferredAt = await ensureTransferredAtColumn();
@@ -866,7 +894,7 @@ router.get(
 router.get(
     "/reports/monthly/pdf",
     verifyToken,
-    verifyRole(["finance", "hr", "admin"]),
+    verifyRole(["finance", "hr"]),
     async (req, res) => {
         try {
             const month = Number(req.query.month);
@@ -944,7 +972,7 @@ router.get(
 router.get(
     "/reports/monthly/excel",
     verifyToken,
-    verifyRole(["finance", "hr", "admin"]),
+    verifyRole(["finance", "hr"]),
     async (req, res) => {
         try {
             const month = Number(req.query.month);
@@ -1009,7 +1037,7 @@ router.get(
 router.get(
     "/:id/pdf",
     verifyToken,
-    verifyRole(["hr", "admin", "finance", "pegawai"]),
+    verifyRole(["hr", "finance", "pegawai"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -1042,8 +1070,8 @@ router.get(
             const hasPrivilegedRole =
                 userRoles.includes("finance") ||
                 userRoles.includes("hr") ||
-                userRoles.includes("admin") ||
-                ["finance", "hr", "admin"].includes(req.user.role);
+                
+                ["finance", "hr"].includes(req.user.role);
 
             const isPegawaiOnly =
                 !hasPrivilegedRole &&
@@ -1254,7 +1282,7 @@ router.get(
 router.get(
     "/:id",
     verifyToken,
-    verifyRole(["hr", "admin", "finance", "pegawai"]),
+    verifyRole(["hr", "finance", "pegawai"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -1315,7 +1343,7 @@ router.get(
 router.get(
     "/employee/:employee_id",
     verifyToken,
-    verifyRole(["hr", "admin", "finance", "pegawai"]),
+    verifyRole(["hr", "finance", "pegawai"]),
     async (req, res) => {
         try {
             const supportsTransferredAt = await ensureTransferredAtColumn();
@@ -1326,8 +1354,8 @@ router.get(
             const hasPrivilegedRole =
                 userRoles.includes("finance") ||
                 userRoles.includes("hr") ||
-                userRoles.includes("admin") ||
-                ["finance", "hr", "admin"].includes(req.user.role);
+                
+                ["finance", "hr"].includes(req.user.role);
 
             if (!hasPrivilegedRole) {
                 const [employeeRows] = await db
@@ -1472,7 +1500,7 @@ router.get(
 router.put(
     "/:id/publish",
     verifyToken,
-    verifyRole(["hr", "admin", "finance"]),
+    verifyRole(["hr", "finance"]),
     async (req, res) => {
         try {
             const supportsTransferredAt = await ensureTransferredAtColumn();
@@ -1515,7 +1543,7 @@ router.put(
 router.put(
     "/:id/transfer",
     verifyToken,
-    verifyRole(["admin", "finance"]),
+    verifyRole(["finance"]),
     async (req, res) => {
         try {
             const supportsTransferredAt = await ensureTransferredAtColumn();
@@ -1548,6 +1576,20 @@ router.put(
                     "UPDATE payrolls SET transferred_at = NOW(), updated_at = NOW() WHERE id = ?",
                     [id]
                 );
+
+            // Log transfer activity
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "UPDATE",
+                module: "payroll",
+                description: `Marked payroll id ${id} as transferred`,
+                oldValues: { id, status: 'claimed' },
+                newValues: { id, status: 'transferred', transferred_at: new Date().toISOString() },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
 
             res.status(200).json({
                 message: "Payroll berhasil ditandai telah dikirim ke rekening",
@@ -1615,6 +1657,20 @@ router.put(
                     [id]
                 );
 
+            // Log claim activity
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "UPDATE",
+                module: "payroll",
+                description: `Payroll id ${id} claimed by employee user_id ${userId}`,
+                oldValues: { id, status: 'published' },
+                newValues: { id, status: 'claimed', claimed_at: new Date().toISOString() },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
+
             res.status(200).json({
                 message: "Payroll claimed successfully",
                 id: id,
@@ -1633,7 +1689,7 @@ router.put(
 router.delete(
     "/:id",
     verifyToken,
-    verifyRole(["hr", "admin", "finance"]),
+    verifyRole(["hr", "finance"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -1681,3 +1737,4 @@ router.delete(
 );
 
 module.exports = router;
+

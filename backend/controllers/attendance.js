@@ -681,6 +681,30 @@ router.post(
             }
 
             await evaluateAlphaDisciplineForEmployee(employeeId);
+            // Log activity: check-in
+            try {
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles)
+                    ? req.user.roles[0]
+                    : req.user.role || null;
+                const action = existingAttendance.length === 0 ? "CREATE" : "UPDATE";
+
+                await logActivity({
+                    userId,
+                    username,
+                    role,
+                    action,
+                    module: "attendance",
+                    description: action === "CREATE" ? "Check-in" : "Check-in (update)",
+                    oldValues: existingAttendance.length === 0 ? null : existingAttendance[0],
+                    newValues: { date: today, check_in: checkInTime, employee_id: employeeId },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log check-in activity:", e);
+            }
 
             res.status(200).json({
                 message: isLate
@@ -698,6 +722,23 @@ router.post(
             });
         } catch (error) {
             console.error(error);
+            try {
+                await logActivity({
+                    userId: req.user?.id || null,
+                    username: req.user?.username || req.user?.name || null,
+                    role: Array.isArray(req.user?.roles) ? req.user.roles[0] : req.user?.role || null,
+                    action: "CREATE",
+                    module: "attendance",
+                    description: "Check-in failed",
+                    errorMessage: error.message,
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "failed",
+                });
+            } catch (e) {
+                console.error("Failed to log failed check-in activity:", e);
+            }
+
             res.status(error.statusCode || 500).json({
                 message: error.message || "Server error",
             });
@@ -837,6 +878,34 @@ router.post(
                         today,
                     ]
                 );
+            // Log activity: check-out
+            try {
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles)
+                    ? req.user.roles[0]
+                    : req.user.role || null;
+
+                await logActivity({
+                    userId,
+                    username,
+                    role,
+                    action: "UPDATE",
+                    module: "attendance",
+                    description: "Check-out",
+                    oldValues: existingAttendance[0],
+                    newValues: {
+                        date: today,
+                        check_out: checkOutTime,
+                        working_hours: workingHoursDecimal,
+                        overtime_hours: overtimeHoursDecimal,
+                    },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log check-out activity:", e);
+            }
 
             res.status(200).json({
                 message: "Check-out successful",
@@ -852,6 +921,23 @@ router.post(
             });
         } catch (error) {
             console.error(error);
+            try {
+                await logActivity({
+                    userId: req.user?.id || null,
+                    username: req.user?.username || req.user?.name || null,
+                    role: Array.isArray(req.user?.roles) ? req.user.roles[0] : req.user?.role || null,
+                    action: "UPDATE",
+                    module: "attendance",
+                    description: "Check-out failed",
+                    errorMessage: error.message,
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "failed",
+                });
+            } catch (e) {
+                console.error("Failed to log failed check-out activity:", e);
+            }
+
             res.status(error.statusCode || 500).json({
                 message: error.message || "Server error",
             });
@@ -1130,13 +1216,13 @@ router.get(
 );
 
 // ============================
-// GET ALL EMPLOYEES ATTENDANCE (HR/Atasan/Admin/Finance)
+// GET ALL EMPLOYEES ATTENDANCE (HR/Atasan/Finance)
 // ============================
-// HR, Atasan, Admin, atau Finance melihat absensi semua pegawai
+// HR, Atasan, atau Finance melihat absensi semua pegawai
 router.get(
     "/all",
     verifyToken,
-    verifyRole(["hr", "atasan", "admin", "finance"]),
+    verifyRole(["hr", "atasan", "finance"]),
     async (req, res) => {
         try {
             const { date, month, year, employee_id } = req.query;
@@ -1201,12 +1287,12 @@ router.get(
 );
 
 // ============================
-// GET TEAM MEMBERS (HR/Atasan/Admin/Finance)
+// GET TEAM MEMBERS (HR/Atasan/Finance)
 // ============================
 router.get(
     "/team-members",
     verifyToken,
-    verifyRole(["hr", "atasan", "admin", "finance"]),
+    verifyRole(["hr", "atasan", "finance"]),
     async (req, res) => {
         try {
             let managerScope = null;
@@ -1256,13 +1342,13 @@ router.get(
 );
 
 // ============================
-// GET ATTENDANCE SUMMARY FOR ALL EMPLOYEES (HR/Admin)
+// GET ATTENDANCE SUMMARY FOR ALL EMPLOYEES (HR/Finance)
 // ============================
 // Ringkasan absensi semua pegawai per bulan
 router.get(
     "/summary/all",
     verifyToken,
-    verifyRole(["hr", "admin", "finance"]),
+    verifyRole(["hr", "finance"]),
     async (req, res) => {
         try {
             const { month, year } = req.query;
@@ -1348,13 +1434,13 @@ router.get(
 );
 
 // ============================
-// UPDATE ATTENDANCE STATUS (HR/Atasan/Admin/Finance)
+// UPDATE ATTENDANCE STATUS (HR/Atasan/Finance)
 // ============================
-// HR, Atasan, Admin, atau Finance mengubah status absensi (misal: izin, sakit, alpha)
+// HR, Atasan, atau Finance mengubah status absensi (misal: izin, sakit, alpha)
 router.put(
     "/:id/status",
     verifyToken,
-    verifyRole(["hr", "atasan", "admin", "finance"]),
+    verifyRole(["hr", "atasan", "finance"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -1490,6 +1576,35 @@ router.put(
                 existingAttendance[0].employee_id
             );
 
+            // Log activity: update attendance status by admin/atasan/hr/finance
+            try {
+                console.log('[DEBUG] Attempting activity log for attendance status update', {
+                    reqUser: req.user,
+                    attendanceId: id,
+                    newStatus: status,
+                })
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles)
+                    ? req.user.roles[0]
+                    : req.user.role || null;
+
+                await logActivity({
+                    userId: req.user.id,
+                    username,
+                    role,
+                    action: "UPDATE",
+                    module: "attendance",
+                    description: `Attendance status updated to ${status}`,
+                    oldValues: existingAttendance[0],
+                    newValues: { id, status },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log attendance status update:", e);
+            }
+
             res.status(200).json({
                 message: "Attendance status updated successfully",
                 id: id,
@@ -1497,6 +1612,22 @@ router.put(
             });
         } catch (error) {
             console.error(error);
+            try {
+                await logActivity({
+                    userId: req.user?.id || null,
+                    username: req.user?.username || req.user?.name || null,
+                    role: Array.isArray(req.user?.roles) ? req.user.roles[0] : req.user?.role || null,
+                    action: "UPDATE",
+                    module: "attendance",
+                    description: "Attendance status update failed",
+                    errorMessage: error.message,
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "failed",
+                });
+            } catch (e) {
+                console.error("Failed to log failed attendance status update:", e);
+            }
             res.status(500).json({ message: "Server error" });
         }
     }
@@ -1681,6 +1812,36 @@ router.post(
                     total_days: totalDays,
                     reason,
                 });
+                // Log activity: auto-approved leave request
+                try {
+                    const username = req.user.username || req.user.name || null;
+                    const role = Array.isArray(req.user.roles)
+                        ? req.user.roles[0]
+                        : req.user.role || null;
+                    await logActivity({
+                        userId,
+                        username,
+                        role,
+                        action: "CREATE",
+                        module: "leave_requests",
+                        description: "Leave request auto-approved",
+                        oldValues: null,
+                        newValues: {
+                            request_id: result.insertId,
+                            employee_id: employeeId,
+                            leave_type,
+                            start_date,
+                            end_date,
+                            total_days: totalDays,
+                            status: "approved",
+                        },
+                        ipAddress: getIpAddress(req),
+                        userAgent: getUserAgent(req),
+                        status: "success",
+                    });
+                } catch (e) {
+                    console.error("Failed to log auto-approved leave request:", e);
+                }
             } else {
                 [result] = await db.promise().query(
                     `INSERT INTO leave_requests 
@@ -1709,8 +1870,55 @@ router.post(
                 total_days: totalDays,
                 status,
             });
+            // Log activity: leave request submitted (pending)
+            try {
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles)
+                    ? req.user.roles[0]
+                    : req.user.role || null;
+                await logActivity({
+                    userId,
+                    username,
+                    role,
+                    action: "CREATE",
+                    module: "leave_requests",
+                    description: shouldAutoApprove ? "Leave request auto-approved" : "Leave request submitted",
+                    oldValues: null,
+                    newValues: {
+                        request_id: result.insertId,
+                        employee_id: employeeId,
+                        leave_type,
+                        start_date,
+                        end_date,
+                        total_days: totalDays,
+                        status,
+                    },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log leave request submission:", e);
+            }
         } catch (error) {
             console.error(error);
+            try {
+                await logActivity({
+                    userId: req.user?.id || null,
+                    username: req.user?.username || req.user?.name || null,
+                    role: Array.isArray(req.user?.roles) ? req.user.roles[0] : req.user?.role || null,
+                    action: "CREATE",
+                    module: "leave_requests",
+                    description: "Leave request submission failed",
+                    errorMessage: error.message,
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "failed",
+                });
+            } catch (e) {
+                console.error("Failed to log failed leave request submission:", e);
+            }
+
             res.status(500).json({ message: "Server error" });
         }
     }
@@ -2012,6 +2220,30 @@ router.put(
             // Jika approved, create attendance records untuk setiap hari
             if (status === "approved") {
                 await applyApprovedLeaveEffects(leaveRequest);
+            }
+
+            // Log activity: approve/reject leave request
+            try {
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles)
+                    ? req.user.roles[0]
+                    : req.user.role || null;
+
+                await logActivity({
+                    userId,
+                    username,
+                    role,
+                    action: "UPDATE",
+                    module: "leave_requests",
+                    description: status === "approved" ? "Leave request approved" : "Leave request rejected",
+                    oldValues: leaveRequest,
+                    newValues: { request_id: id, status, approved_by: approverId },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log leave request approval/rejection:", e);
             }
 
             res.status(200).json({

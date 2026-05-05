@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const bcrypt = require("bcryptjs");
@@ -13,12 +13,12 @@ const {
 } = require("../utils/documentRequirements");
 
 // ============================
-// GET SINGLE APPLICATION DETAIL (HR/Admin)
+// GET SINGLE APPLICATION DETAIL (HR)
 // ============================
 router.get(
   "/admin/applications/:id",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -71,7 +71,7 @@ router.get(
 router.get(
   "/admin/interviews/history-combined",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       // Ambil interview status completed dan canceled_by_company
@@ -108,7 +108,7 @@ router.get(
 router.put(
   "/admin/interviews/:id",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -165,7 +165,7 @@ router.put(
 router.get(
   "/admin/interviews/canceled-applications",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { status } = req.query;
@@ -206,7 +206,7 @@ router.get(
 router.put(
   "/admin/applications/cancel-by-job",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { job_opening_id } = req.body;
@@ -244,7 +244,7 @@ router.put(
 router.get(
   "/interviews",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const [rows] = await db.promise().query(`
@@ -275,7 +275,7 @@ router.get(
 router.get(
   "/interviews/history",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const [rows] = await db.promise().query(`
@@ -644,7 +644,7 @@ router.get(
 router.put(
   "/admin/interviews/:id/cancel",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -1229,7 +1229,7 @@ router.put(
 router.get(
   "/admin/applications",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { status, job_opening_id } = req.query;
@@ -1328,7 +1328,7 @@ LEFT JOIN employees e ON a.reviewed_by = e.id
 router.put(
   "/admin/applications/:id/status",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -1406,7 +1406,7 @@ router.put(
 router.post(
   "/admin/applications/:id/schedule-interview",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -1482,7 +1482,7 @@ router.post(
 router.put(
   "/admin/interviews/:id/result",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -1524,7 +1524,7 @@ router.put(
 router.get(
   "/admin/candidates",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { status } = req.query;
@@ -1555,7 +1555,7 @@ router.get(
 router.get(
   "/admin/candidates/:id",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -1593,7 +1593,7 @@ router.get(
 router.post(
   "/admin/candidates/:id/convert",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -1753,3 +1753,4 @@ router.post(
 );
 
 module.exports = router;
+

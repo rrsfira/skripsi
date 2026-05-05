@@ -13,6 +13,16 @@ const INITIAL_FILTERS = {
     limit: 20,
 }
 
+const MODULE_OPTIONS = [
+    { value: 'attendance', label: 'Kehadiran' },
+    { value: 'leave_requests', label: 'Cuti / Izin' },
+    { value: 'reimbursements', label: 'Reimbursement' },
+    { value: 'payroll', label: 'Gaji' },
+    { value: 'salary_appeals', label: 'Banding Gaji' },
+    { value: 'employees', label: 'Pegawai' },
+    { value: 'job_openings', label: 'Lowongan' },
+]
+
 // 🎯 Badge helpers
 const getActionBadge = (action) => {
     switch (action?.toUpperCase()) {
@@ -36,12 +46,14 @@ const getModuleBadge = (module) => {
         case 'kehadiran':
             return 'badge-success'
         case 'leave':
+        case 'leave_requests':
         case 'cuti':
             return 'badge-secondary'
         case 'permit':
         case 'izin':
             return 'badge-warning'
         case 'reimbursement':
+        case 'reimbursements':
             return 'badge-accent'
         case 'payroll':
         case 'gaji':
@@ -178,24 +190,7 @@ function AdminActivityLogs() {
                 </div>
             )}
 
-            {/* 📊 SUMMARY */}
-            <TitleCard title="Ringkasan Aktivitas 7 Hari">
-                <div className="grid md:grid-cols-3 gap-4">
-                    {['byAction', 'byModule', 'byRole'].map((key, i) => (
-                        <div key={i} className="bg-base-200 p-4 rounded-lg">
-                            <h4 className="font-semibold mb-2 capitalize">
-                                {key.replace('by', 'Per ')}
-                            </h4>
-                            {(summary[key] || []).slice(0, 5).map((item, idx) => (
-                                <div key={idx} className="flex justify-between text-sm">
-                                    <span>{item.action || item.module || item.role}</span>
-                                    <span className="font-medium">{item.count}</span>
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            </TitleCard>
+            
 
             {/* 📋 LOG TABLE */}
             <TitleCard title="Log Aktivitas" topMargin="mt-6">
@@ -219,12 +214,11 @@ function AdminActivityLogs() {
                         onChange={(e) => handleFilterChange('module', e.target.value)}
                     >
                         <option value="">Semua Modul</option>
-                        <option value="attendance">Kehadiran</option>
-                        <option value="leave">Cuti</option>
-                        <option value="permit">Izin</option>
-                        <option value="reimbursement">Reimbursement</option>
-                        <option value="payroll">Gaji</option>
-                        <option value="salary_appeals">Banding Gaji</option>
+                        {MODULE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
                     </select>
 
                     <select

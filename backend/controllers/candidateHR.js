@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const bcrypt = require("bcryptjs");
@@ -18,7 +18,7 @@ const {
 router.get(
   "/interviews/history-combined",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       // Ambil interview status completed dan canceled_by_company
@@ -57,7 +57,7 @@ router.get(
 router.get(
   "/interviews",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const [rows] = await db.promise().query(`
@@ -90,7 +90,7 @@ router.get(
 router.get(
   "/applications",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { status, job_opening_id } = req.query;
@@ -189,7 +189,7 @@ LEFT JOIN employees e ON a.reviewed_by = e.id
 router.put(
   "/applications/:id/status",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -267,7 +267,7 @@ router.put(
 router.post(
   "/applications/:id/schedule-interview",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -343,7 +343,7 @@ router.post(
 router.put(
   "/interviews/:id/result",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -385,7 +385,7 @@ router.put(
 router.get(
   "/interviews/canceled-applications",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const query = `
@@ -423,3 +423,4 @@ router.get(
   }
 );
 module.exports = router;
+

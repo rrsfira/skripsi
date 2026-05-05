@@ -5,6 +5,7 @@ const multer = require("multer");
 const fs = require("fs");
 const db = require("../config/db");
 const { verifyToken, verifyRole } = require("../middleware/authMiddleware");
+const { logActivity, getIpAddress, getUserAgent } = require("../middleware/activityLogger");
 
 // ============================
 // MULTER SETUP - Supporting Documents
@@ -516,6 +517,19 @@ router.post(
 
             await syncPayrollAppealStatus(payroll_id);
 
+            // Log salary appeal submission
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "CREATE",
+                module: "salary_appeals",
+                description: `Submitted salary appeal for payroll_id ${payroll_id}`,
+                newValues: { payroll_id, appeal_items_count: Array.isArray(appealItems) ? appealItems.length : 0, status: 'pending' },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
+
             res.status(201).json({
                 message: "Salary appeal submitted successfully",
             });
@@ -719,6 +733,20 @@ router.put(
                 }
             }
 
+            // Log salary appeal update
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "UPDATE",
+                module: "salary_appeals",
+                description: `Updated salary appeal id ${id}`,
+                oldValues: { id: appeal.id, status: appeal.status },
+                newValues: { id: id, status: 'pending' },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
+
             res.json({ message: "Salary appeal updated successfully" });
         } catch (error) {
             console.error(error);
@@ -780,6 +808,20 @@ router.delete(
                 [id]
             );
             await syncPayrollAppealStatus(appeal.payroll_id);
+
+            // Log salary appeal deletion
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "DELETE",
+                module: "salary_appeals",
+                description: `Deleted salary appeal id ${id}`,
+                oldValues: { id: appeal.id, status: appeal.status },
+                newValues: { id: id, status: 'rejected', deleted_at: new Date().toISOString() },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
 
             res.json({ message: "Salary appeal deleted successfully" });
         } catch (error) {
@@ -1147,6 +1189,20 @@ router.put("/:id/review", verifyToken, verifyRole(["hr", "admin"]), async (req, 
                 appeal.payroll_id
             );
 
+            // Log salary appeal review (detailed items)
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "UPDATE",
+                module: "salary_appeals",
+                description: `Reviewed salary appeal id ${id}: ${newStatus}`,
+                oldValues: { id: appeal.id, status: appeal.status },
+                newValues: { id: appeal.id, status: newStatus, approved_items: approvedCount, rejected_items: rejectedCount },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
+
             return res.json({
                 message: `Salary appeal ${newStatus}`,
                 payroll_appeal_status: payrollAppealStatus,
@@ -1179,6 +1235,20 @@ router.put("/:id/review", verifyToken, verifyRole(["hr", "admin"]), async (req, 
         );
 
         const payrollAppealStatus = await syncPayrollAppealStatus(appeal.payroll_id);
+
+        // Log salary appeal review (simple path)
+        await logActivity({
+            userId: req.user.id,
+            username: req.user.username || req.user.name || null,
+            role: req.user.roles?.[0] || req.user.role || null,
+            action: "UPDATE",
+            module: "salary_appeals",
+            description: `Reviewed salary appeal id ${id}: ${newStatus}`,
+            oldValues: { id: appeal.id, status: appeal.status },
+            newValues: { id: appeal.id, status: newStatus, review_notes: normalizedReviewNotes || null },
+            ipAddress: getIpAddress(req),
+            userAgent: getUserAgent(req),
+        });
 
         res.json({
             message: `Salary appeal ${newStatus}`,
@@ -1483,6 +1553,19 @@ router.post(
                     `${appeal.period_year}-${String(appeal.period_month).padStart(2, "0")}`,
                 ]
             );
+
+            // Log revised payroll creation for appeal
+            await logActivity({
+                userId: req.user.id,
+                username: req.user.username || req.user.name || null,
+                role: req.user.roles?.[0] || req.user.role || null,
+                action: "CREATE",
+                module: "salary_appeals",
+                description: `Created revised payroll for appeal id ${appeal_id}, payroll id ${appeal.payroll_id}`,
+                newValues: { appeal_id, payroll_id: appeal.payroll_id, final_amount: parseFloat(final_amount) },
+                ipAddress: getIpAddress(req),
+                userAgent: getUserAgent(req),
+            });
 
             res.json({
                 message: "Revised payroll created successfully",
