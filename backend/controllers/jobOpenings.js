@@ -1,7 +1,12 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const { verifyToken, verifyRole } = require("../middleware/authMiddleware");
+const {
+  logActivity,
+  getIpAddress,
+  getUserAgent,
+} = require("../middleware/activityLogger");
 const {
   getRequiredDocuments,
   DOCUMENT_FIELD_METADATA,
@@ -13,7 +18,7 @@ const {
 router.put(
   "/:id/cancel",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -37,6 +42,25 @@ router.put(
                  WHERE a.job_opening_id = ? AND i.status IN ('scheduled', 'rescheduled')`,
         [id],
       );
+
+      // Log job opening cancellation
+      await logActivity({
+        userId: req.user.id,
+        username: req.user.username,
+        role: req.user.roles?.[0] || req.user.role,
+        action: "UPDATE",
+        module: "job_openings",
+        description: `Canceled job opening ID: ${id}`,
+        oldValues: {
+          id,
+          status: job[0].status,
+          hiring_status: job[0].hiring_status,
+        },
+        newValues: { id, status: "closed", hiring_status: "canceled" },
+        ipAddress: getIpAddress(req),
+        userAgent: getUserAgent(req),
+      });
+
       res.json({
         message:
           "Lowongan berhasil dibatalkan, status interview juga diupdate.",
@@ -268,7 +292,7 @@ router.get("/:id/documents", async (req, res) => {
 // ============================
 // CREATE JOB OPENING (HR/Admin)
 // ============================
-router.post("/", verifyToken, verifyRole(["hr", "admin"]), async (req, res) => {
+router.post("/", verifyToken, verifyRole(["hr"]), async (req, res) => {
   try {
     const {
       position_id,
@@ -334,6 +358,26 @@ router.post("/", verifyToken, verifyRole(["hr", "admin"]), async (req, res) => {
       ],
     );
 
+    // Log job opening creation
+    await logActivity({
+      userId: req.user.id,
+      username: req.user.username,
+      role: req.user.roles?.[0] || req.user.role,
+      action: "CREATE",
+      module: "job_openings",
+      description: `Created job opening: ${title}`,
+      newValues: {
+        id: result.insertId,
+        position_id,
+        title,
+        quota: quota || 1,
+        status: status || "open",
+        deadline,
+      },
+      ipAddress: getIpAddress(req),
+      userAgent: getUserAgent(req),
+    });
+
     res.status(201).json({
       message: "Job opening created successfully",
       job_id: result.insertId,
@@ -350,7 +394,7 @@ router.post("/", verifyToken, verifyRole(["hr", "admin"]), async (req, res) => {
 router.put(
   "/:id",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -415,6 +459,20 @@ router.put(
         ],
       );
 
+      // Log job opening update
+      await logActivity({
+        userId: req.user.id,
+        username: req.user.username,
+        role: req.user.roles?.[0] || req.user.role,
+        action: "UPDATE",
+        module: "job_openings",
+        description: `Updated job opening ID: ${id}`,
+        oldValues: job[0],
+        newValues: req.body,
+        ipAddress: getIpAddress(req),
+        userAgent: getUserAgent(req),
+      });
+
       res.json({ message: "Job opening updated successfully" });
     } catch (error) {
       console.error(error);
@@ -429,7 +487,7 @@ router.put(
 router.delete(
   "/:id",
   verifyToken,
-  verifyRole(["hr", "admin"]),
+  verifyRole(["hr"]),
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -444,6 +502,19 @@ router.delete(
 
       await db.promise().query("DELETE FROM job_openings WHERE id = ?", [id]);
 
+      // Log job opening deletion
+      await logActivity({
+        userId: req.user.id,
+        username: req.user.username,
+        role: req.user.roles?.[0] || req.user.role,
+        action: "DELETE",
+        module: "job_openings",
+        description: `Deleted job opening ID: ${id}`,
+        oldValues: job[0],
+        ipAddress: getIpAddress(req),
+        userAgent: getUserAgent(req),
+      });
+
       res.json({ message: "Job opening deleted successfully" });
     } catch (error) {
       console.error(error);
@@ -453,3 +524,4 @@ router.delete(
 );
 
 module.exports = router;
+

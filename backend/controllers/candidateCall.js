@@ -1,11 +1,11 @@
-
+﻿
 const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const { verifyToken, verifyRole } = require("../middleware/authMiddleware");
 
 // POST /api/candidate-calls
-router.post("/", verifyToken, verifyRole(["hr", "admin"]), async (req, res) => {
+router.post("/", verifyToken, verifyRole(["hr"]), async (req, res) => {
   try {
     const { candidate_id, call_date, call_time, call_location, call_notes, status, invitation_letter_file } = req.body;
     if (!candidate_id || !call_date || !call_time || !call_location) {
@@ -88,3 +88,4 @@ router.get("/:candidate_id", async (req, res) => {
 });
 
 module.exports = router;
+

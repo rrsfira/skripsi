@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
@@ -6,6 +6,7 @@ const fs = require("fs");
 const db = require("../config/db");
 const { verifyToken, verifyRole } = require("../middleware/authMiddleware");
 const { resolveManagerScope } = require("../utils/managerScope");
+const { logActivity, getIpAddress, getUserAgent } = require("../middleware/activityLogger");
 
 const isAtasanRoleActive = (req) =>
     String(req.headers["x-active-role"] || "").toLowerCase() === "atasan";
@@ -155,6 +156,27 @@ router.post(
             res.status(201).json({
                 message: "Reimbursement submitted successfully",
             });
+
+            // Log activity: reimbursement submission
+            try {
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles) ? req.user.roles[0] : req.user.role || null;
+                await logActivity({
+                    userId: userId,
+                    username,
+                    role,
+                    action: "CREATE",
+                    module: "reimbursements",
+                    description: "Reimbursement submitted",
+                    oldValues: null,
+                    newValues: { request_id: nextId, employee_id: employeeId, reimbursement_type: reimbursementType, amount, description },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log reimbursement submission:", e);
+            }
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Server error" });
@@ -199,7 +221,7 @@ router.get(
 router.get(
     "/",
     verifyToken,
-    verifyRole(["admin", "hr", "finance", "atasan"]),
+    verifyRole(["hr", "finance", "atasan"]),
     async (req, res) => {
         try {
             let managerScope = null;
@@ -276,7 +298,7 @@ router.get(
 router.put(
     "/:id/approve",
     verifyToken,
-    verifyRole(["atasan", "admin"]),
+    verifyRole(["atasan"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -374,6 +396,27 @@ router.put(
                 [newStatus, requesterUserId, id]
             );
 
+            // Log activity: level-1 approval/rejection
+            try {
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles) ? req.user.roles[0] : req.user.role || null;
+                await logActivity({
+                    userId: requesterUserId,
+                    username,
+                    role,
+                    action: "UPDATE",
+                    module: "reimbursements",
+                    description: newStatus === "approved" || newStatus === "included_in_payroll" ? "Reimbursement approved by manager" : "Reimbursement rejected by manager",
+                    oldValues: rows[0] || null,
+                    newValues: { request_id: id, status: newStatus, approved_by: requesterUserId },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log reimbursement approval/rejection:", e);
+            }
+
             res.json({ message: `Reimbursement ${newStatus}` });
         } catch (error) {
             console.error(error);
@@ -390,7 +433,7 @@ router.put(
 router.put(
     "/:id/validate",
     verifyToken,
-    verifyRole(["hr", "admin"]),
+    verifyRole(["hr"]),
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -453,6 +496,27 @@ router.put(
                 );
             }
 
+            // Log activity: HR validation (level-2)
+            try {
+                const username = req.user.username || req.user.name || null;
+                const role = Array.isArray(req.user.roles) ? req.user.roles[0] : req.user.role || null;
+                await logActivity({
+                    userId: requesterUserId,
+                    username,
+                    role,
+                    action: "UPDATE",
+                    module: "reimbursements",
+                    description: action === "approve" ? "Reimbursement validated and included in payroll" : "Reimbursement rejected by HR",
+                    oldValues: rows[0] || null,
+                    newValues: { request_id: id, status: newStatus, hr_rejection_reason: action === "reject" ? rejectionReason : null },
+                    ipAddress: getIpAddress(req),
+                    userAgent: getUserAgent(req),
+                    status: "success",
+                });
+            } catch (e) {
+                console.error("Failed to log reimbursement validation:", e);
+            }
+
             res.json({ message: `Reimbursement ${newStatus}` });
         } catch (error) {
             console.error(error);
@@ -462,3 +526,4 @@ router.put(
 );
 
 module.exports = router;
+

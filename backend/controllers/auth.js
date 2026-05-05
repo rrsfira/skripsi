@@ -604,62 +604,6 @@ router.post("/logout", verifyToken, async (req, res) => {
         res.status(500).json({ message: "Error during logout" });
     }
 });
-
-// ============================
-// ADMIN RESET PASSWORD (jika pegawai lupa password)
-// ============================
-router.put(
-    "/reset-password/:userId",
-    verifyToken,
-    verifyRole(["admin"]),
-    async (req, res) => {
-        const { userId } = req.params;
-        const { newPassword } = req.body;
-
-        if (!newPassword) {
-            return res
-                .status(400)
-                .json({ message: "New password is required" });
-        }
-
-        if (newPassword.length < 6) {
-            return res.status(400).json({
-                message: "Password must be at least 6 characters",
-            });
-        }
-
-        try {
-            // Cek apakah user exists
-            const [userCheck] = await db
-                .promise()
-                .query("SELECT id, name FROM users WHERE id = ?", [userId]);
-
-            if (userCheck.length === 0) {
-                return res.status(404).json({ message: "User not found" });
-            }
-
-            // Hash password baru
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-            // Update password (admin tidak perlu tahu password lama)
-            await db
-                .promise()
-                .query(
-                    "UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?",
-                    [hashedPassword, userId],
-                );
-
-            res.json({
-                message: "Password reset successfully",
-                user: userCheck[0].name,
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Server error" });
-        }
-    },
-);
-
 // ============================
 // ADMIN - LIST USERS + ROLES
 // ============================

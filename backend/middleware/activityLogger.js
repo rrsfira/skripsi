@@ -65,6 +65,13 @@ async function logActivity({
 }) {
     try {
         if (!userId || userId <= 0) {
+            console.warn('[LOGGING] Skipping activity log because userId is missing or invalid', {
+                userId,
+                username,
+                role,
+                action,
+                module,
+            })
             return;
         }
 
@@ -105,7 +112,14 @@ async function logActivity({
         await db.promise().query(query, values);
         console.log(`[LOG] ${action} by ${identity.username} on ${module}`);
     } catch (error) {
-        console.error("[ERROR] Failed to log activity:", error);
+        console.error("[ERROR] Failed to log activity:", {
+            error: error && error.message ? error.message : error,
+            userId,
+            username,
+            role,
+            action,
+            module,
+        });
     }
 }
 
