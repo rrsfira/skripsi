@@ -80,7 +80,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL || '/'}>
         <Routes>
           {/* Public candidate job application routes */}
           <Route path="/" element={<Navigate to="/candidate/jobs" replace />} />

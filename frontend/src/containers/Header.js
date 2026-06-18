@@ -116,7 +116,7 @@ function Header() {
 
   function logoutUser() {
     localStorage.clear();
-    window.location.href = "/";
+    window.location.href = (process.env.PUBLIC_URL || '') + '/';
   }
 
   return (

@@ -170,7 +170,7 @@ function Layout() {
                 className="btn btn-error shadow-lg shadow-error/20"
                 onClick={() => {
                   localStorage.clear();
-                  window.location.href = "/login";
+                  window.location.href = (process.env.PUBLIC_URL || '') + '/login';
                 }}
               >
                 Kembali ke Login

@@ -249,10 +249,11 @@ export default function ApplicationDetailModal({ isOpen, onClose, app }) {
   ];
 
   function getDocumentUrl(path) {
+    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     if (!path) return "#";
     if (/^https?:\/\//i.test(path)) return path;
-    if (path.startsWith("/uploads")) return `http://localhost:5000${path}`;
-    if (path.startsWith("uploads/")) return `http://localhost:5000/${path}`;
+    if (path.startsWith("/uploads")) return `${baseUrl}${path}`;
+    if (path.startsWith("uploads/")) return `${baseUrl}/${path}`;
     return path;
   }
 

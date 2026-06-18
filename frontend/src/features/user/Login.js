@@ -75,9 +75,9 @@ function Login() {
 
         // Redirect sesuai role
         if (activeRole === "kandidat") {
-          window.location.href = "/candidate/dashboard";
+          window.location.href = (process.env.PUBLIC_URL || '') + '/candidate/dashboard';
         } else {
-          window.location.href = "/app/dashboard";
+          window.location.href = (process.env.PUBLIC_URL || '') + '/app/dashboard';
         }
       })
       .catch((error) => {

@@ -72,7 +72,7 @@ function InternalPortalLandingPage() {
         <div className="container mx-auto flex items-center justify-between gap-4 px-4 py-3">
           <Link to="/portal" className="flex min-w-0 items-center gap-3">
             <img
-              src="/logo1.svg"
+              src={process.env.PUBLIC_URL + '/logo1.svg'}
               alt="PT Otak Kanan"
               className="h-10 w-auto object-contain"
             />
@@ -183,7 +183,7 @@ function InternalPortalLandingPage() {
               <div className="relative overflow-hidden rounded-[2rem] border border-white/25 bg-white/14 p-6 shadow-2xl backdrop-blur-md">
                 <div className="pointer-events-none absolute -bottom-14 -right-14 opacity-10">
                   <img
-                    src="/logo1.svg"
+                    src={process.env.PUBLIC_URL + '/logo1.svg'}
                     alt="PT Otak Kanan"
                     className="h-56 w-auto"
                   />

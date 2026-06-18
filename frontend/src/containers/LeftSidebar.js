@@ -36,7 +36,7 @@ function LeftSidebar() {
           <div className="flex w-full justify-center rounded-3xl border border-base-300/60 bg-base-200/70 px-4 py-4 shadow-sm">
             <Link to={"/app/dashboard"}>
               <img
-                src="/logo1.svg"
+                src={process.env.PUBLIC_URL + '/logo1.svg'}
                 alt="PT OTAK KANAN"
                 className="h-10 w-auto object-contain"
               />

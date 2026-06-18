@@ -116,8 +116,8 @@ const MiniCalendar = ({
   const isWeekend = (day) => {
     if (!day) return false;
     const dayOfWeek = new Date(year, month - 1, day).getDay();
-    return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
-  };
+    return dayOfWeek === 0; // 0 = Sunday only (not Saturday)
+  }; 
 
   const isWorkday = (day) => {
     if (!day) return false;

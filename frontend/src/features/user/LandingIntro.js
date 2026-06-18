@@ -7,7 +7,7 @@ function LandingIntro() {
         <div className="max-w-md">
           <div className="text-center mt-8 sm:mt-12">
             <img
-              src="/logo1.svg"
+              src={process.env.PUBLIC_URL + '/logo1.svg'}
               alt="PT OTAK KANAN"
               className="w-36 sm:w-44 md:w-48 mx-auto block"
             />

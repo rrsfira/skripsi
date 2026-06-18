@@ -32,6 +32,8 @@ import {
   findHiredCandidateInfo,
 } from "../../../utils/hiredCandidateStatus";
 
+const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const normalizeStatus = (value) => String(value || "").toLowerCase().trim();
 const rejectedStatuses = new Set(["ditolak", "rejected"]);
 const publishedHiringStatuses = new Set([
@@ -107,13 +109,13 @@ function getCoverLetterFileUrl(value) {
   if (typeof value === "string") {
     if (value.startsWith("http")) return value;
     if (value.startsWith("/")) {
-      return `http://localhost:5000${value}`;
+      return `${baseUrl}${value}`;
     }
-    return `http://localhost:5000/${value}`;
+    return `${baseUrl}/${value}`;
   }
 
   if (typeof value === "number") {
-    return `http://localhost:5000/${value}`;
+    return `${baseUrl}/${value}`;
   }
 
   if (typeof value === "object") {
@@ -1080,7 +1082,7 @@ export default function HRRecruitmentProcessDetail() {
                           selected.photo_file
                             ? selected.photo_file.startsWith("http")
                               ? selected.photo_file
-                              : `http://localhost:5000/${selected.photo_file.replace(/^\//, "")}`
+                              : `${baseUrl}/${selected.photo_file.replace(/^\//, "")}`
                             : "https://ui-avatars.com/api/?name=" +
                               encodeURIComponent(selected.candidate_name || selected.name || "-") +
                               "&background=fb923c&color=fff"
@@ -1280,9 +1282,9 @@ export default function HRRecruitmentProcessDetail() {
                           if (val) {
                             if (val.startsWith("http")) url = val;
                             else if (val.startsWith("/uploads") || val.startsWith("uploads/")) {
-                              url = `http://localhost:5000/${val.replace(/^\//, "")}`;
+                              url = `${baseUrl}/${val.replace(/^\//, "")}`;
                             } else {
-                              url = `http://localhost:5000/uploads/candidate_documents/${val}`;
+                              url = `${baseUrl}/uploads/candidate_documents/${val}`;
                             }
                           }
 

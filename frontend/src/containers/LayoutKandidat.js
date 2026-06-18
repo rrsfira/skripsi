@@ -71,9 +71,9 @@ function LeftSidebarKandidat() {
       <ul className="menu relative min-h-full w-72 overflow-y-auto border-r border-base-300/70 bg-base-100/95 pt-2 text-base-content shadow-[16px_0_40px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:w-80">
         <li className="mb-6">
           <div className="flex w-full justify-center">
-            <Link to={"/candidate/dashboard"}>
+              <Link to={"/candidate/dashboard"}>
               <img
-                src="/logo1.svg"
+                src={process.env.PUBLIC_URL + '/logo1.svg'}
                 alt="Kandidat"
                 className="h-10 w-auto object-contain"
               />
@@ -244,7 +244,7 @@ export default function LayoutKandidat() {
                 className="btn btn-error"
                 onClick={() => {
                   localStorage.clear()
-                  window.location.href = '/login'
+                  window.location.href = (process.env.PUBLIC_URL || '') + '/login'
                 }}
               >
                 Kembali ke Login

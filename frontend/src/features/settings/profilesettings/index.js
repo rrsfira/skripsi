@@ -289,7 +289,7 @@ function ProfileSettings(){
             setTimeout(() => {
                 localStorage.clear()
                 delete axios.defaults.headers.common['Authorization']
-                window.location.href = '/login'
+                window.location.href = (process.env.PUBLIC_URL || '') + '/login'
             }, 1500)
         } catch (err) {
             setError(err.message || 'Gagal mengubah password')

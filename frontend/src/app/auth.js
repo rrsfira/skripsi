@@ -103,7 +103,7 @@ const checkAuth = () => {
   const isPublicPage = PUBLIC_ROUTES.some((r) =>
     window.location.href.includes(r),
   );
-  const isAppRoute = window.location.pathname.startsWith("/app");
+  const isAppRoute = window.location.pathname.startsWith((process.env.PUBLIC_URL || '') + "/app");
   const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const userStatus = String(savedUser?.status || "").toLowerCase();
 
@@ -113,12 +113,12 @@ const checkAuth = () => {
     localStorage.removeItem("roles");
     localStorage.removeItem("activeRole");
     delete axios.defaults.headers.common["Authorization"];
-    window.location.href = "/login";
+    window.location.href = (process.env.PUBLIC_URL || '') + '/login';
     return null;
   }
 
   if (!TOKEN && !isPublicPage) {
-    window.location.href = "/login";
+    window.location.href = (process.env.PUBLIC_URL || '') + '/login';
     return;
   }
 
@@ -135,7 +135,7 @@ const checkAuth = () => {
   if (isAppRoute) {
     if (!Array.isArray(savedRoles) || savedRoles.length === 0) {
       localStorage.clear();
-      window.location.href = "/login";
+      window.location.href = (process.env.PUBLIC_URL || '') + '/login';
       return;
     }
 
@@ -191,7 +191,7 @@ const checkAuth = () => {
           localStorage.clear();
           localStorage.setItem("accountInactiveNotice", "1");
           delete axios.defaults.headers.common["Authorization"];
-          window.location.href = "/login";
+          window.location.href = (process.env.PUBLIC_URL || '') + '/login';
         }
 
         const isAuthLoginRequest =
@@ -201,7 +201,7 @@ const checkAuth = () => {
           localStorage.clear();
           localStorage.setItem("sessionExpiredNotice", "1");
           delete axios.defaults.headers.common["Authorization"];
-          window.location.href = "/login";
+          window.location.href = (process.env.PUBLIC_URL || '') + '/login';
         }
 
         if (

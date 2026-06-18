@@ -130,7 +130,7 @@ export default function CandidateJobsPage() {
         <div className="container mx-auto flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <img
-              src="/logo2.svg"
+              src={process.env.PUBLIC_URL + '/logo2.svg'}
               alt="Otak Kanan Logo"
               className="h-12 w-auto object-contain"
             />
@@ -180,7 +180,7 @@ export default function CandidateJobsPage() {
         {/* Ilustrasi samar kanan */}
         <div className="pointer-events-none absolute bottom-0 right-0 hidden lg:block">
           <img
-            src="/team.svg"
+            src={process.env.PUBLIC_URL + '/team.svg'}
             alt=""
             className="h-[520px] w-auto opacity-[0.13]"
           />
