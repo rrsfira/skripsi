@@ -205,9 +205,7 @@ const HRHiredCandidateDetailModal = () => {
   return (
     <TitleCard
       title={
-        <span className="text-2xl font-bold">
-          Kirim Undangan Calon Pegawai
-        </span>
+        <span className="text-2xl font-bold">Kirim Undangan Calon Pegawai</span>
       }
       TopSideButtons={
         <button
@@ -235,7 +233,6 @@ const HRHiredCandidateDetailModal = () => {
             {notification.message}
           </div>
         )}
-
         {/* INFO */}
         <div className="alert alert-info">
           Silakan isi jadwal kehadiran kandidat untuk proses onboarding.
@@ -453,7 +450,15 @@ const HRHiredCandidateDetailModal = () => {
 
             {/* ================= TTD ================= */}
             <div style={{ marginTop: 30, textAlign: "left" }}>
-              <div style={{ display: "block", width: "220px", marginLeft: "auto", marginRight: 0, textAlign: "center" }}>
+              <div
+                style={{
+                  display: "block",
+                  width: "220px",
+                  marginLeft: "auto",
+                  marginRight: 0,
+                  textAlign: "center",
+                }}
+              >
                 <p style={{ marginBottom: 30 }}>Hormat kami,</p>
                 <p style={{ fontWeight: "bold", marginBottom: 0 }}>
                   {userName || ""}
@@ -503,7 +508,11 @@ const HRHiredCandidateDetailModal = () => {
           disabled={checkingInvitation || invitationExists || sending}
           onClick={handleSendInvitation}
         >
-          {invitationExists ? "Undangan Sudah Dibuat" : sending ? "Mengirim..." : "Kirim"}
+          {invitationExists
+            ? "Undangan Sudah Dibuat"
+            : sending
+              ? "Mengirim..."
+              : "Kirim"}
         </button>
       </div>
     </TitleCard>
@@ -511,4 +520,3 @@ const HRHiredCandidateDetailModal = () => {
 };
 
 export default HRHiredCandidateDetailModal;
-

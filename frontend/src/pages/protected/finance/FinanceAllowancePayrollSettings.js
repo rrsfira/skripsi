@@ -14,14 +14,30 @@ const formatPercent = (value) =>
 
 const percentToInput = (value) => {
   if (value === null || value === undefined || value === "") return "";
-  return Number(value) * 100;
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return "";
+  return String(parsed * 100);
 };
 
 const normalizePercentInput = (value) => {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return 0;
-  return parsed >= 1 ? parsed / 100 : parsed;
+  return parsed;
 };
+
+const settingsToForm = (settings = {}) => ({
+  transport_per_day: settings?.transport_per_day || "",
+  meal_per_day: settings?.meal_per_day || "",
+  health_percentage: percentToInput(settings?.health_percentage),
+  bpjs_percentage: percentToInput(settings?.bpjs_percentage),
+  tax: percentToInput(settings?.tax),
+  late_deduction_percentage: percentToInput(
+    settings?.late_deduction_percentage,
+  ),
+  alpha_deduction_percentage: percentToInput(
+    settings?.alpha_deduction_percentage,
+  ),
+});
 
 function FinancePayrollSettings() {
   const dispatch = useDispatch();
@@ -56,19 +72,7 @@ function FinancePayrollSettings() {
         setError("");
         const result = await financeApi.getPayrollSettings();
         setData(result);
-        setForm({
-          transport_per_day: result?.transport_per_day || "",
-          meal_per_day: result?.meal_per_day || "",
-          health_percentage: percentToInput(result?.health_percentage),
-          bpjs_percentage: percentToInput(result?.bpjs_percentage),
-          tax: percentToInput(result?.tax),
-          late_deduction_percentage: percentToInput(
-            result?.late_deduction_percentage,
-          ),
-          alpha_deduction_percentage: percentToInput(
-            result?.alpha_deduction_percentage,
-          ),
-        });
+        setForm(settingsToForm(result));
       } catch (err) {
         console.error(err);
         setError("Gagal memuat data pengaturan payroll");
@@ -103,7 +107,7 @@ function FinancePayrollSettings() {
 
     setForm({
       ...form,
-      [name]: value === "" ? "" : Number(value),
+      [name]: value,
     });
   };
 
@@ -154,6 +158,7 @@ function FinancePayrollSettings() {
 
       // Update data dengan settings terbaru yang baru disimpan
       setData(result.settings);
+      setForm(settingsToForm(result.settings));
       setSuccess(
         data
           ? "Pengaturan payroll berhasil disimpan sebagai versi baru"
@@ -478,19 +483,7 @@ function FinancePayrollSettings() {
                 type="button"
                 className="btn btn-ghost"
                 onClick={() => {
-                  setForm({
-                    transport_per_day: data?.transport_per_day || "",
-                    meal_per_day: data?.meal_per_day || "",
-                    health_percentage: percentToInput(data?.health_percentage),
-                    bpjs_percentage: percentToInput(data?.bpjs_percentage),
-                    tax: percentToInput(data?.tax),
-                    late_deduction_percentage: percentToInput(
-                      data?.late_deduction_percentage,
-                    ),
-                    alpha_deduction_percentage: percentToInput(
-                      data?.alpha_deduction_percentage,
-                    ),
-                  });
+                  setForm(settingsToForm(data));
                   setError("");
                 }}
                 disabled={submitting}
@@ -513,4 +506,3 @@ function FinancePayrollSettings() {
 }
 
 export default FinancePayrollSettings;
-

@@ -418,7 +418,7 @@ export default function CandidateJobsPage() {
       {/* ABOUT COMPANY */}
       <section className="bg-base-100 py-20">
         <div className="container mx-auto grid items-center gap-12 px-4 md:grid-cols-2">
-          <img src="/logo1.svg" alt="PT Otak Kanan" />
+          <img src={process.env.PUBLIC_URL + '/logo1.svg'} alt="PT Otak Kanan" />
 
           <div>
             <h2 className="mb-4 text-3xl font-bold text-primary">
@@ -502,7 +502,7 @@ export default function CandidateJobsPage() {
             <div className="absolute bottom-0 -left-10 h-40 w-40 rounded-full bg-orange-200/40 blur-2xl" />
 
             <img
-              src="/team.svg"
+              src={process.env.PUBLIC_URL + '/team.svg'}
               alt="Team Otak Kanan"
               className="relative z-10 w-full max-w-md drop-shadow-2xl"
             />
